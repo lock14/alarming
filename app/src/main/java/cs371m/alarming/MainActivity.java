@@ -1,5 +1,6 @@
 package cs371m.alarming;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == EDIT_ALARM) {
+        if (resultCode == Activity.RESULT_OK && requestCode == EDIT_ALARM) {
             int hour = intent.getIntExtra(getString(R.string.intent_hour_key), -1);
             int minute = intent.getIntExtra(getString(R.string.intent_minute_key), -1);
 
