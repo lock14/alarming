@@ -1,21 +1,37 @@
 package cs371m.alarming;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Calendar;
+
 public class MainActivity extends AppCompatActivity {
+    public static final String TAG = "MainActivity";
     private static final int EDIT_ALARM = 0;
+    private AlarmManager alarmManager;
+    private PendingIntent pendingIntent;
+
+    private static Button disableButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        disableButton = (Button) findViewById(R.id.disable_alarm);
+        pendingIntent = null;
     }
 
     @Override
@@ -49,7 +65,33 @@ public class MainActivity extends AppCompatActivity {
                 TextView alarmText = (TextView) findViewById(R.id.alarm_text);
                 alarmText.setText(AlarmUtil.alarmText(hour, minute));
                 alarmText.setEnabled(true);
+                setAlarm(hour, minute);
             }
         }
+    }
+
+    private void setAlarm(int hour, int minute) {
+        // set calendar to time
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+
+        // set alarm receiver
+        Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+
+        // schedule alarm
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+    }
+
+    public void cancelAlarm(View view) {
+        if (alarmManager!= null && pendingIntent != null) {
+            Log.d(TAG, "Canceling Alarm");
+            alarmManager.cancel(pendingIntent);
+        }
+    }
+
+    public static Button getDisableButton() {
+        return disableButton;
     }
 }
