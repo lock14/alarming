@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
+    private static final int EDIT_ALARM = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +31,24 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.edit_alarm:
                 Intent intent = new Intent(this, EditAlarm.class);
-                startActivity(intent);
+                startActivityForResult(intent, EDIT_ALARM);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == EDIT_ALARM) {
+            int hour = intent.getIntExtra(getString(R.string.intent_hour_key), -1);
+            int minute = intent.getIntExtra(getString(R.string.intent_minute_key), -1);
+
+            if (hour != -1 && minute != -1) {
+                TextView alarmText = (TextView) findViewById(R.id.alarm_text);
+                alarmText.setText(AlarmUtil.alarmText(hour, minute));
+                alarmText.setEnabled(true);
+            }
         }
     }
 }

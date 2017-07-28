@@ -31,25 +31,8 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     }
     @Override
     public void onTimeSet(TimePicker timePicker, int hour, int minute) {
-        TextView alarmText = (TextView) getActivity().findViewById(R.id.edit_alarm_text);
-        String ampm = (hour < 12)? " AM" : " PM";
-        alarmText.setText(zeroPad(covertHour(hour)) + ":" + zeroPad(minute) + ampm);
+        ((EditAlarm) getActivity()).setAlarm(hour, minute);
     }
 
-    private String zeroPad(int n) {
-        StringBuilder s = new StringBuilder();
-        if (n < 10) {
-            s.append("0");
-        }
-        return s.append(n).toString();
-    }
 
-    private int covertHour(int hour) {
-        if (hour > 12) {
-            return hour %= 12;
-        } else if (hour == 0) {
-            return 12;
-        }
-        return hour;
-    }
 }
