@@ -15,9 +15,10 @@ import android.view.View;
 public class AlarmReceiver extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(final Context context, Intent intent) {
-        MainActivity.getDisableButton().setVisibility(View.VISIBLE);
+        //MainActivity.getDisableButton().setVisibility(View.VISIBLE);
         Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         Ringtone ringtone = RingtoneManager.getRingtone(context, uri);
         ringtone.play();
+        context.startActivity(new Intent(context, MainActivity.class));
     }
 }
