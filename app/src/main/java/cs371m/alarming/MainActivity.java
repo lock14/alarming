@@ -4,6 +4,11 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,9 +25,10 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
     private static final int EDIT_ALARM = 0;
     private AlarmManager alarmManager;
+    private Ringtone ringtone;
     private PendingIntent pendingIntent;
-
-    private static Button disableButton;
+    private int hour;
+    private int minute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +36,47 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        disableButton = (Button) findViewById(R.id.disable_alarm);
+
         pendingIntent = null;
+
+        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        ringtone = RingtoneManager.getRingtone(this, uri);
+        loadStateFromPreferences();
+        Intent intent = getIntent();
+        boolean startedByAlarm =
+                intent.getBooleanExtra(getString(R.string.intent_started_by_alarm_key), false);
+        if (startedByAlarm) {
+            playAlarm();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putInt(getString(R.string.shared_pref_hour_key), hour);
+        editor.putInt(getString(R.string.shared_pref_minute_key), minute);
+        editor.apply();
+    }
+
+    private void loadStateFromPreferences() {
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        hour = sharedPreferences.getInt(getString(R.string.shared_pref_hour_key), -1);
+        minute = sharedPreferences.getInt(getString(R.string.shared_pref_minute_key), -1);
+        if (hour != -1 && minute != -1) {
+            enableAlarmText(hour, minute);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        boolean startedByAlarm =
+                intent.getBooleanExtra(getString(R.string.intent_started_by_alarm_key), false);
+        if (startedByAlarm) {
+            playAlarm();
+        }
     }
 
     @Override
@@ -58,19 +103,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (resultCode == Activity.RESULT_OK && requestCode == EDIT_ALARM) {
-            int hour = intent.getIntExtra(getString(R.string.intent_hour_key), -1);
-            int minute = intent.getIntExtra(getString(R.string.intent_minute_key), -1);
+            hour = intent.getIntExtra(getString(R.string.intent_hour_key), -1);
+            minute = intent.getIntExtra(getString(R.string.intent_minute_key), -1);
 
             if (hour != -1 && minute != -1) {
-                TextView alarmText = (TextView) findViewById(R.id.alarm_text);
-                alarmText.setText(AlarmUtil.alarmText(hour, minute));
-                alarmText.setEnabled(true);
+                enableAlarmText(hour, minute);
                 setAlarm(hour, minute);
             }
         }
     }
 
+    private void enableAlarmText(int hour, int minute) {
+        TextView alarmText = (TextView) findViewById(R.id.alarm_text);
+        alarmText.setText(AlarmUtil.alarmText(hour, minute));
+        alarmText.setEnabled(true);
+    }
+
     private void setAlarm(int hour, int minute) {
+        // check if we've already scheduled an alarm and if so cancel it
+        if (pendingIntent != null) {
+            alarmManager.cancel(pendingIntent);
+        }
         // set calendar to time
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, hour);
@@ -81,17 +134,20 @@ public class MainActivity extends AppCompatActivity {
         pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
 
         // schedule alarm
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-    }
-
-    public void cancelAlarm(View view) {
-        if (alarmManager!= null && pendingIntent != null) {
-            Log.d(TAG, "Canceling Alarm");
-            alarmManager.cancel(pendingIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        } else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         }
     }
 
-    public static Button getDisableButton() {
-        return disableButton;
+    private void playAlarm() {
+        Button disableButton = (Button) findViewById(R.id.disable_alarm);
+        disableButton.setVisibility(View.VISIBLE);
+        ringtone.play();
+    }
+
+    public void cancelAlarm(View view) {
+        ringtone.stop();
     }
 }

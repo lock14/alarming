@@ -10,16 +10,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 public class EditAlarm extends AppCompatActivity {
-    private int mHour;
-    private int mMinute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mHour = -1;
-        mMinute = -1;
         setContentView(R.layout.activity_edit_alarm);
     }
 
@@ -36,9 +33,10 @@ public class EditAlarm extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_save:
+                TimePicker timePicker = (TimePicker) findViewById(R.id.time_picker);
                 Intent result = new Intent();
-                result.putExtra(getString(R.string.intent_hour_key), mHour);
-                result.putExtra(getString(R.string.intent_minute_key), mMinute);
+                result.putExtra(getString(R.string.intent_hour_key), timePicker.getCurrentHour());
+                result.putExtra(getString(R.string.intent_minute_key), timePicker.getCurrentMinute());
                 setResult(Activity.RESULT_OK, result);
                 finish();
                 return true;
@@ -60,16 +58,5 @@ public class EditAlarm extends AppCompatActivity {
     public void editObjective(View view) {
         Intent intent = new Intent(this, EditObjective.class);
         startActivity(intent);
-    }
-
-    public void setAlarm(int hour, int minute) {
-        mHour = hour;
-        mMinute = minute;
-        setAlarmText(hour, minute);
-    }
-
-    private void setAlarmText(int hour, int minute) {
-        TextView alarmText = (TextView) findViewById(R.id.edit_alarm_text);
-        alarmText.setText(AlarmUtil.alarmText(hour, minute));
     }
 }
