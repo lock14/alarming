@@ -125,9 +125,13 @@ public class MainActivity extends AppCompatActivity {
             alarmManager.cancel(pendingIntent);
         }
         // set calendar to time
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minute);
+        Calendar curentTime = Calendar.getInstance();
+        Calendar alarmTime = Calendar.getInstance();
+        alarmTime.set(Calendar.HOUR_OF_DAY, hour);
+        alarmTime.set(Calendar.MINUTE, minute);
+        if (curentTime.after(alarmTime)) {
+            alarmTime.add(Calendar.DATE, 1);
+        }
 
         // set alarm receiver
         Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
@@ -135,9 +139,9 @@ public class MainActivity extends AppCompatActivity {
 
         // schedule alarm
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime.getTimeInMillis(), pendingIntent);
         } else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime.getTimeInMillis(), pendingIntent);
         }
     }
 
