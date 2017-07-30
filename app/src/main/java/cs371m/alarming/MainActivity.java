@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void cancelAlarm(View view) {
-        Intent intent = new Intent(this, TestObjective.class);
+        Intent intent = new Intent(this, MathObjective.class);
         startActivityForResult(intent, OBJECTIVE);
     }
 }
