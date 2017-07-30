@@ -24,6 +24,7 @@ import java.util.Calendar;
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
     private static final int EDIT_ALARM = 0;
+    private static final int OBJECTIVE = 1;
     private AlarmManager alarmManager;
     private Ringtone ringtone;
     private PendingIntent pendingIntent;
@@ -102,13 +103,24 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (resultCode == Activity.RESULT_OK && requestCode == EDIT_ALARM) {
-            hour = intent.getIntExtra(getString(R.string.intent_hour_key), -1);
-            minute = intent.getIntExtra(getString(R.string.intent_minute_key), -1);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == EDIT_ALARM) {
+                hour = intent.getIntExtra(getString(R.string.intent_hour_key), -1);
+                minute = intent.getIntExtra(getString(R.string.intent_minute_key), -1);
 
-            if (hour != -1 && minute != -1) {
-                enableAlarmText(hour, minute);
-                setAlarm(hour, minute);
+                if (hour != -1 && minute != -1) {
+                    enableAlarmText(hour, minute);
+                    setAlarm(hour, minute);
+                }
+            } else if (requestCode == OBJECTIVE) {
+                ringtone.stop();
+                Button disableButton = (Button) findViewById(R.id.disable_alarm);
+                disableButton.setVisibility(View.INVISIBLE);
+                TextView alarmText = (TextView) findViewById(R.id.alarm_text);
+                alarmText.setEnabled(false);
+                // reset hour and minute
+                hour = -1;
+                minute = -1;
             }
         }
     }
@@ -152,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void cancelAlarm(View view) {
-        ringtone.stop();
+        Intent intent = new Intent(this, TestObjective.class);
+        startActivityForResult(intent, OBJECTIVE);
     }
 }
