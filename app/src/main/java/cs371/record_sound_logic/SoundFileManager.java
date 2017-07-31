@@ -3,23 +3,21 @@ package cs371.record_sound_logic;
 /**
  * Created by nano on 7/26/17.
  */
-import java.io.File;
-import android.util.Log;
-import android.content.Context;
 import android.content.ContextWrapper;
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
-import cs371m.alarming.R;
 
 public class SoundFileManager {
     String mSoundFileDirectory;
     static final String LOG_TAG = "SoundFileManager";
     ContextWrapper context;
 
-    SoundFileManager(ContextWrapper context, String soundFileDirectory) {
+    public SoundFileManager(ContextWrapper context, String soundFileDirectory) {
         this.context = context;
         mSoundFileDirectory = setupSoundFileDirectoryEnviroment(soundFileDirectory);
     }

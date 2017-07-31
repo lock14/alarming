@@ -4,14 +4,13 @@ package cs371.record_sound_logic;
  * Created by nano on 7/25/17.
  */
 
-import android.media.MediaPlayer;
-import android.media.MediaRecorder;
-import android.content.Context;
 import android.content.ContextWrapper;
+import android.media.MediaPlayer;
 import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
+
 import cs371m.alarming.R;
 
 public class SoundLogic {
@@ -25,14 +24,19 @@ public class SoundLogic {
        this.mSoundFileDirectory = soundFileDirectory;
     }
 
-    public void playCurrentSound() {
+    public int playCurrentSound() {
         String temporarySoundFileName = mContext.getString(R.string.temporary_sound_file_name);
         File temporarySoundFile = new File(prependDirectoryToFileName(temporarySoundFileName));
         if (temporarySoundFile.exists()) {
-            playSoundByFileName(temporarySoundFileName);
+            return playSoundByFileName(temporarySoundFileName);
         } else {
             Log.d(LOG_TAG, "there's no temporarySoundFile to play sound from");
         }
+        return 0;
+    }
+
+    public String getCurrentSoundName() {
+        return prependDirectoryToFileName(mContext.getString(R.string.temporary_sound_file_name));
     }
 
     public String[] getListOfSoundFiles() {
@@ -41,21 +45,26 @@ public class SoundLogic {
     }
 
 
-    public void playSoundByFileName(String fileName) {
+    public int playSoundByFileName(String fileName) {
         // play sound
         mPlayer = new MediaPlayer();
+        int duration = 0;
         try {
             mPlayer.setDataSource(prependDirectoryToFileName(fileName));
             mPlayer.prepare();
+            duration = mPlayer.getDuration();
             mPlayer.start();
         } catch (IOException e) {
             Log.e(LOG_TAG, "prepare() failed");
         }
+        return duration;
     }
 
     public void stopPlaying() {
-        mPlayer.release();
-        mPlayer = null;
+        if (mPlayer != null) {
+            mPlayer.release();
+            mPlayer = null;
+        }
     }
 
     public void releaseMediaPlayer() {

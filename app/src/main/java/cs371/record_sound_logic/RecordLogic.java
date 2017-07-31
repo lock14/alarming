@@ -4,17 +4,17 @@ package cs371.record_sound_logic;
  * Created by nano on 7/25/17.
  */
 
+import android.content.ContextWrapper;
 import android.media.MediaRecorder;
 import android.util.Log;
-import android.content.res.Resources;
-import android.content.Context;
-import android.content.ContextWrapper;
-import cs371m.alarming.R;
-import java.io.IOException;
+
 import java.io.File;
-import java.nio.channels.FileChannel;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
+
+import cs371m.alarming.R;
 
 public class RecordLogic {
     MediaRecorder mRecorder;
@@ -55,7 +55,7 @@ public class RecordLogic {
         if (!temporarySoundFile.exists()) {
             Log.d(LOG_TAG, "Cannot save temporary file as " + newSoundFileName + " because there" +
                     "is no temporary file");
-        } else {
+        }
             try {
                 FileChannel src = new FileInputStream(temporarySoundFile).getChannel();
                 FileChannel dest = new FileOutputStream(newSoundFile).getChannel();
@@ -64,7 +64,7 @@ public class RecordLogic {
             } catch (IOException ioException) {
                 Log.d(LOG_TAG, "Could not transfer temporary sound file into " + newSoundFileName);
             }
-        }
+
 
     }
 
