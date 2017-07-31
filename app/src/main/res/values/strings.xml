@@ -5,4 +5,11 @@
     <string name="intent_started_by_alarm_key">STARTED_BY_ALARM</string>
     <string name="shared_pref_hour_key">hour</string>
     <string name="shared_pref_minute_key">minute</string>
+    <string name="division_symbol">÷</string>
+    <string name="plus_symbol">+</string>
+    <string name="minus_symbol">-</string>
+    <string name="times_symbol">x</string>
+    <string name="intent_objective_key">OBJECTIVE_KEY</string>
+    <string name="shared_pref_objective_key">shared_pref_objective_key</string>
+    <string name="objective_demo_mode">DEMO_MODE</string>
 </resources>
