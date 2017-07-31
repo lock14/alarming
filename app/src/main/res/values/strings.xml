@@ -9,4 +9,7 @@
     <string name="plus_symbol">+</string>
     <string name="minus_symbol">-</string>
     <string name="times_symbol">x</string>
+    <string name="intent_objective_key">OBJECTIVE_KEY</string>
+    <string name="shared_pref_objective_key">shared_pref_objective_key</string>
+    <string name="objective_demo_mode">DEMO_MODE</string>
 </resources>

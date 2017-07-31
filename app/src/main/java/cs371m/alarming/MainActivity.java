@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private PendingIntent pendingIntent;
     private int hour;
     private int minute;
+    private int objectiveCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
         hour = sharedPreferences.getInt(getString(R.string.shared_pref_hour_key), -1);
         minute = sharedPreferences.getInt(getString(R.string.shared_pref_minute_key), -1);
+        objectiveCode = sharedPreferences.getInt(getString(R.string.shared_pref_objective_key), 0);
         if (hour != -1 && minute != -1) {
             enableAlarmText(hour, minute);
         }
@@ -107,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
             if (requestCode == EDIT_ALARM) {
                 hour = intent.getIntExtra(getString(R.string.intent_hour_key), -1);
                 minute = intent.getIntExtra(getString(R.string.intent_minute_key), -1);
+                objectiveCode = intent.getIntExtra(getString(R.string.intent_objective_key), 0);
 
                 if (hour != -1 && minute != -1) {
                     enableAlarmText(hour, minute);
@@ -121,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 // reset hour and minute
                 hour = -1;
                 minute = -1;
+                objectiveCode = 0;
             }
         }
     }
@@ -164,7 +168,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void cancelAlarm(View view) {
-        Intent intent = new Intent(this, MathObjective.class);
+        Objective objective = Objective.getObjective(objectiveCode);
+        Intent intent = null;
+        switch (objective) {
+            case MATH:
+                intent = new Intent(this, MathObjective.class);
+                break;
+            case TIC_TAC_TOE:
+                // insert code here
+                break;
+            case TYPING:
+                // insert code here
+                break;
+            case SWIPE:
+                // insert code here
+                break;
+            case COUNTING:
+                // insert code here
+                break;
+        }
         startActivityForResult(intent, OBJECTIVE);
     }
 }

@@ -4,9 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import java.util.Random;
 
@@ -16,15 +21,41 @@ public class MathObjective extends AppCompatActivity {
     private int operand2;
     private MathFunctor operator;
     private Random random;
+    private boolean demoMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_math_objective);
+        Intent intent = getIntent();
+        demoMode = intent.getBooleanExtra(getString(R.string.objective_demo_mode), false);
         completion_count = 3;
         random = new Random();
         chooseRandomProblem();
         setGuiCompoents();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        if (demoMode) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menu_save, menu);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_save:
+                Intent result = new Intent();
+                setResult(Activity.RESULT_OK, result);
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void submitAnswer(View view) {
@@ -32,7 +63,7 @@ public class MathObjective extends AppCompatActivity {
         int answer = Integer.parseInt(String.valueOf(answerText.getText()));
         if (answer == operator.doOperation(operand1, operand2)) {
             --completion_count;
-            if (completion_count == 0) {
+            if (!demoMode && completion_count == 0) {
                 Intent result = new Intent();
                 setResult(Activity.RESULT_OK, result);
                 finish();
