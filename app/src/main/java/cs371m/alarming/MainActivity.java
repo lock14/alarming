@@ -11,7 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private int hour;
     private int minute;
     private int objectiveCode;
+    private String alarmDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
         editor.putInt(getString(R.string.shared_pref_hour_key), hour);
         editor.putInt(getString(R.string.shared_pref_minute_key), minute);
+        editor.putInt(getString(R.string.shared_pref_objective_key), objectiveCode);
+        editor.putString(getString(R.string.shared_pref_description_key), alarmDescription);
         editor.apply();
     }
 
@@ -68,8 +71,13 @@ public class MainActivity extends AppCompatActivity {
         hour = sharedPreferences.getInt(getString(R.string.shared_pref_hour_key), -1);
         minute = sharedPreferences.getInt(getString(R.string.shared_pref_minute_key), -1);
         objectiveCode = sharedPreferences.getInt(getString(R.string.shared_pref_objective_key), 0);
+        alarmDescription = sharedPreferences
+                .getString(getString(R.string.shared_pref_description_key), "");
         if (hour != -1 && minute != -1) {
             enableAlarmText(hour, minute);
+        }
+        if (!TextUtils.isEmpty(alarmDescription)) {
+            enableAlarmDescription(alarmDescription);
         }
     }
 
@@ -110,21 +118,33 @@ public class MainActivity extends AppCompatActivity {
                 hour = intent.getIntExtra(getString(R.string.intent_hour_key), -1);
                 minute = intent.getIntExtra(getString(R.string.intent_minute_key), -1);
                 objectiveCode = intent.getIntExtra(getString(R.string.intent_objective_key), 0);
+                alarmDescription = intent.getStringExtra(getString(R.string.intent_description_key));
+                if (alarmDescription == null) {
+                    alarmDescription = "";
+                }
 
                 if (hour != -1 && minute != -1) {
                     enableAlarmText(hour, minute);
                     setAlarm(hour, minute);
+                }
+                if (TextUtils.isEmpty(alarmDescription)) {
+                    disableAlarmDescription();
+                } else {
+                    enableAlarmDescription(alarmDescription);
                 }
             } else if (requestCode == OBJECTIVE) {
                 ringtone.stop();
                 Button disableButton = (Button) findViewById(R.id.disable_alarm);
                 disableButton.setVisibility(View.INVISIBLE);
                 TextView alarmText = (TextView) findViewById(R.id.alarm_text);
-                alarmText.setEnabled(false);
+                alarmText.setVisibility(View.INVISIBLE);
+                TextView description = (TextView) findViewById(R.id.alarm_description_txt);
+                description.setVisibility(View.INVISIBLE);
                 // reset hour and minute
                 hour = -1;
                 minute = -1;
                 objectiveCode = 0;
+                alarmDescription = "";
             }
         }
     }
@@ -132,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
     private void enableAlarmText(int hour, int minute) {
         TextView alarmText = (TextView) findViewById(R.id.alarm_text);
         alarmText.setText(AlarmUtil.alarmText(hour, minute));
-        alarmText.setEnabled(true);
+        alarmText.setVisibility(View.VISIBLE);
     }
 
     private void setAlarm(int hour, int minute) {
@@ -188,5 +208,17 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         startActivityForResult(intent, OBJECTIVE);
+    }
+
+    public void enableAlarmDescription(String alarmDescription) {
+        TextView textView = (TextView) findViewById(R.id.alarm_description_txt);
+        textView.setText(alarmDescription);
+        textView.setVisibility(View.VISIBLE);
+    }
+
+    public  void disableAlarmDescription() {
+        TextView textView = (TextView) findViewById(R.id.alarm_description_txt);
+        textView.setText("");
+        textView.setVisibility(View.INVISIBLE);
     }
 }

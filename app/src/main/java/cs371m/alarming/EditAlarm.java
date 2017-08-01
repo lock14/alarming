@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -16,12 +17,14 @@ public class EditAlarm extends AppCompatActivity {
     private static final int EDIT_RECORDING = 0;
     private static final int EDIT_OBJECTIVE = 1;
     private int objectiveCode;
+    private String alarmDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_alarm);
         objectiveCode = 0; // default to math objective?
+        alarmDescription =  "";
     }
 
     @Override
@@ -42,6 +45,9 @@ public class EditAlarm extends AppCompatActivity {
                 result.putExtra(getString(R.string.intent_hour_key), timePicker.getCurrentHour());
                 result.putExtra(getString(R.string.intent_minute_key), timePicker.getCurrentMinute());
                 result.putExtra(getString(R.string.intent_objective_key), objectiveCode);
+                EditText editText = (EditText) findViewById(R.id.alarm_description_edit_txt);
+                result.putExtra(getString(R.string.intent_description_key),
+                        editText.getText().toString());
                 setResult(Activity.RESULT_OK, result);
                 finish();
                 return true;
