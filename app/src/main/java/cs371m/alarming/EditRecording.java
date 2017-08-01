@@ -75,6 +75,13 @@ public class EditRecording extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (!mRecordOnStart) {
+            stopRecording((Button) findViewById(R.id.record_button));
+        }
+        super.onBackPressed();
+    }
 
     @Override
     public void onStop() {
@@ -85,6 +92,7 @@ public class EditRecording extends AppCompatActivity {
 
     // record ui logic
     private void startRecording(Button recordButton) {
+        mRecordOnStart = false;
         Button recordPlayButton = (Button) findViewById(R.id.play_recording);
         recordPlayButton.setText(getString(R.string.play));
         mSoundLogic.stopPlaying();
@@ -93,6 +101,7 @@ public class EditRecording extends AppCompatActivity {
     }
 
     private void stopRecording(Button recordButton) {
+        mRecordOnStart = true;
         recordButton.setBackgroundResource(R.drawable.record_start);
         mRecordLogic.stopRecording();
     }
@@ -105,10 +114,8 @@ public class EditRecording extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (mRecordOnStart) {
-                    mRecordOnStart = false;
                     startRecording((Button) v);
                 } else {
-                    mRecordOnStart = true;
                     stopRecording((Button) v);
                 }
             }
