@@ -3,6 +3,7 @@ package cs371.record_sound_logic;
 /**
  * Created by nano on 7/26/17.
  */
+
 import android.content.ContextWrapper;
 import android.util.Log;
 
@@ -12,14 +13,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
+import cs371m.alarming.R;
+
 public class SoundFileManager {
     String mSoundFileDirectory;
+    String mAlarmFileDirectory;
     static final String LOG_TAG = "SoundFileManager";
-    ContextWrapper context;
+    ContextWrapper mContext;
 
     public SoundFileManager(ContextWrapper context, String soundFileDirectory) {
-        this.context = context;
+        this.mContext = context;
         mSoundFileDirectory = setupSoundFileDirectoryEnviroment(soundFileDirectory);
+        mAlarmFileDirectory = setupAlarmFileDirectory();
     }
 
     public void addSoundFileByName(String soundFileName) {
@@ -61,7 +66,9 @@ public class SoundFileManager {
     }
 
     private String setupSoundFileDirectoryEnviroment(String soundFileDirectory) {
-        String newSoundFileDirectory = context.getFilesDir().getAbsolutePath() + "/" + soundFileDirectory;
+        System.out.println("1setupSoundFileDirectoryEnviroment: " + mContext.getFilesDir().getAbsolutePath() + "/");
+        System.out.println("2setupSoundFileDirectoryEnviroment: " + soundFileDirectory);
+        String newSoundFileDirectory = mContext.getFilesDir().getAbsolutePath() + "/" + soundFileDirectory;
         File soundDirectoryFile = new File(newSoundFileDirectory);
 
         if (!soundDirectoryFile.exists()) {
@@ -74,8 +81,44 @@ public class SoundFileManager {
         } else {
             Log.d(LOG_TAG, newSoundFileDirectory + " already exists");
         }
-
+        System.out.println("setupSoundFileDirectory returning: " + newSoundFileDirectory);
         return newSoundFileDirectory;
+    }
+
+    private String setupAlarmFileDirectory() {
+        String alarmFileDirectoryName = mContext.getFilesDir().getAbsolutePath() + "/" +
+                mContext.getString(R.string.alarm_file_directory);
+        File alarmFileDirectoryFile = new File(alarmFileDirectoryName);
+        if (!alarmFileDirectoryFile.exists()) {
+            alarmFileDirectoryFile.mkdir();
+            Log.d(LOG_TAG, "created alarm file directory " + alarmFileDirectoryName);
+        } else {
+            Log.d(LOG_TAG, alarmFileDirectoryName + " already exists");
+        }
+        return alarmFileDirectoryName;
+    }
+
+    public void saveTemporarySoundFileToAlarm() {
+        String temporarySoundFileName = prependDirectoryToFileName(mContext.getString(R.string.temporary_sound_file_name));
+        System.out.println("1saveTemporarySoundFileToAlarm: " +  mSoundFileDirectory);
+        System.out.println("2saveTemporarySoundFileToAlarm: " + mContext.getString(R.string.temporary_sound_file_name));
+        System.out.println("3saveTemporarySoundFileToAlarm: " +  temporarySoundFileName);
+        File temporarySoundFile = new File(temporarySoundFileName);
+        File newAlarmSoundFile = new File(mAlarmFileDirectory + "/" + mContext.getString(R.string.alarm_sound_file));
+
+        if (!temporarySoundFile.exists()) {
+            Log.d(LOG_TAG, "Cannot save temporary file as " + newAlarmSoundFile + " because there" +
+                    "is no temporary file");
+        } else {
+            try {
+                FileChannel src = new FileInputStream(temporarySoundFile).getChannel();
+                FileChannel dest = new FileOutputStream(newAlarmSoundFile).getChannel();
+                dest.transferFrom(src, 0, src.size());
+                Log.d(LOG_TAG, "Bytes transfered from temporarySoundFile to " + newAlarmSoundFile);
+            } catch (IOException ioException) {
+                Log.d(LOG_TAG, "Could not transfer temporary sound file into " + newAlarmSoundFile);
+            }
+        }
     }
 
     private String prependDirectoryToFileName(String fileName) {

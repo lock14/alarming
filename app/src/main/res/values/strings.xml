@@ -6,4 +6,6 @@
     <string name="temporary_sound_file_name">b54b5861-a32e-4f6f-9b22-707ebbe00ceb</string>
     <string name="play">Play</string>
     <string name="stop">Stop</string>
+    <string name="alarm_file_directory">alarmFileDirectory</string>
+    <string name="alarm_sound_file">alarmSoundFile</string>
 </resources>

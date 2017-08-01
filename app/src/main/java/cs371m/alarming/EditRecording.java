@@ -35,11 +35,10 @@ public class EditRecording extends AppCompatActivity {
         RecordingListAdapter recordingListAdapter = new RecordingListAdapter(this, R.layout.recording_list_row, mData);
         lv.setAdapter(recordingListAdapter);
         mRecordLogic = new RecordLogic(new ContextWrapper(getApplicationContext()),
-                                       getFilesDir() + "/" +  getString(R.string.sound_file_directory));
+                                       getFilesDir().getAbsolutePath() + "/" +  getString(R.string.sound_file_directory));
         mSoundLogic = new SoundLogic(new ContextWrapper((getApplicationContext())),
-                                     getFilesDir() + "/" +  getString(R.string.sound_file_directory));
-        mSoundFileManager = new SoundFileManager(new ContextWrapper((getApplicationContext())),
-                                                 getFilesDir() + "/" +  getString(R.string.sound_file_directory));
+                                     getFilesDir().getAbsolutePath() + "/" +  getString(R.string.sound_file_directory));
+        mSoundFileManager = new SoundFileManager(new ContextWrapper((getApplicationContext())), getString(R.string.sound_file_directory));
         mRecordOnStart = true;
 
         setOnClickListenersForButtons();
@@ -69,6 +68,7 @@ public class EditRecording extends AppCompatActivity {
                  * populate result with data to send back
                  * e.g. result.putExtra(String key, ? data);
                  */
+                mSoundFileManager.saveTemporarySoundFileToAlarm();
                 setResult(Activity.RESULT_OK, result);
                 finish();
                 return true;

@@ -28,6 +28,7 @@ public class RecordLogic {
     }
 
     public void startRecordingIntoFile(String outputSoundFileName) {
+        System.out.println("startRecordingIntoFile: " + outputSoundFileName);
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);

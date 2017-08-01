@@ -27,6 +27,8 @@ public class SoundLogic {
     public int playCurrentSound() {
         String temporarySoundFileName = mContext.getString(R.string.temporary_sound_file_name);
         File temporarySoundFile = new File(prependDirectoryToFileName(temporarySoundFileName));
+        System.out.println("playCurrentSound: " + temporarySoundFileName);
+        System.out.println("playCurrentSound: " + prependDirectoryToFileName(temporarySoundFileName));
         if (temporarySoundFile.exists()) {
             return playSoundByFileName(temporarySoundFileName);
         } else {
