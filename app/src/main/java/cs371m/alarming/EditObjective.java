@@ -2,24 +2,32 @@ package cs371m.alarming;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.GradientDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TimePicker;
+import android.widget.ImageView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EditObjective extends AppCompatActivity {
     private int objectiveCode;
+    List<View> imageViews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_objective);
+        imageViews = new ArrayList<>();
+        ImageView mathImageView = (ImageView) findViewById(R.id.math_img_view);
+        ImageView ticTactToeImageView = (ImageView) findViewById(R.id.tic_tac_toe_img_view);
+        imageViews.add(mathImageView);
+        imageViews.add(ticTactToeImageView);
         objectiveCode = 0;
+        selectObjective(mathImageView);
     }
 
     @Override
@@ -45,25 +53,32 @@ public class EditObjective extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (resultCode == Activity.RESULT_OK) {
-            objectiveCode = requestCode;
-            if(objectiveCode == Objective.MATH.ordinal()) {
-                    GradientDrawable gd = new GradientDrawable();
-                    gd.setColor(0xFF00FF00); // Changes this drawbale to use a single color instead of a gradient
-                    gd.setCornerRadius(5);
-                    gd.setStroke(1, 0xFF000000);
-                    Button mathButton = (Button) findViewById(R.id.math_objective_btn);
-                    mathButton.setBackgroundDrawable(gd);
+    public void selectObjective(View view) {
+        int paddingDp = paddingInDP(2);
+        view.setPadding(paddingDp, paddingDp, paddingDp, paddingDp);
+        objectiveCode = getObjective(view.getId()).ordinal();
+        for (View otherView : imageViews) {
+            if (!otherView.equals(view)) {
+                paddingDp = paddingInDP(0);
+                otherView.setPadding(paddingDp, paddingDp, paddingDp, paddingDp);
             }
+        }
+    }
+
+    private Objective getObjective(int viewId) {
+        if (viewId == R.id.math_img_view) {
+            return Objective.MATH;
+        } else if (viewId == R.id.tic_tac_toe_img_view) {
+            return Objective.TIC_TAC_TOE;
+        } else {
+            throw new IllegalStateException("Non Existent View ID: " + viewId);
         }
     }
 
     public void mathObjective(View view) {
         Intent intent = new Intent(this, MathObjective.class);
         intent.putExtra(getString(R.string.objective_demo_mode), true);
-        startActivityForResult(intent, Objective.MATH.ordinal());
+        startActivity(intent);
     }
 
     public void ticTacToeObjective(View view) {
@@ -80,5 +95,10 @@ public class EditObjective extends AppCompatActivity {
 
     public void countingObjective(View view) {
 
+    }
+
+    public int paddingInDP(int paddingDP) {
+        final float scale = getResources().getDisplayMetrics().density;
+        return (int) (paddingDP * scale + 0.5f);
     }
 }

@@ -35,29 +35,6 @@ public class MathObjective extends AppCompatActivity {
         setGuiCompoents();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        if (demoMode) {
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.menu_save, menu);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_save:
-                Intent result = new Intent();
-                setResult(Activity.RESULT_OK, result);
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     public void submitAnswer(View view) {
         EditText answerText = (EditText) findViewById(R.id.answer_text);
         int answer = Integer.parseInt(String.valueOf(answerText.getText()));
