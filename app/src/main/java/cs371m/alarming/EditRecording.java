@@ -34,10 +34,8 @@ public class EditRecording extends AppCompatActivity {
         generateDummyData();
         RecordingListAdapter recordingListAdapter = new RecordingListAdapter(this, R.layout.recording_list_row, mData);
         lv.setAdapter(recordingListAdapter);
-        mRecordLogic = new RecordLogic(new ContextWrapper(getApplicationContext()),
-                                       getFilesDir().getAbsolutePath() + "/" +  getString(R.string.sound_file_directory));
-        mSoundLogic = new SoundLogic(new ContextWrapper((getApplicationContext())),
-                                     getFilesDir().getAbsolutePath() + "/" +  getString(R.string.sound_file_directory));
+        mRecordLogic = new RecordLogic(new ContextWrapper(getApplicationContext()), getString(R.string.sound_file_directory));
+        mSoundLogic = new SoundLogic(new ContextWrapper((getApplicationContext())), getString(R.string.sound_file_directory));
         mSoundFileManager = new SoundFileManager(new ContextWrapper((getApplicationContext())), getString(R.string.sound_file_directory));
         mRecordOnStart = true;
 

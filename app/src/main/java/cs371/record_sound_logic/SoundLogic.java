@@ -21,14 +21,12 @@ public class SoundLogic {
 
     public SoundLogic(ContextWrapper context, String soundFileDirectory) {
         this.mContext = context;
-       this.mSoundFileDirectory = soundFileDirectory;
+       this.mSoundFileDirectory = createSoundFileDirectoryPath(soundFileDirectory);
     }
 
     public int playCurrentSound() {
         String temporarySoundFileName = mContext.getString(R.string.temporary_sound_file_name);
         File temporarySoundFile = new File(prependDirectoryToFileName(temporarySoundFileName));
-        System.out.println("playCurrentSound: " + temporarySoundFileName);
-        System.out.println("playCurrentSound: " + prependDirectoryToFileName(temporarySoundFileName));
         if (temporarySoundFile.exists()) {
             return playSoundByFileName(temporarySoundFileName);
         } else {
@@ -78,6 +76,10 @@ public class SoundLogic {
 
     private String prependDirectoryToFileName(String fileName) {
         return this.mSoundFileDirectory + "/" + fileName;
+    }
+
+    private String createSoundFileDirectoryPath(String soundFileDirectory) {
+        return mContext.getFilesDir().getAbsolutePath() + "/" + soundFileDirectory;
     }
 
 }

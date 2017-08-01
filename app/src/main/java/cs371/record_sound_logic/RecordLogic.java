@@ -24,11 +24,10 @@ public class RecordLogic {
 
     public RecordLogic(ContextWrapper context, String soundFileDirectory) {
         this.mContext = context;
-        this.mSoundFileDirectory = soundFileDirectory;
+        this.mSoundFileDirectory = createSoundFileDirectoryPath(soundFileDirectory);
     }
 
     public void startRecordingIntoFile(String outputSoundFileName) {
-        System.out.println("startRecordingIntoFile: " + outputSoundFileName);
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -78,6 +77,10 @@ public class RecordLogic {
 
     private String prependDirectoryToFileName(String fileName) {
         return this.mSoundFileDirectory + "/" + fileName;
+    }
+
+    private String createSoundFileDirectoryPath(String soundFileDirectory) {
+        return mContext.getFilesDir().getAbsolutePath() + "/" + soundFileDirectory;
     }
 
     public String getSoundFileDirectory() {

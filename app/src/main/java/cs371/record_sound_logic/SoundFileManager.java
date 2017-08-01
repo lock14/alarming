@@ -66,8 +66,6 @@ public class SoundFileManager {
     }
 
     private String setupSoundFileDirectoryEnviroment(String soundFileDirectory) {
-        System.out.println("1setupSoundFileDirectoryEnviroment: " + mContext.getFilesDir().getAbsolutePath() + "/");
-        System.out.println("2setupSoundFileDirectoryEnviroment: " + soundFileDirectory);
         String newSoundFileDirectory = mContext.getFilesDir().getAbsolutePath() + "/" + soundFileDirectory;
         File soundDirectoryFile = new File(newSoundFileDirectory);
 
@@ -81,7 +79,6 @@ public class SoundFileManager {
         } else {
             Log.d(LOG_TAG, newSoundFileDirectory + " already exists");
         }
-        System.out.println("setupSoundFileDirectory returning: " + newSoundFileDirectory);
         return newSoundFileDirectory;
     }
 
@@ -100,9 +97,6 @@ public class SoundFileManager {
 
     public void saveTemporarySoundFileToAlarm() {
         String temporarySoundFileName = prependDirectoryToFileName(mContext.getString(R.string.temporary_sound_file_name));
-        System.out.println("1saveTemporarySoundFileToAlarm: " +  mSoundFileDirectory);
-        System.out.println("2saveTemporarySoundFileToAlarm: " + mContext.getString(R.string.temporary_sound_file_name));
-        System.out.println("3saveTemporarySoundFileToAlarm: " +  temporarySoundFileName);
         File temporarySoundFile = new File(temporarySoundFileName);
         File newAlarmSoundFile = new File(mAlarmFileDirectory + "/" + mContext.getString(R.string.alarm_sound_file));
 
