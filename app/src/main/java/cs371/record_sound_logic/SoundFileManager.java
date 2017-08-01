@@ -95,7 +95,7 @@ public class SoundFileManager {
         return alarmFileDirectoryName;
     }
 
-    public void saveTemporarySoundFileToAlarm() {
+    public String saveTemporarySoundFileToAlarm() {
         String temporarySoundFileName = prependDirectoryToFileName(mContext.getString(R.string.temporary_sound_file_name));
         File temporarySoundFile = new File(temporarySoundFileName);
         File newAlarmSoundFile = new File(mAlarmFileDirectory + "/" + mContext.getString(R.string.alarm_sound_file));
@@ -109,10 +109,12 @@ public class SoundFileManager {
                 FileChannel dest = new FileOutputStream(newAlarmSoundFile).getChannel();
                 dest.transferFrom(src, 0, src.size());
                 Log.d(LOG_TAG, "Bytes transfered from temporarySoundFile to " + newAlarmSoundFile);
+                return newAlarmSoundFile.getName();
             } catch (IOException ioException) {
                 Log.d(LOG_TAG, "Could not transfer temporary sound file into " + newAlarmSoundFile);
             }
         }
+        return null;
     }
 
     private String prependDirectoryToFileName(String fileName) {

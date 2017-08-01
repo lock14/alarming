@@ -8,23 +8,21 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.TimePicker;
 
 public class EditAlarm extends AppCompatActivity {
     private static final int EDIT_RECORDING = 0;
     private static final int EDIT_OBJECTIVE = 1;
     private int objectiveCode;
-    private String alarmDescription;
+    private String recordingFileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_alarm);
         objectiveCode = 0; // default to math objective?
-        alarmDescription =  "";
+        recordingFileName = "";
     }
 
     @Override
@@ -45,6 +43,7 @@ public class EditAlarm extends AppCompatActivity {
                 result.putExtra(getString(R.string.intent_hour_key), timePicker.getCurrentHour());
                 result.putExtra(getString(R.string.intent_minute_key), timePicker.getCurrentMinute());
                 result.putExtra(getString(R.string.intent_objective_key), objectiveCode);
+                result.putExtra(getString(R.string.intent_recording_key), recordingFileName);
                 EditText editText = (EditText) findViewById(R.id.alarm_description_edit_txt);
                 result.putExtra(getString(R.string.intent_description_key),
                         editText.getText().toString());
@@ -60,9 +59,10 @@ public class EditAlarm extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == EDIT_RECORDING) {
-                /**
-                 * EXTRACT RECORDING INFORMATION HERE
-                 */
+                String fileName = intent.getStringExtra(getString(R.string.intent_recording_key));
+                if (fileName != null) {
+                    recordingFileName = fileName;
+                }
             } else if (requestCode == EDIT_OBJECTIVE) {
                 objectiveCode = intent.getIntExtra(getString(R.string.intent_objective_key), 0);
             }
