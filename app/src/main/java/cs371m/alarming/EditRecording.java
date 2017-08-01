@@ -85,6 +85,9 @@ public class EditRecording extends AppCompatActivity {
 
     // record ui logic
     private void startRecording(Button recordButton) {
+        Button recordPlayButton = (Button) findViewById(R.id.play_recording);
+        recordPlayButton.setText(getString(R.string.play));
+        mSoundLogic.stopPlaying();
         recordButton.setBackgroundResource(R.drawable.record_stop);
         mRecordLogic.startRecordingIntoTemporarySoundFile();
     }
