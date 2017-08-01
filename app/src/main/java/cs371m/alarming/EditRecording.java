@@ -61,11 +61,10 @@ public class EditRecording extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menu_save:
                 Intent result = new Intent();
-                /**
-                 * populate result with data to send back
-                 * e.g. result.putExtra(String key, ? data);
-                 */
-                mSoundFileManager.saveTemporarySoundFileToAlarm();
+                String recordingFileName = mSoundFileManager.saveTemporarySoundFileToAlarm();
+                if (recordingFileName != null) {
+                    result.putExtra(getString(R.string.intent_recording_key), recordingFileName);
+                }
                 setResult(Activity.RESULT_OK, result);
                 finish();
                 return true;

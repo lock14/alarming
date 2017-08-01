@@ -20,4 +20,6 @@
     <string name="objective_demo_mode">DEMO_MODE</string>
     <string name="intent_description_key">DESCRIPTION_KEY</string>
     <string name="shared_pref_description_key">shared_pref_description_key</string>
+    <string name="intent_recording_key">RECORDING_KEY</string>
+    <string name="shared_pref_recording_filename">shared_pref_recording_filename</string>
 </resources>
