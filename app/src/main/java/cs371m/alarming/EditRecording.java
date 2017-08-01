@@ -38,7 +38,6 @@ public class EditRecording extends AppCompatActivity {
         mSoundLogic = new SoundLogic(new ContextWrapper((getApplicationContext())), getString(R.string.sound_file_directory));
         mSoundFileManager = new SoundFileManager(new ContextWrapper((getApplicationContext())), getString(R.string.sound_file_directory));
         mRecordOnStart = true;
-
         setOnClickListenersForButtons();
     }
     

@@ -60,6 +60,20 @@ public class SoundLogic {
         return duration;
     }
 
+    public int playSoundFileByNameRaw(String fileName) {
+        mPlayer = new MediaPlayer();
+        int duration = 0;
+        try {
+            mPlayer.setDataSource(fileName);
+            mPlayer.prepare();
+            duration = mPlayer.getDuration();
+            mPlayer.start();
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "prepare() failed");
+        }
+        return duration;
+    }
+
     public void stopPlaying() {
         if (mPlayer != null) {
             mPlayer.release();
