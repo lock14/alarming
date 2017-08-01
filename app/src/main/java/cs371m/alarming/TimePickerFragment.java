@@ -31,8 +31,6 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
     }
     @Override
     public void onTimeSet(TimePicker timePicker, int hour, int minute) {
-        ((EditAlarm) getActivity()).setAlarm(hour, minute);
+        //((EditAlarm) getActivity()).setAlarm(hour, minute);
     }
-
-
 }
