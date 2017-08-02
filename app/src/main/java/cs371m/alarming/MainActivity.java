@@ -210,6 +210,8 @@ public class MainActivity extends AppCompatActivity {
         Calendar alarmTime = Calendar.getInstance();
         alarmTime.set(Calendar.HOUR_OF_DAY, hour);
         alarmTime.set(Calendar.MINUTE, minute);
+        alarmTime.set(Calendar.SECOND, 0);
+        alarmTime.set(Calendar.MILLISECOND, 0);
         if (curentTime.after(alarmTime)) {
             alarmTime.add(Calendar.DATE, 1);
         }
