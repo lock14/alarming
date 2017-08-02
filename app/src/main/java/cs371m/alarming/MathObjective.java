@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Random;
 
@@ -17,7 +20,6 @@ public class MathObjective extends AppCompatActivity {
     private MathFunctor operator;
     private Random random;
     private boolean demoMode;
-    private TextView completionTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,30 +31,40 @@ public class MathObjective extends AppCompatActivity {
         random = new Random();
         chooseRandomProblem();
         setGuiCompoents();
-        completionTextView = (TextView) findViewById(R.id.math_objective_completions);
         if (!demoMode) {
-            completionTextView.setText("Need "+(3 - completion_count)+" objective wins to disable.");
-        } else {
+            TextView completionTextView = (TextView) findViewById(R.id.math_objective_completions);
             completionTextView.setText("DEMO");
         }
     }
 
     public void submitAnswer(View view) {
         EditText answerText = (EditText) findViewById(R.id.answer_text);
-        int answer = Integer.parseInt(String.valueOf(answerText.getText()));
-        if (answer == operator.doOperation(operand1, operand2)) {
-            --completion_count;
-            if (!demoMode && completion_count == 0) {
-                completionTextView.setText("Need "+(3 - completion_count)+" objective wins to disable.");
-                Intent result = new Intent();
-                setResult(Activity.RESULT_OK, result);
-                finish();
+        String answerString = String.valueOf(answerText.getText());
+        if (!TextUtils.isEmpty(answerString)) {
+            int answer = Integer.parseInt(answerString);
+            String message = null;
+            if (answer == operator.doOperation(operand1, operand2)) {
+                --completion_count;
+                message = "Correct.";
+                if (!demoMode && completion_count == 0) {
+                    Intent result = new Intent();
+                    setResult(Activity.RESULT_OK, result);
+                    finish();
+                } else {
+                    if (!demoMode) {
+                        message += " Need " + completion_count + " more wins to disable";
+                    }
+                    chooseRandomProblem();
+                    setGuiCompoents();
+                }
             } else {
-                chooseRandomProblem();
-                setGuiCompoents();
+                message = "Incorrect. Try Again.";
             }
+            answerText.setText("");
+            Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
         }
-        answerText.setText("");
     }
 
     private void setGuiCompoents() {
