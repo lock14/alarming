@@ -43,7 +43,7 @@ public class MathObjective extends AppCompatActivity {
         if (answer == operator.doOperation(operand1, operand2)) {
             --completion_count;
             if (!demoMode && completion_count == 0) {
-                completionTextView.setText("Need 3 objective wins to disable, currently have " + (3 - completion_count) + ".");
+                completionTextView.setText("Need "+(3 - completion_count)+" objective wins to disable.");
                 Intent result = new Intent();
                 setResult(Activity.RESULT_OK, result);
                 finish();
