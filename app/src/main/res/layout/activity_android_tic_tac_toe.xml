@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context="cs371m.alarming.TicTacToeObjective"
+    android:weightSum="1">
+
+    <TableLayout
+        android:id="@+id/play_grid"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="*">
+
+        <TableRow
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/one"
+                android:textSize="70sp" />
+
+            <Button
+                android:id="@+id/two"
+                android:textSize="70sp" />
+
+            <Button
+                android:id="@+id/three"
+                android:textSize="70sp" />
+        </TableRow>
+
+        <TableRow
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/four"
+                android:textSize="70sp" />
+
+            <Button
+                android:id="@+id/five"
+                android:textSize="70sp" />
+
+            <Button
+                android:id="@+id/six"
+                android:textSize="70sp" />
+        </TableRow>
+
+        <TableRow
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/seven"
+                android:textSize="70sp" />
+
+            <Button
+                android:id="@+id/eight"
+                android:textSize="70sp" />
+
+            <Button
+                android:id="@+id/nine"
+                android:textSize="70sp" />
+        </TableRow>
+    </TableLayout>
+
+    <TextView
+        android:id="@+id/information"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:gravity="center_horizontal"
+        android:text="@string/info"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/retry_tictactoe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Retry" />
+
+    <TextView
+        android:id="@+id/tictactoe_objective_completions"
+        android:layout_width="215dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.21"
+        android:text=""
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        android:textSize="24sp" />
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:padding="20dp">-->
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:textSize="20sp"-->
+            <!--android:text="@string/human"/>-->
+        <!--<TextView-->
+            <!--android:id="@+id/human_wins_tv"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:textStyle="bold"-->
+            <!--android:textSize="20sp"-->
+            <!--android:text="@string/zero"/>-->
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:textSize="20sp"-->
+            <!--android:text="@string/ties"/>-->
+        <!--<TextView-->
+            <!--android:id="@+id/ties_tv"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:textStyle="bold"-->
+            <!--android:textSize="20sp"-->
+            <!--android:text="@string/zero"/>-->
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:textSize="20sp"-->
+            <!--android:text="@string/android"/>-->
+        <!--<TextView-->
+            <!--android:id="@+id/android_wins_tv"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:textStyle="bold"-->
+            <!--android:textSize="20sp"-->
+            <!--android:text="@string/zero"/>-->
+    <!--</LinearLayout>-->
+
+
+</LinearLayout>

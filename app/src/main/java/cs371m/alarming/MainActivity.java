@@ -6,18 +6,16 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.media.SoundPool;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -239,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(this, MathObjective.class);
                 break;
             case TIC_TAC_TOE:
-                // insert code here
+                intent = new Intent(this, TicTacToeObjective.class);
                 break;
             case TYPING:
                 // insert code here

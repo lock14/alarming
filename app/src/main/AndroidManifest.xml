@@ -39,6 +39,8 @@
             android:screenOrientation="portrait" />
         <activity android:name=".MathObjective"
             android:screenOrientation="portrait" />
+        <activity android:name=".TicTacToeObjective"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
