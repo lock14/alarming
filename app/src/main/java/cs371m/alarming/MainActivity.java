@@ -8,6 +8,7 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -229,14 +230,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void playAlarm() {
-        try {
-            Thread.sleep(soundLogic.playSoundByFileName(recordingFileName));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        soundLogic.playSoundByFileName(recordingFileName, new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                ringtone.play();
+            }
+        });
         Button disableButton = (Button) findViewById(R.id.disable_alarm);
         disableButton.setVisibility(View.VISIBLE);
-        ringtone.play();
     }
 
     public void cancelAlarm(View view) {

@@ -44,14 +44,20 @@ public class SoundLogic {
         return dummyStrings;
     }
 
-
     public int playSoundByFileName(String fileName) {
+        return playSoundByFileName(fileName, null);
+    }
+
+    public int playSoundByFileName(String fileName, MediaPlayer.OnCompletionListener listener) {
         // play sound
         mPlayer = new MediaPlayer();
         int duration = 0;
         try {
             mPlayer.setDataSource(prependDirectoryToFileName(fileName));
             mPlayer.prepare();
+            if (listener != null) {
+                mPlayer.setOnCompletionListener(listener);
+            }
             duration = mPlayer.getDuration();
             mPlayer.start();
         } catch (IOException e) {
