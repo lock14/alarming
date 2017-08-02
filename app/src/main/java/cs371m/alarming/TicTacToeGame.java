@@ -1,8 +1,4 @@
-package cs371.record_sound_logic;
-
-/**
- * Created by nano on 7/28/17.
- */
+package cs371m.alarming;
 
 /* TicTacToeConsole.java
  * By Frank McCown (Harding University)
@@ -12,52 +8,51 @@ package cs371.record_sound_logic;
  */
 
 import android.util.Log;
-
 import java.util.Random;
-
-/**
- * Created by nano on 7/11/17.
- */
-
-/* TicTacToeConsole.java
- * By Frank McCown (Harding University)
- *
- * This is a tic-tac-toe game that runs in the console window.  The human
- * is X and the computer is O.
- */
-
-import android.util.Log;
-
-import java.util.InputMismatchException;
-import java.util.Random;
-import java.util.Scanner;
 
 public class TicTacToeGame {
 
-    private char mBoard[] = {'1','2','3','4','5','6','7','8','9'};
+    public enum DifficultyLevel {Easy, Harder, Expert};
+    private DifficultyLevel mDifficultyLevel = DifficultyLevel.Easy;
 
+    private static final String TAG = "TicTacToeGame";
+    public final static int BOARD_SIZE = 9;
+
+    // Characters used to represent the human, computer, and open spots
     public static final char HUMAN_PLAYER = 'X';
     public static final char COMPUTER_PLAYER = 'O';
     public static final char OPEN_SPOT = ' ';
-    public static final String TAG = "TicTacToeGame";
-    public static final int BOARD_SIZE = 9;
+
 
     private Random mRand;
+    private char mBoard[];
 
     public TicTacToeGame() {
-
         // Seed the random number generator
         mRand = new Random();
+        mBoard = new char[BOARD_SIZE];
+        clearBoard();
     }
 
-    private void displayBoard()	{
-        System.out.println();
-        System.out.println(mBoard[0] + " | " + mBoard[1] + " | " + mBoard[2]);
-        System.out.println("-----------");
-        System.out.println(mBoard[3] + " | " + mBoard[4] + " | " + mBoard[5]);
-        System.out.println("-----------");
-        System.out.println(mBoard[6] + " | " + mBoard[7] + " | " + mBoard[8]);
-        System.out.println();
+    /** Clear the board of all X's and O's by setting all spots to OPEN_SPOT. */
+    public void clearBoard() {
+        for (int i = 0; i < mBoard.length; i++) {
+            mBoard[i] = OPEN_SPOT;
+        }
+    }
+
+    /** Set the given player at the given location on the game board.
+     *  The location must be available, or the board will not be changed.
+     *
+     * @param player - The HUMAN_PLAYER or COMPUTER_PLAYER
+     * @param location - The location (0-8) to place the move
+     */
+    public void setMove(char player, int location) {
+//        assert player == HUMAN_PLAYER || player == COMPUTER_PLAYER
+//                : "illegal player character";
+//        assert 0 <= location && location < BOARD_SIZE
+//                : "illegal location: " + location + ". Location must be between 0 and 8 inclusive.";
+        mBoard[location] = player;
     }
 
     // Check for a winner.  Return
@@ -65,26 +60,6 @@ public class TicTacToeGame {
     //  1 if it's a tie
     //  2 if X won
     //  3 if O won
-
-
-    /** Clear the board of all X's and O's by setting all spots to OPEN_SPOT. */
-    public void clearBoard() {
-        for(int i = 0; i < BOARD_SIZE; ++i) {
-            mBoard[i] = (char) (i + '0');
-        }
-    }
-
-    /** Set the given player at the given location on the game board.
-     The location must be available, or the board will not be changed. @param player - The HUMAN_PLAYER or COMPUTER_PLAYER
-     @param location - The location (0-8) to place the move
-     */
-    public void setMove(char player, int location) {
-        mBoard[location] = player;
-    }
-    /** Return the best move for the computer to make. You must call setMove() * to actually make the computer move to that location.
-     * @return The best move for the computer to make (0-8).
-     */
-
     public int checkForWinner() {
 
         // Check horizontal wins
@@ -138,25 +113,51 @@ public class TicTacToeGame {
         return 1;
     }
 
-    public int getComputerMove()
-    {
-        int move = 0;
 
+
+    public int getComputerMove() {
+
+        int move = -1;
+
+        if (mDifficultyLevel == DifficultyLevel.Easy)
+            move = getRandomMove();
+        else if (mDifficultyLevel == DifficultyLevel.Harder) {
+            move = getWinningMove();
+            if (move == -1)
+                move = getRandomMove();
+        }
+        else if (mDifficultyLevel == DifficultyLevel.Expert) {
+            move = getWinningMove();
+            if (move == -1)
+                move = getBlockingMove();
+            if (move == -1)
+                move = getRandomMove();
+        }
+
+        if (move == -1) {
+            System.out.println("Logic error");
+        }
+        return move;
+    }
+
+    private int getWinningMove() {
         // First see if there's a move O can make to win
         for (int i = 0; i < BOARD_SIZE; i++) {
             if (mBoard[i] != HUMAN_PLAYER && mBoard[i] != COMPUTER_PLAYER) {
                 char curr = mBoard[i];
                 mBoard[i] = COMPUTER_PLAYER;
                 if (checkForWinner() == 3) {
-//                  System.out.println("Computer is moving to " + (i + 1));
-                    Log.d("Computer is moving to ", String.valueOf(i + 1));
+                    Log.d(TAG, "Computer is moving to " + i + " in order to win.");
                     return i;
                 }
                 else
                     mBoard[i] = curr;
             }
         }
+        return -1;
+    }
 
+    private int getBlockingMove() {
         // See if there's a move O can make to block X from winning
         for (int i = 0; i < BOARD_SIZE; i++) {
             if (mBoard[i] != HUMAN_PLAYER && mBoard[i] != COMPUTER_PLAYER) {
@@ -164,25 +165,34 @@ public class TicTacToeGame {
                 mBoard[i] = HUMAN_PLAYER;
                 if (checkForWinner() == 2) {
                     mBoard[i] = COMPUTER_PLAYER;
-//                  System.out.println("Computer is moving to " + (i + 1));
-                    Log.d("Computer is moving to ", String.valueOf(i + 1));
+                    Log.d(TAG, "Computer is moving to " + i + " in order to block human win.");
                     return i;
                 }
                 else
                     mBoard[i] = curr;
             }
         }
+        return -1;
+    }
 
+    private int getRandomMove() {
         // Generate random move
-        do
-        {
+        int move;
+        do {
             move = mRand.nextInt(BOARD_SIZE);
         } while (mBoard[move] == HUMAN_PLAYER || mBoard[move] == COMPUTER_PLAYER);
 
-//      System.out.println("Computer is moving to " + (move + 1));
-        Log.d("Computer is moving to ", String.valueOf(move + 1));
+        Log.d(TAG, "Computer is moving to " + move + ", a random move");
+
         mBoard[move] = COMPUTER_PLAYER;
         return move;
     }
 
+    public DifficultyLevel getDifficulty() {
+        return mDifficultyLevel;
+    }
+
+    public void setDifficultyLevel(DifficultyLevel difficultyLevel) {
+        mDifficultyLevel = difficultyLevel;
+    }
 }

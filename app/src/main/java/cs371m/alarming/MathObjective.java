@@ -2,16 +2,11 @@ package cs371m.alarming;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import java.util.Random;
 
@@ -22,6 +17,7 @@ public class MathObjective extends AppCompatActivity {
     private MathFunctor operator;
     private Random random;
     private boolean demoMode;
+    private TextView completionTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +29,12 @@ public class MathObjective extends AppCompatActivity {
         random = new Random();
         chooseRandomProblem();
         setGuiCompoents();
+        completionTextView = (TextView) findViewById(R.id.math_objective_completions);
+        if (!demoMode) {
+            completionTextView.setText("Need 3 objective wins to disable, currently have " + (3 - completion_count) + ".");
+        } else {
+            completionTextView.setText("DEMO");
+        }
     }
 
     public void submitAnswer(View view) {
@@ -40,6 +42,7 @@ public class MathObjective extends AppCompatActivity {
         int answer = Integer.parseInt(String.valueOf(answerText.getText()));
         if (answer == operator.doOperation(operand1, operand2)) {
             --completion_count;
+            completionTextView.setText("Need 3 objective wins to disable, currently have " + (3 - completion_count) + ".");
             if (!demoMode && completion_count == 0) {
                 Intent result = new Intent();
                 setResult(Activity.RESULT_OK, result);

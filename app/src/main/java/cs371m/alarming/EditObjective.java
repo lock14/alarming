@@ -28,12 +28,12 @@ public class EditObjective extends AppCompatActivity {
         imageViews.add(ticTactToeImageView);
         objectiveCode = 0;
         selectObjective(mathImageView);
+        //selectObjective(ticTactToeImageView);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_save, menu);
         return true;
@@ -82,7 +82,9 @@ public class EditObjective extends AppCompatActivity {
     }
 
     public void ticTacToeObjective(View view) {
-
+        Intent intent = new Intent(this, TicTacToeObjective.class);
+        intent.putExtra(getString(R.string.objective_demo_mode), true);
+        startActivity(intent);
     }
 
     public void typingObjective(View view) {
