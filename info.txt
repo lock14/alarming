@@ -1,0 +1,27 @@
+a. 	Name - UT EID
+
+	Ali Darwiche – ad32823
+	Brian Bechtel – brb2727
+	Christiano Contreras – cac6253
+
+b.	Special Instructions
+
+	N/A
+
+c.	List of features
+
+	- Ability to set an alarm at a user specified time and have the alarm go off at the set time.
+	- The ability to record one message from the user that will play when the alarm goes off.
+	- Two objectives that the user may select between in order to disable the alarm
+	- Basic UI that supports interacting with the above features.
+
+d. Code obtained from other sources
+	
+	Two classes involve code from Tutorial 3. This code is to implement a TicTacToe objective. The classes are:
+	- TicTacToeGame.java
+	- TicTacToeObjective.java
+
+e. Code completed ourselves
+
+	All classes other than those mentioned in d are written by us
+	
