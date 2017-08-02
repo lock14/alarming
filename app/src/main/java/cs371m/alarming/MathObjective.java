@@ -31,7 +31,7 @@ public class MathObjective extends AppCompatActivity {
         random = new Random();
         chooseRandomProblem();
         setGuiCompoents();
-        if (!demoMode) {
+        if (demoMode) {
             TextView completionTextView = (TextView) findViewById(R.id.math_objective_completions);
             completionTextView.setText("DEMO");
         }
@@ -52,7 +52,11 @@ public class MathObjective extends AppCompatActivity {
                     finish();
                 } else {
                     if (!demoMode) {
-                        message += " Need " + completion_count + " more wins to disable";
+                        message += " Need " + completion_count + " more win";
+                        if (completion_count > 1) {
+                            message += "s";
+                        }
+                        message += " to disable";
                     }
                     chooseRandomProblem();
                     setGuiCompoents();
