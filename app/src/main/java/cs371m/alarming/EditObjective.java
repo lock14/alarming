@@ -27,8 +27,8 @@ public class EditObjective extends AppCompatActivity {
         imageViews.add(mathImageView);
         imageViews.add(ticTactToeImageView);
         objectiveCode = 0;
-        //selectObjective(mathImageView);
-        selectObjective(ticTactToeImageView);
+        selectObjective(mathImageView);
+        //selectObjective(ticTactToeImageView);
     }
 
     @Override
