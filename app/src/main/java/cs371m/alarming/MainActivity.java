@@ -176,6 +176,10 @@ public class MainActivity extends AppCompatActivity {
                 alarmText.setVisibility(View.INVISIBLE);
                 TextView description = (TextView) findViewById(R.id.alarm_description_txt);
                 description.setVisibility(View.INVISIBLE);
+                // "No Alarm Enabled" code
+                TextView alarmMissing = (TextView) findViewById(R.id.alarm_missing);
+                alarmMissing.setVisibility(View.VISIBLE);
+
                 // reset hour and minute
                 hour = -1;
                 minute = -1;
@@ -190,6 +194,10 @@ public class MainActivity extends AppCompatActivity {
         TextView alarmText = (TextView) findViewById(R.id.alarm_text);
         alarmText.setText(AlarmUtil.alarmText(hour, minute));
         alarmText.setVisibility(View.VISIBLE);
+
+        // "No Alarm Enabled" code
+        TextView alarmMissing = (TextView) findViewById(R.id.alarm_missing);
+        alarmMissing.setVisibility(View.INVISIBLE);
     }
 
     private void setAlarm(int hour, int minute) {

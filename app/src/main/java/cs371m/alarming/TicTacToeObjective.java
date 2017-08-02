@@ -39,7 +39,7 @@ public class TicTacToeObjective extends AppCompatActivity {
         mDemoMode =  intent.getBooleanExtra(getString(R.string.objective_demo_mode), false);
         mCompletionTextView = (TextView) findViewById(R.id.tictactoe_objective_completions);
         if (!mDemoMode) {
-            mCompletionTextView.setText("Need "+(3 - mNumWins)+" objective wins to disable.");
+            mCompletionTextView.setText("Need "+ (3 - mNumWins) +" objective wins to disable.");
         } else {
             mCompletionTextView.setText("DEMO");
         }

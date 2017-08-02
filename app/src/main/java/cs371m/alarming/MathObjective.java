@@ -31,7 +31,7 @@ public class MathObjective extends AppCompatActivity {
         setGuiCompoents();
         completionTextView = (TextView) findViewById(R.id.math_objective_completions);
         if (!demoMode) {
-            completionTextView.setText("Need 3 objective wins to disable, currently have " + (3 - completion_count) + ".");
+            completionTextView.setText("Need "+(3 - completion_count)+" objective wins to disable.");
         } else {
             completionTextView.setText("DEMO");
         }
