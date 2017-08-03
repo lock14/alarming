@@ -230,12 +230,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void playAlarm() {
-        soundLogic.playSoundByFileName(recordingFileName, new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                ringtone.play();
-            }
-        });
+        if (TextUtils.isEmpty(recordingFileName)) {
+            ringtone.play();
+        } else {
+            soundLogic.playSoundByFileName(recordingFileName, new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    ringtone.play();
+                }
+            });
+        }
         Button disableButton = (Button) findViewById(R.id.disable_alarm);
         disableButton.setVisibility(View.VISIBLE);
     }
