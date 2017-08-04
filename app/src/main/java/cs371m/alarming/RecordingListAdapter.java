@@ -80,10 +80,11 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
         }
     }
 
-    private void setAllButtonsToPlay() {
+    public void setAllButtonsToPlay() {
         for (String key : mIsRecording.keySet()) {
             mIsRecording.put(key, false);
         }
+        mRecordingPlayButton.setText(R.string.play);
     }
 
     private class ListPlayListener implements View.OnClickListener {
@@ -94,19 +95,19 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
             Button playButton = (Button) v;
             if (String.valueOf(playButton.getText()).equals(mContext.getString(R.string.play))) {
                 setAllButtonsToPlay();
+                mSoundLogic.stopPlaying();
                 mIsRecording.put(mRecordingFileName, true);
                 notifyDataSetChanged();
-//                        RecordingTaskBundle recordingTaskBundle = new RecordingTaskBundle();
-//                        recordingTaskBundle.mSoundLogic = mSoundLogic;
-//                        recordingTaskBundle.mRecordingFileName = getItem(position);
-//                        recordingTaskBundle.mRecordingListAdapter = mRecordingListAdapter;
-//                        PlayRecordingTask playRecordingTask = new PlayRecordingTask();
-//                        playRecordingTask.execute(recordingTaskBundle);
+                        RecordingTaskBundle recordingTaskBundle = new RecordingTaskBundle();
+                        recordingTaskBundle.mSoundLogic = mSoundLogic;
+                        recordingTaskBundle.mRecordingFileName = mRecordingFileName;
+                        recordingTaskBundle.mRecordingListAdapter = mRecordingListAdapter;
+                        PlayRecordingTask playRecordingTask = new PlayRecordingTask();
+                        playRecordingTask.execute(recordingTaskBundle);
             } else {
                 mIsRecording.put(mRecordingFileName, false);
                 notifyDataSetChanged();
-//                        mSoundLogic.stopPlaying();
-                // at this point stop playing any sound
+                        mSoundLogic.stopPlaying();
             }
 
         }

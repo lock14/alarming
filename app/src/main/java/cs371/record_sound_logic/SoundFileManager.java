@@ -134,6 +134,7 @@ public class SoundFileManager {
         } else {
             Log.d(LOG_TAG, "Not returning list of file names.");
         }
+        list = removeTemporarySoundFileName(list);
         return list;
     }
 
@@ -147,6 +148,43 @@ public class SoundFileManager {
             Log.d(LOG_TAG, "Not returning list of files.");
         }
         return soundFiles;
+    }
+
+    public void saveTemporarySoundFileAs(String newSoundFileName) {
+        String temporarySoundFileName = mContext.getString(R.string.temporary_sound_file_name);
+        File temporarySoundFile = new File(prependDirectoryToFileName(temporarySoundFileName));
+        File newSoundFile = new File(prependDirectoryToFileName(newSoundFileName));
+
+        if (!temporarySoundFile.exists()) {
+            Log.d(LOG_TAG, "Cannot save temporary file as " + newSoundFileName + " because there" +
+                    "is no temporary file");
+        }
+        try {
+            FileChannel src = new FileInputStream(temporarySoundFile).getChannel();
+            FileChannel dest = new FileOutputStream(newSoundFile).getChannel();
+            dest.transferFrom(src, 0, src.size());
+            Log.d(LOG_TAG, "Bytes transfered from temporarySoundFile to "+ newSoundFileName);
+        } catch (IOException ioException) {
+            Log.d(LOG_TAG, "Could not transfer temporary sound file into " + newSoundFileName);
+        }
+
+
+    }
+
+    private String[] removeTemporarySoundFileName(String[] soundFileNames) {
+        String[] newSoundFileNames = soundFileNames;
+        if (soundFileNames.length > 1) {
+            newSoundFileNames = new String[soundFileNames.length - 1];
+            int j = 0;
+            for (int i = 0; i < soundFileNames.length; ++i) {
+                if (!soundFileNames[i].equals(mContext.getString(R.string.temporary_sound_file_name))) {
+                    newSoundFileNames[j] = soundFileNames[i];
+                    ++j;
+                }
+            }
+            soundFileNames = newSoundFileNames;
+        }
+        return newSoundFileNames;
     }
 
 }
