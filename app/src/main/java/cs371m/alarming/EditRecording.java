@@ -32,7 +32,8 @@ public class EditRecording extends AppCompatActivity {
         setContentView(R.layout.activity_edit_recording);
         ListView lv = (ListView) findViewById(R.id.recording_list);
         generateDummyData();
-        RecordingListAdapter recordingListAdapter = new RecordingListAdapter(this, R.layout.recording_list_row, mData);
+        RecordingListAdapter recordingListAdapter = new RecordingListAdapter(this,
+                R.layout.recording_list_row, mData, (Button) findViewById(R.id.play_recording));
         lv.setAdapter(recordingListAdapter);
         mRecordLogic = new RecordLogic(new ContextWrapper(getApplicationContext()), getString(R.string.sound_file_directory));
         mSoundLogic = new SoundLogic(new ContextWrapper((getApplicationContext())), getString(R.string.sound_file_directory));
@@ -40,7 +41,7 @@ public class EditRecording extends AppCompatActivity {
         mRecordOnStart = true;
         setOnClickListenersForButtons();
     }
-    
+
 
     private void generateDummyData() {
         for (int i = 0; i < 5; ++i) {
