@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="Alarming" parent="Theme.AppCompat" >
+        <item name="colorAccent">@android:color/white</item>
+        <item name="android:colorBackground">@android:color/background_dark</item>
+    </style>
+
 </resources>
