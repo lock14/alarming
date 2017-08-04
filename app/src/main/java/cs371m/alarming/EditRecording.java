@@ -177,6 +177,7 @@ public class EditRecording extends AppCompatActivity {
                     mSoundFileManager.saveTemporarySoundFileAs(recordingTitleInput);
                     mRecordingTitleInput.setText("");
                     mRecordingListAdapter.add(recordingTitleInput);
+                    mRecordingListAdapter.mIsRecording.put(recordingTitleInput, false);
                     mRecordingListAdapter.notifyDataSetChanged();
                 }
             }
