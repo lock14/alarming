@@ -30,22 +30,24 @@ public class EditRecording extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_recording);
-        ListView lv = (ListView) findViewById(R.id.recording_list);
-        generateDummyData();
-        RecordingListAdapter recordingListAdapter = new RecordingListAdapter(this,
-                R.layout.recording_list_row, mData, (Button) findViewById(R.id.play_recording));
-        lv.setAdapter(recordingListAdapter);
+
         mRecordLogic = new RecordLogic(new ContextWrapper(getApplicationContext()), getString(R.string.sound_file_directory));
         mSoundLogic = new SoundLogic(new ContextWrapper((getApplicationContext())), getString(R.string.sound_file_directory));
         mSoundFileManager = new SoundFileManager(new ContextWrapper((getApplicationContext())), getString(R.string.sound_file_directory));
         mRecordOnStart = true;
         setOnClickListenersForButtons();
+        ListView lv = (ListView) findViewById(R.id.recording_list);
+        generateRecordingData();
+        RecordingListAdapter recordingListAdapter = new RecordingListAdapter(this,
+                R.layout.recording_list_row, mData, (Button) findViewById(R.id.play_recording), mSoundLogic);
+        lv.setAdapter(recordingListAdapter);
     }
 
 
-    private void generateDummyData() {
-        for (int i = 0; i < 5; ++i) {
-            mData.add(String.valueOf(i));
+    private void generateRecordingData() {
+        String[] recordingData = mSoundFileManager.getSoundFileList();
+        for (String recordingName : recordingData) {
+            mData.add(recordingName);
         }
     }
 

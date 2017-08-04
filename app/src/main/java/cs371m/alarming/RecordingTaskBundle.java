@@ -11,4 +11,6 @@ import cs371.record_sound_logic.SoundLogic;
 public class RecordingTaskBundle {
     public SoundLogic mSoundLogic;
     public Button mRecordingPlayButton;
+    public String mRecordingFileName;
+    public RecordingListAdapter mRecordingListAdapter;
 }

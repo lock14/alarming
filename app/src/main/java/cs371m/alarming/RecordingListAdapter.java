@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cs371.record_sound_logic.SoundLogic;
+
 import static cs371m.alarming.R.string.play;
 
 
@@ -23,15 +25,19 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
     private Context mContext;
     private int mLayout;
     private Button mRecordingPlayButton;
-    private Map<String, Boolean> mIsRecording;
+    public Map<String, Boolean> mIsRecording;
+    private SoundLogic mSoundLogic;
+    private RecordingListAdapter mRecordingListAdapter;
 
-    RecordingListAdapter(Context context, int resource, List<String> objects, Button recordingPlayButton) {
+    RecordingListAdapter(Context context, int resource, List<String> objects, Button recordingPlayButton, SoundLogic soundLogic) {
         super(context, resource, objects);
         mContext = context;
         mLayout = resource;
         mIsRecording = new HashMap<String, Boolean>();
         setupIsRecording(objects);
         mRecordingPlayButton = recordingPlayButton;
+        mSoundLogic = soundLogic;
+        mRecordingListAdapter = this;
     }
 
     private void setupIsRecording(List<String> data) {
@@ -43,11 +49,7 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         RecordingViewHolder mainRecordingViewHolder = null;
-        System.out.println("----------------------------------------------------------------");
-        System.out.println("getting view");
-        System.out.println("working on " + getItem(position));
         if(convertView == null) {
-            System.out.println("setting up convertView");
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(mLayout, parent, false);
             RecordingViewHolder recordingViewHolder = new RecordingViewHolder();
@@ -58,32 +60,28 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
                 public void onClick(View v) {
                     Button playButton = (Button) v;
                     if (String.valueOf(playButton.getText()).equals(mContext.getString(R.string.play))) {
-                        System.out.println("click play");
                         setAllButtonsToPlay();
                         mIsRecording.put(getItem(position), true);
-                        //playButton.setText(R.string.stop);
                         notifyDataSetChanged();
+                        RecordingTaskBundle recordingTaskBundle = new RecordingTaskBundle();
+                        recordingTaskBundle.mSoundLogic = mSoundLogic;
+                        recordingTaskBundle.mRecordingFileName = getItem(position);
+                        recordingTaskBundle.mRecordingListAdapter = mRecordingListAdapter;
+                        PlayRecordingTask playRecordingTask = new PlayRecordingTask();
+                        playRecordingTask.execute(recordingTaskBundle);
                     } else {
-                        System.out.println("click stop");
                         mIsRecording.put(getItem(position), false);
-                        //playButton.setText(R.string.play);
                         notifyDataSetChanged();
+                        mSoundLogic.stopPlaying();
                         // at this point stop playing any sound
                     }
-//                    Toast.makeText(getContext(), "Button was clicked for list item " + position + "\n"
-//                            + String.valueOf(playButton.getText()) + "\n" +
-//                                    mContext.getString(R.string.play)
-//                            , Toast.LENGTH_SHORT).show();
 
                 }
             });
             recordingViewHolder.recordingName.setText(getItem(position));
-            //setButtonText(recordingViewHolder.playButton, position);
-            //recordingViewHolder.playButton.callOnClick();
             recordingViewHolder.playButton.setText(R.string.play);
             convertView.setTag(recordingViewHolder);
         } else {
-            System.out.println("changing convertView");
             mainRecordingViewHolder = (RecordingViewHolder) convertView.getTag();
             mainRecordingViewHolder.recordingName.setText(getItem(position));
             mainRecordingViewHolder.playButton.setOnClickListener(new View.OnClickListener() {
@@ -91,23 +89,21 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
                 public void onClick(View v) {
                     Button playButton = (Button) v;
                     if (String.valueOf(playButton.getText()).equals(mContext.getString(R.string.play))) {
-                        System.out.println("click play");
                         setAllButtonsToPlay();
                         mIsRecording.put(getItem(position), true);
-                        //playButton.setText(R.string.stop);
                         notifyDataSetChanged();
+                        RecordingTaskBundle recordingTaskBundle = new RecordingTaskBundle();
+                        recordingTaskBundle.mSoundLogic = mSoundLogic;
+                        recordingTaskBundle.mRecordingFileName = getItem(position);
+                        recordingTaskBundle.mRecordingListAdapter = mRecordingListAdapter;
+                        PlayRecordingTask playRecordingTask = new PlayRecordingTask();
+                        playRecordingTask.execute(recordingTaskBundle);
                     } else {
-                        System.out.println("click stop");
                         mIsRecording.put(getItem(position), false);
-                        //playButton.setText(R.string.play);
                         notifyDataSetChanged();
+                        mSoundLogic.stopPlaying();
                         // at this point stop playing any sound
                     }
-//                    Toast.makeText(getContext(), "Button was clicked for list item " + position + "\n"
-//                            + String.valueOf(playButton.getText()) + "\n" +
-//                                    mContext.getString(R.string.play)
-//                            , Toast.LENGTH_SHORT).show();
-
                 }
             });
             setButtonText(mainRecordingViewHolder.playButton, position);
@@ -127,8 +123,6 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
         for (String key : mIsRecording.keySet()) {
             mIsRecording.put(key, false);
         }
-        // at this point stop any sound
-        //notifyDataSetChanged();
     }
 
 }
