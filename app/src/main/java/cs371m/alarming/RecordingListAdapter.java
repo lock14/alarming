@@ -55,57 +55,18 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
             RecordingViewHolder recordingViewHolder = new RecordingViewHolder();
             recordingViewHolder.recordingName = (TextView) convertView.findViewById(R.id.recording_name);
             recordingViewHolder.playButton = (Button) convertView.findViewById(R.id.play_button);
-            recordingViewHolder.playButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Button playButton = (Button) v;
-                    if (String.valueOf(playButton.getText()).equals(mContext.getString(R.string.play))) {
-                        setAllButtonsToPlay();
-                        mIsRecording.put(getItem(position), true);
-                        notifyDataSetChanged();
-                        RecordingTaskBundle recordingTaskBundle = new RecordingTaskBundle();
-                        recordingTaskBundle.mSoundLogic = mSoundLogic;
-                        recordingTaskBundle.mRecordingFileName = getItem(position);
-                        recordingTaskBundle.mRecordingListAdapter = mRecordingListAdapter;
-                        PlayRecordingTask playRecordingTask = new PlayRecordingTask();
-                        playRecordingTask.execute(recordingTaskBundle);
-                    } else {
-                        mIsRecording.put(getItem(position), false);
-                        notifyDataSetChanged();
-                        mSoundLogic.stopPlaying();
-                        // at this point stop playing any sound
-                    }
-
-                }
-            });
+            ListPlayListener listPlayListener = new ListPlayListener();
+            listPlayListener.mRecordingFileName = getItem(position);
+            recordingViewHolder.playButton.setOnClickListener(listPlayListener);
             recordingViewHolder.recordingName.setText(getItem(position));
             recordingViewHolder.playButton.setText(R.string.play);
             convertView.setTag(recordingViewHolder);
         } else {
             mainRecordingViewHolder = (RecordingViewHolder) convertView.getTag();
             mainRecordingViewHolder.recordingName.setText(getItem(position));
-            mainRecordingViewHolder.playButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Button playButton = (Button) v;
-                    if (String.valueOf(playButton.getText()).equals(mContext.getString(R.string.play))) {
-                        setAllButtonsToPlay();
-                        mIsRecording.put(getItem(position), true);
-                        notifyDataSetChanged();
-                        RecordingTaskBundle recordingTaskBundle = new RecordingTaskBundle();
-                        recordingTaskBundle.mSoundLogic = mSoundLogic;
-                        recordingTaskBundle.mRecordingFileName = getItem(position);
-                        recordingTaskBundle.mRecordingListAdapter = mRecordingListAdapter;
-                        PlayRecordingTask playRecordingTask = new PlayRecordingTask();
-                        playRecordingTask.execute(recordingTaskBundle);
-                    } else {
-                        mIsRecording.put(getItem(position), false);
-                        notifyDataSetChanged();
-                        mSoundLogic.stopPlaying();
-                        // at this point stop playing any sound
-                    }
-                }
-            });
+            ListPlayListener listPlayListener = new ListPlayListener();
+            listPlayListener.mRecordingFileName = getItem(position);
+            mainRecordingViewHolder.playButton.setOnClickListener(listPlayListener);
             setButtonText(mainRecordingViewHolder.playButton, position);
         }
         return convertView;
@@ -122,6 +83,32 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
     private void setAllButtonsToPlay() {
         for (String key : mIsRecording.keySet()) {
             mIsRecording.put(key, false);
+        }
+    }
+
+    private class ListPlayListener implements View.OnClickListener {
+        private String mRecordingFileName;
+
+        @Override
+        public void onClick(View v) {
+            Button playButton = (Button) v;
+            if (String.valueOf(playButton.getText()).equals(mContext.getString(R.string.play))) {
+                setAllButtonsToPlay();
+                mIsRecording.put(mRecordingFileName, true);
+                notifyDataSetChanged();
+//                        RecordingTaskBundle recordingTaskBundle = new RecordingTaskBundle();
+//                        recordingTaskBundle.mSoundLogic = mSoundLogic;
+//                        recordingTaskBundle.mRecordingFileName = getItem(position);
+//                        recordingTaskBundle.mRecordingListAdapter = mRecordingListAdapter;
+//                        PlayRecordingTask playRecordingTask = new PlayRecordingTask();
+//                        playRecordingTask.execute(recordingTaskBundle);
+            } else {
+                mIsRecording.put(mRecordingFileName, false);
+                notifyDataSetChanged();
+//                        mSoundLogic.stopPlaying();
+                // at this point stop playing any sound
+            }
+
         }
     }
 

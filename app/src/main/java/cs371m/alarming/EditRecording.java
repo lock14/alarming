@@ -37,12 +37,18 @@ public class EditRecording extends AppCompatActivity {
         mRecordOnStart = true;
         setOnClickListenersForButtons();
         ListView lv = (ListView) findViewById(R.id.recording_list);
-        generateRecordingData();
+        //generateRecordingData();
+        generateDummyData();
         RecordingListAdapter recordingListAdapter = new RecordingListAdapter(this,
                 R.layout.recording_list_row, mData, (Button) findViewById(R.id.play_recording), mSoundLogic);
         lv.setAdapter(recordingListAdapter);
     }
 
+    private void generateDummyData() {
+        for (int i = 0; i < 5; ++i) {
+            mData.add(String.valueOf(i));
+        }
+    }
 
     private void generateRecordingData() {
         String[] recordingData = mSoundFileManager.getSoundFileList();
