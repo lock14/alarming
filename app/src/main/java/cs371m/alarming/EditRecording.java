@@ -175,6 +175,7 @@ public class EditRecording extends AppCompatActivity {
         mSaveRecording.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                stopRecording(mRecordButton);
                 String recordingTitleInput = mRecordingTitleInput.getText().toString();
                 if (recordingTitleInput.length() == 0) {
                     Toast.makeText(mEditRecording, "Length of recording title too short, title can have a max of 20 characters",
