@@ -4,9 +4,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.Ringtone;
@@ -18,14 +18,21 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import cs371.record_sound_logic.SoundLogic;
 
@@ -35,18 +42,15 @@ public class MainActivity extends AppCompatActivity {
     private static final int OBJECTIVE = 1;
     private AlarmManager alarmManager;
     private Ringtone ringtone;
-    private PendingIntent pendingIntent;
-    private int hour;
-    private int minute;
-    private int objectiveCode;
-    private String alarmDescription;
-    private String recordingFileName;
+    private List<Alarm> alarms;
     private SoundLogic soundLogic;
+    private AlarmListAdapter alarmListAdapter;
 
     // Requesting permission to RECORD_AUDIO
     private boolean permissionToRecordAccepted = false;
     private String [] permissions = {Manifest.permission.RECORD_AUDIO};
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
+    private Alarm currentAlarm;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -68,14 +72,23 @@ public class MainActivity extends AppCompatActivity {
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         soundLogic = new SoundLogic(new ContextWrapper((getApplicationContext())),
                 getString(R.string.alarm_file_directory));
-
-        pendingIntent = null;
+        alarms = new ArrayList<>();
+        currentAlarm = null;
         ActivityCompat.requestPermissions(this, permissions,
                                           REQUEST_RECORD_AUDIO_PERMISSION);
 
         Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         ringtone = RingtoneManager.getRingtone(this, uri);
         loadStateFromPreferences();
+        alarmListAdapter = new AlarmListAdapter(this, alarms);
+        ListView alarmListView = (ListView) findViewById(R.id.alarm_list);
+        alarmListView.setAdapter(alarmListAdapter);
+        if (alarms.isEmpty()) {
+            enableNoAlarmText();
+        } else {
+            enableAlarmListView();
+        }
+
         Intent intent = getIntent();
         boolean startedByAlarm =
                 intent.getBooleanExtra(getString(R.string.intent_started_by_alarm_key), false);
@@ -87,31 +100,30 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        editor.putInt(getString(R.string.shared_pref_hour_key), hour);
-        editor.putInt(getString(R.string.shared_pref_minute_key), minute);
-        editor.putInt(getString(R.string.shared_pref_objective_key), objectiveCode);
-        editor.putString(getString(R.string.shared_pref_description_key), alarmDescription);
-        editor.putString(getString(R.string.shared_pref_recording_filename), recordingFileName);
-        editor.apply();
+//        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putInt(getString(R.string.shared_pref_hour_key), hour);
+//        editor.putInt(getString(R.string.shared_pref_minute_key), minute);
+//        editor.putInt(getString(R.string.shared_pref_objective_key), objectiveCode);
+//        editor.putString(getString(R.string.shared_pref_description_key), alarmDescription);
+//        editor.putString(getString(R.string.shared_pref_recording_filename), recordingFileName);
+//        editor.apply();
     }
 
     private void loadStateFromPreferences() {
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-        hour = sharedPreferences.getInt(getString(R.string.shared_pref_hour_key), -1);
-        minute = sharedPreferences.getInt(getString(R.string.shared_pref_minute_key), -1);
-        objectiveCode = sharedPreferences.getInt(getString(R.string.shared_pref_objective_key), 0);
-        alarmDescription = sharedPreferences
-                .getString(getString(R.string.shared_pref_description_key), "");
-        recordingFileName = sharedPreferences.getString(getString(R.string.shared_pref_recording_filename), "");
-        if (hour != -1 && minute != -1) {
-            enableAlarmText(hour, minute);
-        }
-        if (!TextUtils.isEmpty(alarmDescription)) {
-            enableAlarmDescription(alarmDescription);
-        }
+//        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+//        hour = sharedPreferences.getInt(getString(R.string.shared_pref_hour_key), -1);
+//        minute = sharedPreferences.getInt(getString(R.string.shared_pref_minute_key), -1);
+//        objectiveCode = sharedPreferences.getInt(getString(R.string.shared_pref_objective_key), 0);
+//        alarmDescription = sharedPreferences
+//                .getString(getString(R.string.shared_pref_description_key), "");
+//        recordingFileName = sharedPreferences.getString(getString(R.string.shared_pref_recording_filename), "");
+//        if (hour != -1 && minute != -1) {
+//            enableAlarmText(hour, minute);
+//        }
+//        if (!TextUtils.isEmpty(alarmDescription)) {
+//            enableAlarmDescription(alarmDescription);
+//        }
     }
 
     @Override
@@ -119,8 +131,20 @@ public class MainActivity extends AppCompatActivity {
         boolean startedByAlarm =
                 intent.getBooleanExtra(getString(R.string.intent_started_by_alarm_key), false);
         if (startedByAlarm) {
+            int alarmId = intent.getIntExtra(getString(R.string.intent_alarm_id), 0);
+            currentAlarm = getAlarmById(alarmId);
             playAlarm();
         }
+    }
+
+    private Alarm getAlarmById(int alarmId) {
+        // probably won't have many alarms so linear search should be fine
+        for (Alarm alarm : alarms) {
+            if (alarm.hashCode() == alarmId) {
+                return alarm;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -148,79 +172,64 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == EDIT_ALARM) {
-                hour = intent.getIntExtra(getString(R.string.intent_hour_key), -1);
-                minute = intent.getIntExtra(getString(R.string.intent_minute_key), -1);
-                objectiveCode = intent.getIntExtra(getString(R.string.intent_objective_key), 0);
-                alarmDescription = intent.getStringExtra(getString(R.string.intent_description_key));
-                recordingFileName = intent.getStringExtra(getString(R.string.intent_recording_key));
-                if (alarmDescription == null) {
-                    alarmDescription = "";
-                }
-                if (recordingFileName == null) {
-                    recordingFileName = "";
-                }
+                int hour = intent.getIntExtra(getString(R.string.intent_hour_key), -1);
+                int minute = intent.getIntExtra(getString(R.string.intent_minute_key), -1);
+                int objectiveCode = intent.getIntExtra(getString(R.string.intent_objective_key), 0);
+                String alarmDescription = intent.getStringExtra(getString(R.string.intent_description_key));
+                String recordingFileName = intent.getStringExtra(getString(R.string.intent_recording_key));
+
+                Alarm alarm =
+                        new Alarm(hour, minute, objectiveCode, alarmDescription, recordingFileName);
 
                 if (hour != -1 && minute != -1) {
-                    enableAlarmText(hour, minute);
-                    setAlarm(hour, minute);
-                }
-                if (TextUtils.isEmpty(alarmDescription)) {
-                    disableAlarmDescription();
-                } else {
-                    enableAlarmDescription(alarmDescription);
+                    alarms.add(alarm);
+                    enableAlarmListView();
+                    disableNoAlarmText();
+                    alarmListAdapter.notifyDataSetChanged();
+                    setAlarm(alarm);
                 }
             } else if (requestCode == OBJECTIVE) {
                 ringtone.stop();
                 Button disableButton = (Button) findViewById(R.id.disable_alarm);
                 disableButton.setVisibility(View.INVISIBLE);
-                TextView alarmText = (TextView) findViewById(R.id.alarm_text);
-                alarmText.setVisibility(View.INVISIBLE);
-                TextView description = (TextView) findViewById(R.id.alarm_description_txt);
-                description.setVisibility(View.INVISIBLE);
-                // "No Alarm Enabled" code
-                TextView alarmMissing = (TextView) findViewById(R.id.alarm_missing);
-                alarmMissing.setVisibility(View.VISIBLE);
 
-                // reset hour and minute
-                hour = -1;
-                minute = -1;
-                objectiveCode = 0;
-                alarmDescription = "";
-                recordingFileName = "";
+                alarms.remove(currentAlarm);
+                alarmListAdapter.notifyDataSetChanged();
+                currentAlarm = null;
+
+                if (alarms.isEmpty()) {
+                    disableAlarmListView();
+                    enableNoAlarmText();
+                }
             }
         }
     }
 
-    private void enableAlarmText(int hour, int minute) {
-        TextView alarmText = (TextView) findViewById(R.id.alarm_text);
-        alarmText.setText(AlarmUtil.alarmText(hour, minute));
-        alarmText.setVisibility(View.VISIBLE);
+    private void enableNoAlarmText() {
+        // "No Alarm Enabled" code
+        TextView alarmMissing = (TextView) findViewById(R.id.alarm_missing);
+        alarmMissing.setVisibility(View.VISIBLE);
+    }
 
+    private void disableNoAlarmText() {
         // "No Alarm Enabled" code
         TextView alarmMissing = (TextView) findViewById(R.id.alarm_missing);
         alarmMissing.setVisibility(View.INVISIBLE);
     }
 
-    private void setAlarm(int hour, int minute) {
-        // check if we've already scheduled an alarm and if so cancel it
-        if (pendingIntent != null) {
-            alarmManager.cancel(pendingIntent);
-        }
-        // set calendar to time
-        Calendar curentTime = Calendar.getInstance();
-        Calendar alarmTime = Calendar.getInstance();
-        alarmTime.set(Calendar.HOUR_OF_DAY, hour);
-        alarmTime.set(Calendar.MINUTE, minute);
-        alarmTime.set(Calendar.SECOND, 0);
-        alarmTime.set(Calendar.MILLISECOND, 0);
-        if (curentTime.after(alarmTime)) {
-            alarmTime.add(Calendar.DATE, 1);
-        }
+    private void enableAlarmListView() {
+        ListView alarmListView = (ListView) findViewById(R.id.alarm_list);
+        alarmListView.setVisibility(View.VISIBLE);
+    }
 
-        // set alarm receiver
-        Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
-        pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+    private void disableAlarmListView() {
+        ListView alarmListView = (ListView) findViewById(R.id.alarm_list);
+        alarmListView.setVisibility(View.INVISIBLE);
+    }
 
+    private void setAlarm(Alarm alarm) {
+        PendingIntent pendingIntent = createPendingIntent(alarm);
+        Calendar alarmTime = alarm.getCalendar();
         // schedule alarm
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime.getTimeInMillis(), pendingIntent);
@@ -229,11 +238,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private PendingIntent createPendingIntent(Alarm alarm) {
+        // set alarm receiver
+        Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+        intent.putExtra(getString(R.string.intent_alarm_id), alarm.hashCode());
+        return PendingIntent.getBroadcast(MainActivity.this, alarm.hashCode(), intent, 0);
+    }
+
     private void playAlarm() {
-        if (TextUtils.isEmpty(recordingFileName)) {
+        if (currentAlarm == null) {
+            throw new IllegalStateException("current alarm is null!");
+        }
+        if (TextUtils.isEmpty(currentAlarm.getRecordingFileName())) {
             ringtone.play();
         } else {
-            soundLogic.playSoundByFileName(recordingFileName, new MediaPlayer.OnCompletionListener() {
+            soundLogic.playSoundByFileName(currentAlarm.getRecordingFileName(), new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
                     ringtone.play();
@@ -244,8 +263,11 @@ public class MainActivity extends AppCompatActivity {
         disableButton.setVisibility(View.VISIBLE);
     }
 
-    public void cancelAlarm(View view) {
-        Objective objective = Objective.getObjective(objectiveCode);
+    public void disableAlarm(View view) {
+        if (currentAlarm == null) {
+            throw new IllegalStateException("current alarm is null!");
+        }
+        Objective objective = Objective.getObjective(currentAlarm.getObjectiveCode());
         Intent intent = null;
         switch (objective) {
             case MATH:
@@ -267,15 +289,34 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, OBJECTIVE);
     }
 
-    public void enableAlarmDescription(String alarmDescription) {
-        TextView textView = (TextView) findViewById(R.id.alarm_description_txt);
-        textView.setText(alarmDescription);
-        textView.setVisibility(View.VISIBLE);
-    }
+    public class AlarmListAdapter extends ArrayAdapter<Alarm> {
 
-    public  void disableAlarmDescription() {
-        TextView textView = (TextView) findViewById(R.id.alarm_description_txt);
-        textView.setText("");
-        textView.setVisibility(View.INVISIBLE);
+        AlarmListAdapter(Context context, List<Alarm> objects) {
+            super(context, -1, objects);
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            View rowView = inflater.inflate(R.layout.alarm_list_item, parent, false);
+            TextView alarmText = (TextView) rowView.findViewById(R.id.alarm_text);
+            TextView descriptionText = (TextView) rowView.findViewById(R.id.alarm_description_txt);
+            ImageView deleteAlarm = (ImageView) rowView.findViewById(R.id.delete_alarm_img);
+            final Alarm alarm = alarms.get(position);
+            alarmText.setText(AlarmUtil.alarmText(alarm.getHour(), alarm.getMinute()));
+            descriptionText.setText(alarm.getAlarmDescription());
+            deleteAlarm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PendingIntent pendingIntent = createPendingIntent(alarm);
+                    alarmManager.cancel(pendingIntent);
+                    alarms.remove(alarm);
+                    alarmListAdapter.notifyDataSetChanged();
+                }
+            });
+
+            return rowView;
+        }
+
     }
 }
