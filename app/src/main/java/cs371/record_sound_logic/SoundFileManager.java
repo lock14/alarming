@@ -12,6 +12,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import cs371m.alarming.R;
 
@@ -226,19 +228,10 @@ public class SoundFileManager {
     }
 
     private String[] removeTemporarySoundFileName(String[] soundFileNames) {
-        String[] newSoundFileNames = soundFileNames;
-        if (soundFileNames.length > 1) {
-            newSoundFileNames = new String[soundFileNames.length - 1];
-            int j = 0;
-            for (int i = 0; i < soundFileNames.length; ++i) {
-                if (!soundFileNames[i].equals(mContext.getString(R.string.temporary_sound_file_name))) {
-                    newSoundFileNames[j] = soundFileNames[i];
-                    ++j;
-                }
-            }
-            soundFileNames = newSoundFileNames;
-        }
-        return newSoundFileNames;
+        ArrayList<String> arrayList = new ArrayList(Arrays.asList(soundFileNames));
+        arrayList.remove(mContext.getString(R.string.temporary_sound_file_name));
+        Object[] array = arrayList.toArray();
+        return Arrays.copyOf(array, array.length, String[].class);
     }
 
     public String getAlarmRecordingName() {
@@ -249,6 +242,18 @@ public class SoundFileManager {
             return alarmFileDirectory.listFiles()[0].getName();
         }
         return null;
+    }
+
+    public boolean hasTemporaryRecording() {
+        File soundFileDirectory = new File(mSoundFileDirectory);
+        if (soundFileDirectory.isDirectory()) {
+            for (String soundFileName : soundFileDirectory.list()) {
+                if (soundFileName.equals(mContext.getString(R.string.temporary_sound_file_name))) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

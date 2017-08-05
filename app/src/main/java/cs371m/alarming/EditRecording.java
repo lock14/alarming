@@ -126,7 +126,6 @@ public class EditRecording extends AppCompatActivity {
         setupGuiComponents();
         setOnClickListenersForButtons();
         generateRecordingData();
-        //generateDummyData();
         mRecordingListAdapter = new RecordingListAdapter(this,
                 R.layout.recording_list_row, mData, (Button) findViewById(R.id.play_recording), mSoundLogic, mRecordLogic, mSoundFileManager);
         mRecordingList.setAdapter(mRecordingListAdapter);
@@ -150,20 +149,25 @@ public class EditRecording extends AppCompatActivity {
             public void onClick(View v) {
                 Button button = (Button) v;
                 String buttonText = String.valueOf(button.getText());
-                if (buttonText.equals(getString(R.string.play))) {
-                    mSoundLogic.stopPlaying();
-                    RecordingTaskBundle recordingTaskBundle =
-                            new RecordingTaskBundle();
-                    PlayTemporaryRecordingTask playTemporaryRecordingTask = new PlayTemporaryRecordingTask();
-                    recordingTaskBundle.mRecordingPlayButton = button;
-                    recordingTaskBundle.mSoundLogic = mSoundLogic;
-                    mRecordingListAdapter.setAllButtonsToPlay();
-                    mRecordingListAdapter.notifyDataSetChanged();
-                    button.setText(getString(R.string.stop));
-                    playTemporaryRecordingTask.execute(recordingTaskBundle);
+                if (mSoundFileManager.hasTemporaryRecording()) {
+                    if (buttonText.equals(getString(R.string.play))) {
+                        mSoundLogic.stopPlaying();
+                        RecordingTaskBundle recordingTaskBundle =
+                                new RecordingTaskBundle();
+                        PlayTemporaryRecordingTask playTemporaryRecordingTask = new PlayTemporaryRecordingTask();
+                        recordingTaskBundle.mRecordingPlayButton = button;
+                        recordingTaskBundle.mSoundLogic = mSoundLogic;
+                        mRecordingListAdapter.setAllButtonsToPlay();
+                        mRecordingListAdapter.notifyDataSetChanged();
+                        button.setText(getString(R.string.stop));
+                        playTemporaryRecordingTask.execute(recordingTaskBundle);
+                    } else {
+                        mSoundLogic.stopPlaying();
+                        button.setText((getString(R.string.play)));
+                    }
                 } else {
-                    mSoundLogic.stopPlaying();
-                    button.setText((getString(R.string.play)));
+                    Toast.makeText(mEditRecording, "You must record, before playing.",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });

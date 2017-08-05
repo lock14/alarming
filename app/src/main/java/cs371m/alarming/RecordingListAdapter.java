@@ -193,11 +193,14 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
 
         @Override
         public void onClick(View v) {
-//            mSoundFileManager.removeSoundFileByName(mRecordingFileName);
-//            mIsSetToAlarm.remove(mRecordingFileName);
-//            mIsPlaying.remove(mRecordingFileName);
-//            mRecordingListAdapter.remove(mRecordingFileName);
-//            mRecordingListAdapter.notifyDataSetChanged();
+            mSoundFileManager.removeSoundFileByName(mRecordingFileName);
+            if (mRecordingFileName.equals(mSoundFileManager.getAlarmRecordingName())) {
+                mSoundFileManager.removeSoundFilesInAlarmDirectory();
+            }
+            mIsSetToAlarm.remove(mRecordingFileName);
+            mIsPlaying.remove(mRecordingFileName);
+            mRecordingListAdapter.remove(mRecordingFileName);
+            mRecordingListAdapter.notifyDataSetChanged();
         }
     }
 
