@@ -21,6 +21,12 @@ public class Alarm implements Serializable {
     private String alarmDescription;
     private String recordingFileName;
 
+    public Alarm() {
+        hour = -1;
+        minute = -1;
+        objectiveCode = -1;
+    }
+
     public Alarm(int hour, int minute, int objectiveCode) {
         this(hour, minute, objectiveCode, null);
     }
