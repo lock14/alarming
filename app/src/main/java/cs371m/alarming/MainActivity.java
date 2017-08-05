@@ -195,9 +195,19 @@ public class MainActivity extends AppCompatActivity {
                     setAlarm(currentAlarm);
                 } else {
                     currentAlarm.setEnabled(false);
-                    alarmListAdapter.notifyDataSetChanged();
                 }
+                disableAlarmsWithSameTime(currentAlarm);
+                alarmListAdapter.notifyDataSetChanged();
                 currentAlarm = null;
+            }
+        }
+    }
+
+    private void disableAlarmsWithSameTime(Alarm currentAlarm) {
+        for (Alarm alarm : alarms) {
+            if (alarm != currentAlarm && alarm.getHour() == currentAlarm.getHour()
+                    && alarm.getMinute() == currentAlarm.getMinute() && !alarm.isRepeating()) {
+                alarm.setEnabled(false);
             }
         }
     }
