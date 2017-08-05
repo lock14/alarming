@@ -29,8 +29,4 @@ public class PlayTemporaryRecordingTask extends AsyncTask<RecordingTaskBundle, V
         playRecordingButton.setText(R.string.play);
     }
 
-
-
-
-
 }

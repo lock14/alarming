@@ -8,11 +8,7 @@ import android.content.ContextWrapper;
 import android.media.MediaRecorder;
 import android.util.Log;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
 
 import cs371m.alarming.R;
 
@@ -47,26 +43,6 @@ public class RecordLogic {
         startRecordingIntoFile(mContext.getString(R.string.temporary_sound_file_name));
     }
 
-    public void saveTemporarySoundFileAs(String newSoundFileName) {
-        String temporarySoundFileName = mContext.getString(R.string.temporary_sound_file_name);
-        File temporarySoundFile = new File(prependDirectoryToFileName(temporarySoundFileName));
-        File newSoundFile = new File(prependDirectoryToFileName(newSoundFileName));
-
-        if (!temporarySoundFile.exists()) {
-            Log.d(LOG_TAG, "Cannot save temporary file as " + newSoundFileName + " because there" +
-                    "is no temporary file");
-        }
-            try {
-                FileChannel src = new FileInputStream(temporarySoundFile).getChannel();
-                FileChannel dest = new FileOutputStream(newSoundFile).getChannel();
-                dest.transferFrom(src, 0, src.size());
-                Log.d(LOG_TAG, "Bytes transfered from temporarySoundFile to "+ newSoundFileName);
-            } catch (IOException ioException) {
-                Log.d(LOG_TAG, "Could not transfer temporary sound file into " + newSoundFileName);
-            }
-
-
-    }
 
 
     public void stopRecording() {
