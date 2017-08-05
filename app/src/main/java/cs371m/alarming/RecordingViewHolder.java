@@ -7,6 +7,8 @@ import android.widget.TextView;
 import android.widget.Button;
 
 public class RecordingViewHolder {
-    public TextView recordingName;
-    public Button playButton;
+    public TextView mRecordingName;
+    public Button mPlayButton;
+    public Button mSetRecording;
+    public Button mDeleteRecording;
 }

@@ -1,6 +1,7 @@
 package cs371m.alarming;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cs371.record_sound_logic.RecordLogic;
+import cs371.record_sound_logic.SoundFileManager;
 import cs371.record_sound_logic.SoundLogic;
 
+import static cs371m.alarming.PlayTemporaryRecordingTask.LOG_TAG;
 import static cs371m.alarming.R.string.play;
 
 
@@ -25,24 +29,38 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
     private Context mContext;
     private int mLayout;
     private Button mRecordingPlayButton;
-    public Map<String, Boolean> mIsRecording;
+    public Map<String, Boolean> mIsPlaying;
+    public Map<String, Boolean> mIsSetToAlarm;
     private SoundLogic mSoundLogic;
+    private RecordLogic mRecordLogic;
+    private SoundFileManager mSoundFileManager;
     private RecordingListAdapter mRecordingListAdapter;
 
-    RecordingListAdapter(Context context, int resource, List<String> objects, Button recordingPlayButton, SoundLogic soundLogic) {
+    RecordingListAdapter(Context context, int resource, List<String> objects, Button recordingPlayButton, SoundLogic soundLogic,
+                         RecordLogic recordLogic, SoundFileManager soundFileManager) {
         super(context, resource, objects);
         mContext = context;
         mLayout = resource;
-        mIsRecording = new HashMap<String, Boolean>();
-        setupIsRecording(objects);
+        mIsPlaying = new HashMap<String, Boolean>();
+        mIsSetToAlarm = new HashMap<String, Boolean>();
         mRecordingPlayButton = recordingPlayButton;
         mSoundLogic = soundLogic;
+        mRecordLogic = recordLogic;
+        mSoundFileManager = soundFileManager;
         mRecordingListAdapter = this;
+        setupMaps(objects);
     }
 
-    private void setupIsRecording(List<String> data) {
+    private void setupMaps(List<String> data) {
+        String alarmRecordingName = mSoundFileManager.getAlarmRecordingName();
         for (String string : data) {
-            mIsRecording.put(string, false);
+            mIsPlaying.put(string, false);
+            if (alarmRecordingName != null && string.equals(alarmRecordingName)) {
+                mIsSetToAlarm.put(string, true);
+            } else {
+                mIsSetToAlarm.put(string, false);
+            }
+
         }
     }
 
@@ -53,38 +71,67 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(mLayout, parent, false);
             RecordingViewHolder recordingViewHolder = new RecordingViewHolder();
-            recordingViewHolder.recordingName = (TextView) convertView.findViewById(R.id.recording_name);
-            recordingViewHolder.playButton = (Button) convertView.findViewById(R.id.play_button);
+            recordingViewHolder.mRecordingName = (TextView) convertView.findViewById(R.id.recording_name);
+            recordingViewHolder.mPlayButton = (Button) convertView.findViewById(R.id.play_button);
+            recordingViewHolder.mSetRecording = (Button) convertView.findViewById(R.id.set_recording);
+            recordingViewHolder.mDeleteRecording = (Button) convertView.findViewById(R.id.delete_recording);
             ListPlayListener listPlayListener = new ListPlayListener();
+            ListSetListener listSetListener = new ListSetListener();
+            ListDeleteListener listDeleteListener = new ListDeleteListener();
             listPlayListener.mRecordingFileName = getItem(position);
-            recordingViewHolder.playButton.setOnClickListener(listPlayListener);
-            recordingViewHolder.recordingName.setText(getItem(position));
-            recordingViewHolder.playButton.setText(R.string.play);
+            listSetListener.mRecordingFileName = getItem(position);
+            listDeleteListener.mRecordingFileName = getItem(position);
+            recordingViewHolder.mPlayButton.setOnClickListener(listPlayListener);
+            recordingViewHolder.mRecordingName.setText(getItem(position));
+            recordingViewHolder.mSetRecording.setOnClickListener(listSetListener);
+            recordingViewHolder.mDeleteRecording.setOnClickListener(listDeleteListener);
+            setSetButtonText(recordingViewHolder.mSetRecording, position);
             convertView.setTag(recordingViewHolder);
         } else {
             mainRecordingViewHolder = (RecordingViewHolder) convertView.getTag();
-            mainRecordingViewHolder.recordingName.setText(getItem(position));
+            mainRecordingViewHolder.mRecordingName.setText(getItem(position));
             ListPlayListener listPlayListener = new ListPlayListener();
+            ListSetListener listSetListener = new ListSetListener();
+            ListDeleteListener listDeleteListener = new ListDeleteListener();
+            listSetListener.mRecordingFileName = getItem(position);
+            listDeleteListener.mRecordingFileName = getItem(position);
             listPlayListener.mRecordingFileName = getItem(position);
-            mainRecordingViewHolder.playButton.setOnClickListener(listPlayListener);
-            setButtonText(mainRecordingViewHolder.playButton, position);
+            mainRecordingViewHolder.mPlayButton.setOnClickListener(listPlayListener);
+            mainRecordingViewHolder.mSetRecording.setOnClickListener(listSetListener);
+            mainRecordingViewHolder.mDeleteRecording.setOnClickListener(listDeleteListener);
+            setPlayButtonText(mainRecordingViewHolder.mPlayButton, position);
+            setSetButtonText(mainRecordingViewHolder.mSetRecording, position);
         }
         return convertView;
     }
 
-    private void setButtonText(Button button, int position) {
-        if (mIsRecording.get(getItem(position))) {
+    private void setPlayButtonText(Button button, int position) {
+        if (mIsPlaying.get(getItem(position))) {
             button.setText(R.string.stop);
         } else {
             button.setText(play);
         }
     }
 
+    private void setSetButtonText(Button button, int position) {
+        if (mIsSetToAlarm.get(getItem(position))) {
+            button.setText(R.string.unset);
+        } else {
+            button.setText(R.string.set);
+        }
+    }
+
     public void setAllButtonsToPlay() {
-        for (String key : mIsRecording.keySet()) {
-            mIsRecording.put(key, false);
+        for (String key : mIsPlaying.keySet()) {
+            mIsPlaying.put(key, false);
         }
         mRecordingPlayButton.setText(R.string.play);
+    }
+
+    public void disableAllRecordings() {
+        for (String key : mIsSetToAlarm.keySet()) {
+            mIsSetToAlarm.put(key, false);
+        }
     }
 
     private class ListPlayListener implements View.OnClickListener {
@@ -96,7 +143,7 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
             if (String.valueOf(playButton.getText()).equals(mContext.getString(R.string.play))) {
                 setAllButtonsToPlay();
                 mSoundLogic.stopPlaying();
-                mIsRecording.put(mRecordingFileName, true);
+                mIsPlaying.put(mRecordingFileName, true);
                 notifyDataSetChanged();
                         RecordingTaskBundle recordingTaskBundle = new RecordingTaskBundle();
                         recordingTaskBundle.mSoundLogic = mSoundLogic;
@@ -105,11 +152,52 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
                         PlayRecordingTask playRecordingTask = new PlayRecordingTask();
                         playRecordingTask.execute(recordingTaskBundle);
             } else {
-                mIsRecording.put(mRecordingFileName, false);
+                mIsPlaying.put(mRecordingFileName, false);
                 notifyDataSetChanged();
                         mSoundLogic.stopPlaying();
             }
 
+        }
+    }
+
+    private class ListSetListener implements View.OnClickListener {
+        private String mRecordingFileName;
+
+        @Override
+        public void onClick(View v) {
+            Button setRecording = (Button) v;
+            if (!mIsSetToAlarm.get(mRecordingFileName) &&
+                    String.valueOf(setRecording.getText()).equals(mContext.getString(R.string.set
+            ))) {
+                mSoundFileManager.removeSoundFilesInAlarmDirectory();
+                mSoundFileManager.saveSoundFileToAlarmFileDirectory(mRecordingFileName);
+                disableAllRecordings();
+                mIsSetToAlarm.put(mRecordingFileName, true);
+                mRecordingListAdapter.notifyDataSetChanged();
+            } else if (mIsSetToAlarm.get(mRecordingFileName) &&
+                    String.valueOf(setRecording.getText()).equals(mContext.getString(R.string.unset))) {
+                mSoundFileManager.removeSoundFilesInAlarmDirectory();
+                disableAllRecordings();
+                mIsSetToAlarm.put(mRecordingFileName, false);
+                mRecordingListAdapter.notifyDataSetChanged();
+            } else {
+                Log.d(LOG_TAG, "logic error in onClick ListSetListener");
+            }
+
+
+        }
+    }
+
+    private class ListDeleteListener implements View.OnClickListener {
+        private String mRecordingFileName;
+
+        @Override
+        public void onClick(View v) {
+//            mSoundFileManager.removeSoundFileByName(mRecordingFileName);
+//            mIsSetToAlarm.remove(mRecordingFileName);
+//            mIsPlaying.remove(mRecordingFileName);
+//            mRecordingListAdapter.remove(mRecordingFileName);
+//            mRecordingListAdapter.notifyDataSetChanged();
         }
     }
 

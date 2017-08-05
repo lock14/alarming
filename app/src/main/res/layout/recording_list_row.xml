@@ -6,23 +6,42 @@
     android:orientation="vertical" >
     <TextView
         android:id="@+id/recording_name"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
+        android:layout_width="115dp"
+        android:layout_height="50dp"
+        android:text="recording name"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        />
+        android:layout_alignParentStart="true" />
 
     <Button
         android:id="@+id/play_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="play"
+        android:text="Play"
         app:srcCompat="@android:drawable/ic_media_play"
         android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/delete_recording"
+        android:layout_toStartOf="@+id/delete_recording"
+        android:layout_marginRight="87dp"
+        android:layout_marginEnd="87dp" />
+
+    <Button
+        android:id="@+id/set_recording"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/delete_recording"
+        android:layout_toStartOf="@+id/delete_recording" />
+
+    <Button
+        android:id="@+id/delete_recording"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="16dp"
-        android:layout_marginEnd="16dp" />
+        android:layout_alignParentEnd="true" />
 
 
 </RelativeLayout>

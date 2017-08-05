@@ -98,7 +98,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/play_recording"></ListView>
+        app:layout_constraintTop_toBottomOf="@+id/play_recording"/>
 
 
 </android.support.constraint.ConstraintLayout>

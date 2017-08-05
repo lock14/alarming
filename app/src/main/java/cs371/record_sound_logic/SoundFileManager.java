@@ -65,6 +65,19 @@ public class SoundFileManager {
         }
     }
 
+    public void removeSoundFilesInAlarmDirectory() {
+        File soundFileDirectory = new File(mAlarmFileDirectory);
+        if (soundFileDirectory.exists() && soundFileDirectory.isDirectory()) {
+            File[] soundFiles = soundFileDirectory.listFiles();
+            for (int i = 0; i < soundFiles.length; ++i) {
+                soundFiles[i].delete();
+            }
+            Log.d(LOG_TAG, "all sound files deleted in directory " + mSoundFileDirectory);
+        } else {
+            Log.d(LOG_TAG, "sound directory doesn't exist or we have the wrong directory name");
+        }
+    }
+
     private String setupSoundFileDirectoryEnviroment(String soundFileDirectory) {
         String newSoundFileDirectory = mContext.getFilesDir().getAbsolutePath() + "/" + soundFileDirectory;
         File soundDirectoryFile = new File(newSoundFileDirectory);
@@ -112,6 +125,47 @@ public class SoundFileManager {
                 return newAlarmSoundFile.getName();
             } catch (IOException ioException) {
                 Log.d(LOG_TAG, "Could not transfer temporary sound file into " + newAlarmSoundFile);
+            }
+        }
+        return null;
+    }
+
+    public String saveTemporarySoundFileToAlarmAs(String alarmSoundFileName) {
+        String temporarySoundFileName = prependDirectoryToFileName(mContext.getString(R.string.temporary_sound_file_name));
+        File temporarySoundFile = new File(temporarySoundFileName);
+        File newAlarmSoundFile = new File(mAlarmFileDirectory + "/" + alarmSoundFileName);
+
+        if (!temporarySoundFile.exists()) {
+            Log.d(LOG_TAG, "Cannot save temporary file as " + newAlarmSoundFile + " because there" +
+                    "is no temporary file");
+        } else {
+            try {
+                FileChannel src = new FileInputStream(temporarySoundFile).getChannel();
+                FileChannel dest = new FileOutputStream(newAlarmSoundFile).getChannel();
+                dest.transferFrom(src, 0, src.size());
+                Log.d(LOG_TAG, "Bytes transfered from temporarySoundFile to " + newAlarmSoundFile);
+                return newAlarmSoundFile.getName();
+            } catch (IOException ioException) {
+                Log.d(LOG_TAG, "Could not transfer temporary sound file into " + newAlarmSoundFile);
+            }
+        }
+        return null;
+    }
+
+    public String saveSoundFileToAlarmFileDirectory(String soundFileName) {
+        File soundFile = new File(prependDirectoryToFileName(soundFileName));
+        File alarmSoundFile = new File(mAlarmFileDirectory + "/" + soundFileName);
+        if (!soundFile.exists()) {
+            Log.d(LOG_TAG, "cannot save sound file " + soundFileName + " because it does not exist");
+        } else {
+            try {
+                FileChannel src = new FileInputStream(soundFile).getChannel();
+                FileChannel dest = new FileOutputStream(alarmSoundFile).getChannel();
+                dest.transferFrom(src, 0, src.size());
+                Log.d(LOG_TAG, "Bytes transfered from " + soundFileName + " into alarm file directory");
+                return alarmSoundFile.getName();
+            } catch (IOException ioException) {
+                Log.d(LOG_TAG, "could not copy " + soundFileName +" into soundFile directory");
             }
         }
         return null;
@@ -185,6 +239,16 @@ public class SoundFileManager {
             soundFileNames = newSoundFileNames;
         }
         return newSoundFileNames;
+    }
+
+    public String getAlarmRecordingName() {
+        File alarmFileDirectory = new File(mAlarmFileDirectory);
+
+        if (alarmFileDirectory.isDirectory() && alarmFileDirectory.listFiles().length == 1) {
+//            System.out.println("returning file " + alarmFileDirectory.listFiles()[0].getName());
+            return alarmFileDirectory.listFiles()[0].getName();
+        }
+        return null;
     }
 
 }

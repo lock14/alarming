@@ -38,7 +38,7 @@ public class PlayRecordingTask extends AsyncTask<RecordingTaskBundle, Void, Reco
     protected void onPostExecute(RecordingTaskReturnBundle recordingTaskReturnBundle) {
         String recordingFileName = recordingTaskReturnBundle.mRecordingFileName;
         RecordingListAdapter recordingListAdapter = recordingTaskReturnBundle.mRecordingListAdapter;
-        recordingListAdapter.mIsRecording.put(recordingFileName, false);
+        recordingListAdapter.mIsPlaying.put(recordingFileName, false);
         recordingListAdapter.notifyDataSetChanged();
     }
 }

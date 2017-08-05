@@ -5,9 +5,6 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,12 +31,14 @@ public class EditRecording extends AppCompatActivity {
     private ListView mRecordingList;
     private EditText mRecordingTitleInput;
     private Button mSaveRecording;
+    private String mAlarmRecordingName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_recording);
         setupRecordingInfrastructure();
+
     }
 
     private void generateDummyData() {
@@ -55,38 +54,45 @@ public class EditRecording extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_save, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        super.onCreateOptionsMenu(menu);
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.menu_save, menu);
+//        return true;
+//    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_save:
-                Intent result = new Intent();
-                String recordingFileName = mSoundFileManager.saveTemporarySoundFileToAlarm();
-                if (recordingFileName != null) {
-                    result.putExtra(getString(R.string.intent_recording_key), recordingFileName);
-                }
-                setResult(Activity.RESULT_OK, result);
-                finish();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.menu_save:
+//                Intent result = new Intent();
+//                String recordingFileName = mSoundFileManager.saveTemporarySoundFileToAlarm();
+//                if (recordingFileName != null) {
+//                    result.putExtra(getString(R.string.intent_recording_key), recordingFileName);
+//                }
+//                setResult(Activity.RESULT_OK, result);
+//                finish();
+//                return true;
+//         default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//        return true;
+//    }
 
     @Override
     public void onBackPressed() {
         if (!mRecordOnStart) {
             stopRecording(mRecordButton);
         }
-        super.onBackPressed();
+        Intent result = new Intent();
+        String recordingFileName = mSoundFileManager.getAlarmRecordingName();
+        if (recordingFileName != null) {
+            result.putExtra(getString(R.string.intent_recording_key), recordingFileName);
+        }
+        setResult(Activity.RESULT_OK, result);
+        finish();
+//        super.onBackPressed();
     }
 
     @Override
@@ -99,8 +105,9 @@ public class EditRecording extends AppCompatActivity {
     // record ui logic
     private void startRecording(Button recordButton) {
         mRecordOnStart = false;
-        //mRecordButton.setText(getString(R.string.play));
         mSoundLogic.stopPlaying();
+        mRecordingListAdapter.setAllButtonsToPlay();
+        mRecordingListAdapter.notifyDataSetChanged();
         recordButton.setBackgroundResource(R.drawable.record_stop);
         mRecordLogic.startRecordingIntoTemporarySoundFile();
     }
@@ -121,7 +128,7 @@ public class EditRecording extends AppCompatActivity {
         generateRecordingData();
         //generateDummyData();
         mRecordingListAdapter = new RecordingListAdapter(this,
-                R.layout.recording_list_row, mData, (Button) findViewById(R.id.play_recording), mSoundLogic);
+                R.layout.recording_list_row, mData, (Button) findViewById(R.id.play_recording), mSoundLogic, mRecordLogic, mSoundFileManager);
         mRecordingList.setAdapter(mRecordingListAdapter);
     }
 
@@ -177,7 +184,8 @@ public class EditRecording extends AppCompatActivity {
                     mSoundFileManager.saveTemporarySoundFileAs(recordingTitleInput);
                     mRecordingTitleInput.setText("");
                     mRecordingListAdapter.add(recordingTitleInput);
-                    mRecordingListAdapter.mIsRecording.put(recordingTitleInput, false);
+                    mRecordingListAdapter.mIsPlaying.put(recordingTitleInput, false);
+                    mRecordingListAdapter.mIsSetToAlarm.put(recordingTitleInput, false);
                     mRecordingListAdapter.notifyDataSetChanged();
                 }
             }
