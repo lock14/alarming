@@ -16,10 +16,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,9 +32,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -89,8 +97,10 @@ public class MainActivity extends AppCompatActivity {
         ListView alarmListView = (ListView) findViewById(R.id.alarm_list);
         alarmListView.setAdapter(alarmListAdapter);
         if (alarms.isEmpty()) {
+            disableAlarmListView();
             enableNoAlarmText();
         } else {
+            disableNoAlarmText();
             enableAlarmListView();
         }
 
@@ -175,10 +185,7 @@ public class MainActivity extends AppCompatActivity {
                         new Alarm(hour, minute, objectiveCode, alarmDescription, recordingFileName);
 
                 if (hour != -1 && minute != -1) {
-                    alarms.add(alarm);
-                    enableAlarmListView();
-                    disableNoAlarmText();
-                    alarmListAdapter.notifyDataSetChanged();
+                    addAlarm(alarm);
                     setAlarm(alarm);
                 }
             } else if (requestCode == OBJECTIVE) {
@@ -186,14 +193,13 @@ public class MainActivity extends AppCompatActivity {
                 Button disableButton = (Button) findViewById(R.id.disable_alarm);
                 disableButton.setVisibility(View.INVISIBLE);
 
-                alarms.remove(currentAlarm);
-                alarmListAdapter.notifyDataSetChanged();
-                currentAlarm = null;
-
-                if (alarms.isEmpty()) {
-                    disableAlarmListView();
-                    enableNoAlarmText();
+                if (currentAlarm.isRepeating()) {
+                    setAlarm(currentAlarm);
+                } else {
+                    currentAlarm.setEnabled(false);
+                    alarmListAdapter.notifyDataSetChanged();
                 }
+                currentAlarm = null;
             }
         }
     }
@@ -220,6 +226,24 @@ public class MainActivity extends AppCompatActivity {
         alarmListView.setVisibility(View.INVISIBLE);
     }
 
+    private void addAlarm(Alarm alarm) {
+        if (alarms.isEmpty()) {
+            enableAlarmListView();
+            disableNoAlarmText();
+        }
+        alarms.add(alarm);
+        alarmListAdapter.notifyDataSetChanged();
+    }
+
+    private void removeAlarm(Alarm alarm) {
+        alarms.remove(alarm);
+        alarmListAdapter.notifyDataSetChanged();
+        if (alarms.isEmpty()) {
+            disableAlarmListView();
+            enableNoAlarmText();
+        }
+    }
+
     private void setAlarm(Alarm alarm) {
         PendingIntent pendingIntent = createPendingIntent(alarm);
         Calendar alarmTime = alarm.getCalendar();
@@ -229,6 +253,16 @@ public class MainActivity extends AppCompatActivity {
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime.getTimeInMillis(), pendingIntent);
         }
+        String message = AlarmUtil.getTimeDiffMessage(alarm);
+        Toast toast = Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.BOTTOM, 0, 0);
+        toast.setText(message);
+        toast.show();
+    }
+
+    private void cancelAlarm(Alarm alarm) {
+        PendingIntent pendingIntent = createPendingIntent(alarm);
+        alarmManager.cancel(pendingIntent);
     }
 
     private PendingIntent createPendingIntent(Alarm alarm) {
@@ -292,21 +326,47 @@ public class MainActivity extends AppCompatActivity {
         public View getView(final int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = LayoutInflater.from(getContext());
             View rowView = inflater.inflate(R.layout.alarm_list_item, parent, false);
-            TextView alarmText = (TextView) rowView.findViewById(R.id.alarm_text);
-            TextView descriptionText = (TextView) rowView.findViewById(R.id.alarm_description_txt);
+            final TextView alarmText = (TextView) rowView.findViewById(R.id.alarm_text);
+            final TextView descriptionText = (TextView) rowView.findViewById(R.id.alarm_description_txt);
             ImageView deleteAlarm = (ImageView) rowView.findViewById(R.id.delete_alarm_img);
+            final CheckBox repeatChkBox = (CheckBox) rowView.findViewById(R.id.repeat_chk_bx);
+            Switch enabledSwitch = (Switch) rowView.findViewById(R.id.enable_switch);
             final Alarm alarm = alarms.get(position);
             alarmText.setText(AlarmUtil.alarmText(alarm.getHour(), alarm.getMinute()));
             descriptionText.setText(alarm.getAlarmDescription());
             deleteAlarm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    PendingIntent pendingIntent = createPendingIntent(alarm);
-                    alarmManager.cancel(pendingIntent);
-                    alarms.remove(alarm);
-                    alarmListAdapter.notifyDataSetChanged();
+                    cancelAlarm(alarm);
+                    removeAlarm(alarm);
                 }
             });
+            repeatChkBox.setChecked(alarm.isRepeating());
+            repeatChkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                    alarm.setRepeating(checked);
+                }
+            });
+            enabledSwitch.setChecked(alarm.isEnabled());
+            enabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                    alarm.setEnabled(checked);
+                    alarmText.setEnabled(checked);
+                    descriptionText.setEnabled(checked);
+                    repeatChkBox.setEnabled(checked);
+                    String message = null;
+                    if (checked) {
+                        setAlarm(alarm);
+                    } else {
+                        cancelAlarm(alarm);
+                    }
+                }
+            });
+            alarmText.setEnabled(alarm.isEnabled());
+            descriptionText.setEnabled(alarm.isEnabled());
+            repeatChkBox.setEnabled(alarm.isEnabled());
 
             return rowView;
         }

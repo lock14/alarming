@@ -20,6 +20,24 @@ public class Alarm implements Serializable {
     private int objectiveCode;
     private String alarmDescription;
     private String recordingFileName;
+    boolean repeating;
+    boolean enabled;
+
+    public boolean isRepeating() {
+        return repeating;
+    }
+
+    public void setRepeating(boolean repeating) {
+        this.repeating = repeating;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     public Alarm() {
         hour = -1;
@@ -36,6 +54,10 @@ public class Alarm implements Serializable {
     }
 
     public Alarm(int hour, int minute, int objectiveCode, String alarmDescription, String recordingFileName) {
+        this(hour, minute, objectiveCode, alarmDescription, recordingFileName, false);
+    }
+
+    public Alarm(int hour, int minute, int objectiveCode, String alarmDescription, String recordingFileName, boolean repeating) {
         this.hour = hour;
         this.minute = minute;
         this.objectiveCode = objectiveCode;
@@ -47,6 +69,8 @@ public class Alarm implements Serializable {
         if (this.recordingFileName == null) {
             this.recordingFileName = "";
         }
+        this.repeating = repeating;
+        this.enabled = true;
     }
 
     public int getHour() {
