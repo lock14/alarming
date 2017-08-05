@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.Ringtone;
@@ -18,6 +19,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +31,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -90,40 +95,28 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Intent intent = getIntent();
-        boolean startedByAlarm =
-                intent.getBooleanExtra(getString(R.string.intent_started_by_alarm_key), false);
-        if (startedByAlarm) {
-            playAlarm();
+        if (intent != null) {
+            onNewIntent(intent);
         }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-//        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putInt(getString(R.string.shared_pref_hour_key), hour);
-//        editor.putInt(getString(R.string.shared_pref_minute_key), minute);
-//        editor.putInt(getString(R.string.shared_pref_objective_key), objectiveCode);
-//        editor.putString(getString(R.string.shared_pref_description_key), alarmDescription);
-//        editor.putString(getString(R.string.shared_pref_recording_filename), recordingFileName);
-//        editor.apply();
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String alarmsJson = gson.toJson(alarms);
+        Log.d(TAG, "JSON: " + alarmsJson);
+        editor.putString(getString(R.string.shared_pref_alarms), alarmsJson);
+        editor.apply();
     }
 
     private void loadStateFromPreferences() {
-//        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-//        hour = sharedPreferences.getInt(getString(R.string.shared_pref_hour_key), -1);
-//        minute = sharedPreferences.getInt(getString(R.string.shared_pref_minute_key), -1);
-//        objectiveCode = sharedPreferences.getInt(getString(R.string.shared_pref_objective_key), 0);
-//        alarmDescription = sharedPreferences
-//                .getString(getString(R.string.shared_pref_description_key), "");
-//        recordingFileName = sharedPreferences.getString(getString(R.string.shared_pref_recording_filename), "");
-//        if (hour != -1 && minute != -1) {
-//            enableAlarmText(hour, minute);
-//        }
-//        if (!TextUtils.isEmpty(alarmDescription)) {
-//            enableAlarmDescription(alarmDescription);
-//        }
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        String alarmsJson = sharedPreferences.getString(getString(R.string.shared_pref_alarms), "[]");
+        Gson gson = new Gson();
+        alarms = gson.fromJson(alarmsJson, new TypeToken<List<Alarm>>(){}.getType());
     }
 
     @Override
