@@ -7,9 +7,9 @@ package cs371m.alarming;
 public enum Objective {
     MATH,
     TIC_TAC_TOE,
-    TYPING,
     SWIPE,
-    COUNTING;
+    COUNTING,
+    TYPING;
 
     static Objective getObjective(int id) {
         if (id == MATH.ordinal()) {

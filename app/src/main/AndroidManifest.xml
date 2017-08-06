@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-  
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/alarm_clock"
@@ -37,10 +37,16 @@
         <activity
             android:name=".TestObjective"
             android:screenOrientation="portrait" />
-        <activity android:name=".MathObjective"
+        <activity
+            android:name=".MathObjective"
             android:screenOrientation="portrait" />
-        <activity android:name=".TicTacToeObjective"
+        <activity
+            android:name=".TicTacToeObjective"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".SwipeObjective"
+            android:label="@string/title_activity_swipe_objective"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>
