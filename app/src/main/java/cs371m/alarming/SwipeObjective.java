@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.reflect.Field;
@@ -38,9 +40,7 @@ public class SwipeObjective extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_swipe_objective);
         patternView = (PatternView) findViewById(R.id.swipe_pattern_view);
-
         tryUpdateHitFactor();
-
         random = new Random();
         completionCount = 3;
         handler = new Handler();
@@ -89,6 +89,15 @@ public class SwipeObjective extends Activity {
                 }
             }
         });
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            boolean demoMode = intent.getBooleanExtra(getString(R.string.objective_demo_mode), false);
+            if (demoMode) {
+                TextView demoText = (TextView) findViewById(R.id.swipe_demo_txt);
+                demoText.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     private void tryUpdateHitFactor() {
