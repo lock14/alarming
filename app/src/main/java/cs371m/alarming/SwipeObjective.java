@@ -4,22 +4,23 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import me.zhanghai.android.patternlock.PatternUtils;
 import me.zhanghai.android.patternlock.PatternView;
 
 public class SwipeObjective extends Activity {
+    private static final String TAG = "SwipeObjective";
     private PatternView patternView;
     private List<PatternView.Cell> pattern;
     private Random random;
@@ -37,6 +38,9 @@ public class SwipeObjective extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_swipe_objective);
         patternView = (PatternView) findViewById(R.id.swipe_pattern_view);
+
+        tryUpdateHitFactor();
+
         random = new Random();
         completionCount = 3;
         handler = new Handler();
@@ -87,6 +91,22 @@ public class SwipeObjective extends Activity {
         });
     }
 
+    private void tryUpdateHitFactor() {
+        Class<?> clazz = patternView.getClass();
+        try {
+            Field hitFactor = clazz.getDeclaredField("mHitFactor");
+            hitFactor.setAccessible(true);
+            hitFactor.setFloat(patternView, (float) 0.4);
+            Log.d(TAG, "updated hitfactor to 0.4");
+        } catch (NoSuchFieldException e) {
+            Log.w(TAG, "Could not update hitfactor. using default value.");
+        } catch (IllegalAccessException e) {
+            Log.w(TAG, "Could not update hitfactor. using default value.");
+        } catch (SecurityException e) {
+            Log.w(TAG, "Could not update hitfactor. using default value.");
+        }
+    }
+
     private boolean patternCorrect(List<PatternView.Cell> userPattern) {
         return Arrays.equals(PatternUtils.patternToBytes(pattern),
                 PatternUtils.patternToBytes(userPattern));
@@ -94,17 +114,17 @@ public class SwipeObjective extends Activity {
 
     private byte[] generateRandomPattern() {
         byte[] bytes = new byte[random.nextInt(5) + 4];
-        Set<Integer> used = new HashSet<>();
-        int last = (byte) random.nextInt(9);
-        used.add(last);
-        bytes[0] = (byte) last;
+        List<Integer> choices = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8));
+        Integer last = choices.get(random.nextInt(choices.size()));
+        choices.remove(last);
+        bytes[0] = (byte) last.intValue();
         for (int i = 1; i < bytes.length; i++) {
-            int val = random.nextInt(9);
-            while (used.contains(val) || deleteriousChoice(last, val)) {
-                val = random.nextInt(9);
+            Integer val = choices.get(random.nextInt(choices.size()));
+            while (choices.size() != 1 && deleteriousChoice(last, val)) {
+                val = choices.get(random.nextInt(choices.size()));
             }
-            bytes[i] = (byte) val;
-            used.add(val);
+            choices.remove(val);
+            bytes[i] = (byte) val.intValue();
             last = val;
         }
         return bytes;
