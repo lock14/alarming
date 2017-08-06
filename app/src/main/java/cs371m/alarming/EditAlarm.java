@@ -76,6 +76,7 @@ public class EditAlarm extends AppCompatActivity {
 
     public void editObjective(View view) {
         Intent intent = new Intent(this, EditObjective.class);
+        intent.putExtra(getString(R.string.intent_objective_key), objectiveCode);
         startActivityForResult(intent, EDIT_OBJECTIVE);
     }
 }

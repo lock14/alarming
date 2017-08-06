@@ -27,30 +27,19 @@ public class EditObjective extends AppCompatActivity {
         imageViews.add(mathImageView);
         imageViews.add(ticTactToeImageView);
         objectiveCode = 0;
-        selectObjective(mathImageView);
-        //selectObjective(ticTactToeImageView);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_save, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_save:
-                Intent result = new Intent();
-                result.putExtra(getString(R.string.intent_objective_key), objectiveCode);
-                setResult(Activity.RESULT_OK, result);
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        Intent intent = getIntent();
+        if (intent != null) {
+            objectiveCode = intent.getIntExtra(getString(R.string.intent_objective_key), 0);
         }
+        selectObjective(imageViews.get(objectiveCode));
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent result = new Intent();
+        result.putExtra(getString(R.string.intent_objective_key), objectiveCode);
+        setResult(Activity.RESULT_OK, result);
+        finish();
     }
 
     public void selectObjective(View view) {
