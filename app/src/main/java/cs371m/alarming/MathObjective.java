@@ -45,19 +45,16 @@ public class MathObjective extends AppCompatActivity {
             String message = null;
             if (answer == operator.doOperation(operand1, operand2)) {
                 --completion_count;
-                message = "Correct.";
-                if (!demoMode && completion_count == 0) {
+                if (completion_count == 0) {
                     Intent result = new Intent();
                     setResult(Activity.RESULT_OK, result);
                     finish();
                 } else {
-                    if (!demoMode) {
-                        message += " Need " + completion_count + " more win";
-                        if (completion_count > 1) {
-                            message += "s";
-                        }
-                        message += " to disable";
+                    message = "Correct! " + completion_count + " more win";
+                    if (completion_count > 1) {
+                        message += "s";
                     }
+                    message += " to disable.";
                     chooseRandomProblem();
                     setGuiCompoents();
                 }
@@ -65,9 +62,11 @@ public class MathObjective extends AppCompatActivity {
                 message = "Incorrect. Try Again.";
             }
             answerText.setText("");
-            Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
+            if (completion_count != 0) {
+                Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+            }
         }
     }
 
@@ -86,14 +85,17 @@ public class MathObjective extends AppCompatActivity {
         if (operator instanceof DivideFunctor) {
             // want evenly divisible problem;
             // choose operand2 to be between 1 and 10
-            operand2 = random.nextInt(10) + 1;
+            operand2 = random.nextInt(9) + 2;
 
             // next multiply operand2 by random number between 1 and 10.
             // operand 1 will be the result;
-            operand1 = operand2 * (random.nextInt(10) + 1);
+            operand1 = operand2 * (random.nextInt(9) + 2);
+        } else if (operator instanceof TimesFunctor){
+            operand1 = random.nextInt(9) + 2;
+            operand2 = random.nextInt(9) + 2;
         } else {
-            operand1 = random.nextInt(10) + 1;
-            operand2 = random.nextInt(10) + 1;
+            operand1 = random.nextInt(99) + 2;
+            operand2 = random.nextInt(99) + 2;
         }
     }
 

@@ -53,4 +53,5 @@
     <string name="ok">ok</string>
     <string name="intent_alarm_id">ALARM_ID</string>
     <string name="shared_pref_alarms">shared_pref_alarms</string>
+    <string name="title_activity_swipe_objective">SwipeObjective</string>
 </resources>

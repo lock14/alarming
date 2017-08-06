@@ -315,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
                 // insert code here
                 break;
             case SWIPE:
-                // insert code here
+                intent = new Intent(this, SwipeObjective.class);
                 break;
             case COUNTING:
                 // insert code here
