@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (hour != -1 && minute != -1) {
                     addAlarm(alarm);
-                    setAlarm(alarm);
+                    setAlarm(alarm, true);
                 }
             } else if (requestCode == OBJECTIVE) {
                 ringtone.stop();
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 disableButton.setVisibility(View.INVISIBLE);
 
                 if (currentAlarm.isRepeating()) {
-                    setAlarm(currentAlarm);
+                    setAlarm(currentAlarm, false);
                 } else {
                     currentAlarm.setEnabled(false);
                 }
@@ -251,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setAlarm(Alarm alarm) {
+    private void setAlarm(Alarm alarm, boolean displayToast) {
         PendingIntent pendingIntent = createPendingIntent(alarm);
         Calendar alarmTime = alarm.getCalendar();
         // schedule alarm
@@ -260,11 +260,13 @@ public class MainActivity extends AppCompatActivity {
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime.getTimeInMillis(), pendingIntent);
         }
-        String message = AlarmUtil.getTimeDiffMessage(alarm);
-        Toast toast = Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.BOTTOM, 0, 0);
-        toast.setText(message);
-        toast.show();
+        if (displayToast) {
+            String message = AlarmUtil.getTimeDiffMessage(alarm);
+            Toast toast = Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.BOTTOM, 0, 0);
+            toast.setText(message);
+            toast.show();
+        }
     }
 
     private void cancelAlarm(Alarm alarm) {
@@ -372,7 +374,7 @@ public class MainActivity extends AppCompatActivity {
                     holder.descriptionText.setEnabled(checked);
                     holder.repeatChkBox.setEnabled(checked);
                     if (checked) {
-                        setAlarm(alarm);
+                        setAlarm(alarm, true);
                     } else {
                         cancelAlarm(alarm);
                     }
