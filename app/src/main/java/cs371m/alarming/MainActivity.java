@@ -389,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class AlarmViewHolder {
-         TextView alarmText;
+        TextView alarmText;
         TextView descriptionText;
         ImageView deleteAlarm;
         CheckBox repeatChkBox;
