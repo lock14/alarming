@@ -173,7 +173,7 @@ public class SoundFileManager {
         return null;
     }
 
-    private String prependDirectoryToFileName(String fileName) {
+    public String prependDirectoryToFileName(String fileName) {
         return this.mSoundFileDirectory + "/" + fileName;
     }
 
@@ -255,5 +255,6 @@ public class SoundFileManager {
         }
         return false;
     }
+
 
 }
