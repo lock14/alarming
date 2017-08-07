@@ -168,6 +168,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void editAlarm(Alarm alarm) {
+        Intent intent = new Intent(this, EditAlarm.class);
+        intent.putExtra(getString(R.string.edit_alarm_edit_mode), true);
+        intent.putExtra(getString(R.string.intent_alarm_id), alarm.hashCode());
+        intent.putExtra(getString(R.string.intent_hour_key), alarm.getHour());
+        intent.putExtra(getString(R.string.intent_minute_key), alarm.getMinute());
+        intent.putExtra(getString(R.string.intent_objective_key), alarm.getObjectiveCode());
+        intent.putExtra(getString(R.string.intent_description_key), alarm.getAlarmDescription());
+        intent.putExtra(getString(R.string.intent_recording_key), alarm.getRecordingFileName());
+        intent.putExtra(getString(R.string.intent_repeat_key), alarm.isRepeating());
+        startActivityForResult(intent, EDIT_ALARM);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (resultCode == Activity.RESULT_OK) {
@@ -178,12 +191,28 @@ public class MainActivity extends AppCompatActivity {
                 String alarmDescription = intent.getStringExtra(getString(R.string.intent_description_key));
                 String recordingFileName = intent.getStringExtra(getString(R.string.intent_recording_key));
                 boolean repeat = intent.getBooleanExtra(getString(R.string.intent_repeat_key), false);
-                Alarm alarm =
-                        new Alarm(hour, minute, objectiveCode, alarmDescription, recordingFileName, repeat);
+                boolean editMode = intent.getBooleanExtra(getString(R.string.edit_alarm_edit_mode), false);
+                if (editMode) {
+                    int alarmId = intent.getIntExtra(getString(R.string.intent_alarm_id), -1);
+                    Alarm alarm = getAlarmById(alarmId);
+                    alarm.setHour(hour);
+                    alarm.setMinute(minute);
+                    alarm.setObjectiveCode(objectiveCode);
+                    alarm.setAlarmDescription(alarmDescription);
+                    alarm.setRecordingFileName(recordingFileName);
+                    alarm.setRepeating(repeat);
+                    if (alarm.isEnabled()) {
+                        setAlarm(alarm, true);
+                    }
+                    alarmListAdapter.notifyDataSetChanged();
+                } else {
+                    Alarm alarm = new Alarm(hour, minute, objectiveCode, alarmDescription,
+                                            recordingFileName, repeat);
 
-                if (hour != -1 && minute != -1) {
-                    addAlarm(alarm);
-                    setAlarm(alarm, true);
+                    if (hour != -1 && minute != -1) {
+                        addAlarm(alarm);
+                        setAlarm(alarm, true);
+                    }
                 }
             } else if (requestCode == OBJECTIVE) {
                 ringtone.stop();
@@ -342,22 +371,33 @@ public class MainActivity extends AppCompatActivity {
                 convertView = inflater.inflate(R.layout.alarm_list_item, parent, false);
                 holder.alarmText = convertView.findViewById(R.id.alarm_text);
                 holder.descriptionText = convertView.findViewById(R.id.alarm_description_txt);
-                holder.deleteAlarm = convertView.findViewById(R.id.delete_alarm_img);
                 holder.repeatChkBox = convertView.findViewById(R.id.repeat_chk_bx);
                 holder.enabledSwitch = convertView.findViewById(R.id.enable_switch);
+                holder.editAlarm = convertView.findViewById(R.id.edit_alarm_img);
+                holder.deleteAlarm = convertView.findViewById(R.id.delete_alarm_img);
+
+                holder.editAlarm.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        editAlarm(alarm);
+                    }
+                });
+
+                holder.deleteAlarm.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        cancelAlarm(alarm);
+                        removeAlarm(alarm);
+                    }
+                });
+
                 convertView.setTag(holder);
             } else {
                 holder = (AlarmViewHolder) convertView.getTag();
             }
             holder.alarmText.setText(AlarmUtil.alarmText(alarm.getHour(), alarm.getMinute()));
             holder.descriptionText.setText(alarm.getAlarmDescription());
-            holder.deleteAlarm.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    cancelAlarm(alarm);
-                    removeAlarm(alarm);
-                }
-            });
+
             holder.repeatChkBox.setChecked(alarm.isRepeating());
             holder.repeatChkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -372,7 +412,6 @@ public class MainActivity extends AppCompatActivity {
                     alarm.setEnabled(checked);
                     holder.alarmText.setEnabled(checked);
                     holder.descriptionText.setEnabled(checked);
-                    holder.repeatChkBox.setEnabled(checked);
                     if (checked) {
                         setAlarm(alarm, true);
                     } else {
@@ -382,7 +421,6 @@ public class MainActivity extends AppCompatActivity {
             });
             holder.alarmText.setEnabled(alarm.isEnabled());
             holder.descriptionText.setEnabled(alarm.isEnabled());
-            holder.repeatChkBox.setEnabled(alarm.isEnabled());
 
             return convertView;
         }
@@ -392,6 +430,7 @@ public class MainActivity extends AppCompatActivity {
         TextView alarmText;
         TextView descriptionText;
         ImageView deleteAlarm;
+        ImageView editAlarm;
         CheckBox repeatChkBox;
         Switch enabledSwitch;
     }
