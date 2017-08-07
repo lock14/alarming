@@ -68,6 +68,7 @@ public class EditRecording extends AppCompatActivity {
         String recordingFileName = mRecordingListAdapter.mAlarmSoundFileName; //mSoundFileManager.getAlarmRecordingName();
         mRecordingListAdapter.mAlarmSoundFileName = null;
         if (recordingFileName != null) {
+            System.out.println("passing back recording from EditRecording activity: " + recordingFileName);
             result.putExtra(getString(R.string.intent_recording_key), recordingFileName);
         }
         setResult(Activity.RESULT_OK, result);

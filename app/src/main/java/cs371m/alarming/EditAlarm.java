@@ -71,6 +71,7 @@ public class EditAlarm extends AppCompatActivity {
                 String fileName = intent.getStringExtra(getString(R.string.intent_recording_key));
                 if (fileName != null) {
                     recordingFileName = fileName;
+                    System.out.println("getting recording file name in EditAlarm activity: " + recordingFileName);
                 }
             } else if (requestCode == EDIT_OBJECTIVE) {
                 objectiveCode = intent.getIntExtra(getString(R.string.intent_objective_key), 0);

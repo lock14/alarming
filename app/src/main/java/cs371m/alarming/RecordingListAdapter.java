@@ -54,12 +54,7 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
 //        String alarmRecordingName = mSoundFileManager.getAlarmRecordingName();
         for (String string : data) {
             mIsPlaying.put(string, false);
-            if (mAlarmSoundFileName != null && string.equals(mAlarmSoundFileName)) {
-                mIsSetToAlarm.put(string, true);
-            } else {
-                mIsSetToAlarm.put(string, false);
-            }
-
+            mIsSetToAlarm.put(string, false);
         }
     }
 

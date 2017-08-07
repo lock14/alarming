@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         soundLogic = new SoundLogic(new ContextWrapper((getApplicationContext())),
-                getString(R.string.alarm_file_directory));
+                getString(R.string.sound_file_directory));
         alarms = new ArrayList<>();
         currentAlarm = null;
         ActivityCompat.requestPermissions(this, permissions,
