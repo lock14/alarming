@@ -46,9 +46,11 @@ public class RecordLogic {
 
 
     public void stopRecording() {
-        mRecorder.stop();
-        mRecorder.release();
-        mRecorder = null;
+        if (mRecorder != null) {
+            mRecorder.stop();
+            mRecorder.release();
+            mRecorder = null;
+        }
     }
 
     private String prependDirectoryToFileName(String fileName) {
