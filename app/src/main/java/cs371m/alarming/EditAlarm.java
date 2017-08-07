@@ -71,6 +71,7 @@ public class EditAlarm extends AppCompatActivity {
 
     public void editRecording(View view) {
         Intent intent = new Intent(this, EditRecording.class);
+        intent.putExtra(getString(R.string.intent_recording_key), recordingFileName);
         startActivityForResult(intent, EDIT_RECORDING);
     }
 

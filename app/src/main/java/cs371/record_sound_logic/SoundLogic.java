@@ -62,6 +62,7 @@ public class SoundLogic {
             mPlayer.start();
         } catch (IOException e) {
             Log.e(LOG_TAG, "prepare() failed");
+            listener.onCompletion(mPlayer);
         }
         return duration;
     }

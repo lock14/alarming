@@ -5,6 +5,7 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,7 +40,13 @@ public class EditRecording extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_recording);
         setupRecordingInfrastructure();
-
+        Intent intent = getIntent();
+        if (intent != null) {
+            String recordingFileName = intent.getStringExtra(getString(R.string.intent_recording_key));
+            if (!TextUtils.isEmpty(recordingFileName)) {
+                mRecordingListAdapter.setAlarm(recordingFileName);
+            }
+        }
     }
 
     private void generateDummyData() {

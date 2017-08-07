@@ -133,6 +133,13 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
         }
     }
 
+    public void setAlarm(String alarm) {
+        if (mIsSetToAlarm.containsKey(alarm)) {
+            mIsSetToAlarm.put(alarm, true);
+        }
+        this.notifyDataSetChanged();
+    }
+
     private class ListPlayListener implements View.OnClickListener {
         private String mRecordingFileName;
 
