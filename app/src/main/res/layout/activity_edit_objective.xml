@@ -25,7 +25,6 @@
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <Button
-        android:id="@+id/swipe_objective_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -43,6 +42,7 @@
 
     <ImageView
         android:id="@+id/swipe_img_view"
+        android:contentDescription="Swipe Objective Selection"
         android:layout_width="88dp"
         android:layout_height="88dp"
         android:layout_marginLeft="8dp"
@@ -61,7 +61,6 @@
         app:layout_constraintVertical_bias="0.562" />
 
     <Button
-        android:id="@+id/tic_tac_toe_objective_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -79,6 +78,7 @@
 
     <ImageView
         android:id="@+id/math_img_view"
+        android:contentDescription="Math Objective Selection"
         android:layout_width="88dp"
         android:layout_height="88dp"
         android:padding="0dp"
@@ -98,6 +98,7 @@
 
     <ImageView
         android:id="@+id/tic_tac_toe_img_view"
+        android:contentDescription="Tic Tac Toe Objective Selection"
         android:layout_width="88dp"
         android:layout_height="88dp"
         android:layout_marginBottom="8dp"

@@ -1,8 +1,8 @@
 package cs371m.alarming;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Activity;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
@@ -10,20 +10,16 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import me.zhanghai.android.patternlock.PatternUtils;
 import me.zhanghai.android.patternlock.PatternView;
 
 public class SwipeObjective extends Activity {
-    private static final String TAG = "SwipeObjective";
-    private PatternView patternView;
+    private SwipePatternView patternView;
     private List<PatternView.Cell> pattern;
     private Random random;
     private int completionCount;
@@ -39,8 +35,8 @@ public class SwipeObjective extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_swipe_objective);
-        patternView = (PatternView) findViewById(R.id.swipe_pattern_view);
-        tryUpdateHitFactor();
+        patternView = findViewById(R.id.swipe_pattern_view);
+        patternView.setHitFactor((float) 0.4);
         random = new Random();
         completionCount = 3;
         handler = new Handler();
@@ -59,13 +55,11 @@ public class SwipeObjective extends Activity {
             }
 
             @Override
-            public void onPatternCellAdded(List<PatternView.Cell> pattern) {
-
-            }
+            public void onPatternCellAdded(List<PatternView.Cell> pattern) {}
 
             @Override
             public void onPatternDetected(List<PatternView.Cell> userPattern) {
-                if (patternCorrect(userPattern)) {
+                if (pattern != userPattern && patternCorrect(userPattern)) {
                     completionCount--;
                     if (completionCount == 0) {
                         Intent result = new Intent();
@@ -94,25 +88,9 @@ public class SwipeObjective extends Activity {
         if (intent != null) {
             boolean demoMode = intent.getBooleanExtra(getString(R.string.objective_demo_mode), false);
             if (demoMode) {
-                TextView demoText = (TextView) findViewById(R.id.swipe_demo_txt);
+                TextView demoText = findViewById(R.id.swipe_demo_txt);
                 demoText.setVisibility(View.VISIBLE);
             }
-        }
-    }
-
-    private void tryUpdateHitFactor() {
-        Class<?> clazz = patternView.getClass();
-        try {
-            Field hitFactor = clazz.getDeclaredField("mHitFactor");
-            hitFactor.setAccessible(true);
-            hitFactor.setFloat(patternView, (float) 0.4);
-            Log.d(TAG, "updated hitfactor to 0.4");
-        } catch (NoSuchFieldException e) {
-            Log.w(TAG, "Could not update hitfactor. using default value.");
-        } catch (IllegalAccessException e) {
-            Log.w(TAG, "Could not update hitfactor. using default value.");
-        } catch (SecurityException e) {
-            Log.w(TAG, "Could not update hitfactor. using default value.");
         }
     }
 
@@ -129,8 +107,10 @@ public class SwipeObjective extends Activity {
         bytes[0] = (byte) last.intValue();
         for (int i = 1; i < bytes.length; i++) {
             Integer val = choices.get(random.nextInt(choices.size()));
-            while (choices.size() != 1 && deleteriousChoice(last, val)) {
+            int loopCount = 0;
+            while (loopCount < 50 && deleteriousChoice(last, val)) { // at most do 50 iterations
                 val = choices.get(random.nextInt(choices.size()));
+                ++loopCount;
             }
             choices.remove(val);
             bytes[i] = (byte) val.intValue();
@@ -149,5 +129,4 @@ public class SwipeObjective extends Activity {
                 || (val == 0 && last == 8) || (val == 8 && last == 0)
                 || (val == 2 && last == 6) || (val == 6 && last == 2);
     }
-
 }

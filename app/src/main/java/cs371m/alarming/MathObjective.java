@@ -19,21 +19,20 @@ public class MathObjective extends AppCompatActivity {
     private int operand2;
     private MathFunctor operator;
     private Random random;
-    private boolean demoMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_math_objective);
         Intent intent = getIntent();
-        demoMode = intent.getBooleanExtra(getString(R.string.objective_demo_mode), false);
+        boolean demoMode = intent.getBooleanExtra(getString(R.string.objective_demo_mode), false);
         completion_count = 3;
         random = new Random();
         chooseRandomProblem();
         setGuiCompoents();
         if (demoMode) {
             TextView completionTextView = (TextView) findViewById(R.id.math_objective_completions);
-            completionTextView.setText("DEMO");
+            completionTextView.setText(R.string.demo_string);
         }
     }
 
@@ -122,7 +121,7 @@ public class MathObjective extends AppCompatActivity {
     // if were allowed Java 8 features then this would not be so icky;
 
     private interface MathFunctor {
-        public int doOperation (int m, int n);
+        int doOperation (int m, int n);
     }
 
     private class PlusFunctor implements MathFunctor {

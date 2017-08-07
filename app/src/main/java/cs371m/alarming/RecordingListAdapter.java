@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.TextView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +31,6 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
     public Map<String, Boolean> mIsPlaying;
     public Map<String, Boolean> mIsSetToAlarm;
     private SoundLogic mSoundLogic;
-    private RecordLogic mRecordLogic;
     private SoundFileManager mSoundFileManager;
     private RecordingListAdapter mRecordingListAdapter;
 
@@ -41,11 +39,11 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
         super(context, resource, objects);
         mContext = context;
         mLayout = resource;
-        mIsPlaying = new HashMap<String, Boolean>();
-        mIsSetToAlarm = new HashMap<String, Boolean>();
+        mIsPlaying = new HashMap<>();
+        mIsSetToAlarm = new HashMap<>();
         mRecordingPlayButton = recordingPlayButton;
         mSoundLogic = soundLogic;
-        mRecordLogic = recordLogic;
+        RecordLogic mRecordLogic = recordLogic;
         mSoundFileManager = soundFileManager;
         mRecordingListAdapter = this;
         setupMaps(objects);
@@ -66,15 +64,15 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        RecordingViewHolder mainRecordingViewHolder = null;
+        RecordingViewHolder mainRecordingViewHolder;
         if(convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(mLayout, parent, false);
             RecordingViewHolder recordingViewHolder = new RecordingViewHolder();
-            recordingViewHolder.mRecordingName = (TextView) convertView.findViewById(R.id.recording_name);
-            recordingViewHolder.mPlayButton = (Button) convertView.findViewById(R.id.play_button);
-            recordingViewHolder.mSetRecording = (Button) convertView.findViewById(R.id.set_recording);
-            recordingViewHolder.mDeleteRecording = (Button) convertView.findViewById(R.id.delete_recording);
+            recordingViewHolder.mRecordingName = convertView.findViewById(R.id.recording_name);
+            recordingViewHolder.mPlayButton = convertView.findViewById(R.id.play_button);
+            recordingViewHolder.mSetRecording = convertView.findViewById(R.id.set_recording);
+            recordingViewHolder.mDeleteRecording = convertView.findViewById(R.id.delete_recording);
             ListPlayListener listPlayListener = new ListPlayListener();
             ListSetListener listSetListener = new ListSetListener();
             ListDeleteListener listDeleteListener = new ListDeleteListener();

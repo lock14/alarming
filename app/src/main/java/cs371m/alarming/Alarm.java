@@ -1,10 +1,5 @@
 package cs371m.alarming;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
 import android.text.TextUtils;
 
 import java.io.Serializable;
@@ -133,12 +128,10 @@ public class Alarm implements Serializable {
 
         Alarm alarm = (Alarm) o;
 
-        if (hour != alarm.hour) return false;
-        if (minute != alarm.minute) return false;
-        if (objectiveCode != alarm.objectiveCode) return false;
-        if (!TextUtils.isEmpty(alarmDescription) ? !alarmDescription.equals(alarm.alarmDescription) : alarm.alarmDescription != null)
-            return false;
-        return !TextUtils.isEmpty(recordingFileName) ? recordingFileName.equals(alarm.recordingFileName) : alarm.recordingFileName == null;
+        return hour == alarm.hour && minute == alarm.minute && objectiveCode == alarm.objectiveCode
+                && (!TextUtils.isEmpty(alarmDescription) ? alarmDescription.equals(alarm.alarmDescription)
+                : alarm.alarmDescription == null && (!TextUtils.isEmpty(recordingFileName) ?
+                recordingFileName.equals(alarm.recordingFileName) : alarm.recordingFileName == null));
 
     }
 

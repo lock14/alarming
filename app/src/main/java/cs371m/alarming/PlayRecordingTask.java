@@ -2,7 +2,6 @@ package cs371m.alarming;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Button;
 
 import cs371.record_sound_logic.SoundLogic;
 
@@ -18,7 +17,6 @@ public class PlayRecordingTask extends AsyncTask<RecordingTaskBundle, Void, Reco
     protected RecordingTaskReturnBundle doInBackground(RecordingTaskBundle... recordingTaskBundels) {
         RecordingTaskBundle recordingTaskBundle = recordingTaskBundels[0];
         SoundLogic soundLogic = recordingTaskBundle.mSoundLogic;
-        Button recordingPlayButton = recordingTaskBundle.mRecordingPlayButton;
         String recordingFileName = recordingTaskBundle.mRecordingFileName;
         RecordingListAdapter recordingListAdapter = recordingTaskBundle.mRecordingListAdapter;
         RecordingTaskReturnBundle recordingTaskReturnBundle = new RecordingTaskReturnBundle();

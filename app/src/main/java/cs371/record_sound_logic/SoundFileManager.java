@@ -47,8 +47,12 @@ public class SoundFileManager {
     public void removeSoundFileByName(String soundFileName) {
         File soundFile = new File(prependDirectoryToFileName(soundFileName));
         if (soundFile.exists()) {
-            soundFile.delete();
-            Log.d(LOG_TAG, "sound file " + soundFileName + " deleted");
+            boolean deleted = soundFile.delete();
+            if (deleted) {
+                Log.d(LOG_TAG, "sound file " + soundFileName + " deleted");
+            } else {
+                Log.d(LOG_TAG, "sound file " + soundFileName + " wat not able to be deleted");
+            }
         } else {
             Log.d(LOG_TAG, "sound file " + soundFileName + "does not exist");
         }
@@ -58,8 +62,8 @@ public class SoundFileManager {
         File soundFileDirectory = new File(mSoundFileDirectory);
         if (soundFileDirectory.exists() && soundFileDirectory.isDirectory()) {
             File[] soundFiles = soundFileDirectory.listFiles();
-            for (int i = 0; i < soundFiles.length; ++i) {
-                soundFiles[i].delete();
+            for (File soundFile : soundFiles) {
+                soundFile.delete();
             }
             Log.d(LOG_TAG, "all sound files deleted in directory " + mSoundFileDirectory);
         } else {
@@ -71,8 +75,8 @@ public class SoundFileManager {
         File soundFileDirectory = new File(mAlarmFileDirectory);
         if (soundFileDirectory.exists() && soundFileDirectory.isDirectory()) {
             File[] soundFiles = soundFileDirectory.listFiles();
-            for (int i = 0; i < soundFiles.length; ++i) {
-                soundFiles[i].delete();
+            for (File soundFile : soundFiles) {
+                soundFile.delete();
             }
             Log.d(LOG_TAG, "all sound files deleted in directory " + mSoundFileDirectory);
         } else {
@@ -228,7 +232,7 @@ public class SoundFileManager {
     }
 
     private String[] removeTemporarySoundFileName(String[] soundFileNames) {
-        ArrayList<String> arrayList = new ArrayList(Arrays.asList(soundFileNames));
+        ArrayList<String> arrayList = new ArrayList<>(Arrays.asList(soundFileNames));
         arrayList.remove(mContext.getString(R.string.temporary_sound_file_name));
         Object[] array = arrayList.toArray();
         return Arrays.copyOf(array, array.length, String[].class);

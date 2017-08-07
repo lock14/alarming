@@ -16,7 +16,6 @@ public class RecordLogic {
     MediaRecorder mRecorder;
     String mSoundFileDirectory;
     ContextWrapper mContext;
-    private String LOG_TAG = "RecordLogic";
 
     public RecordLogic(ContextWrapper context, String soundFileDirectory) {
         this.mContext = context;
@@ -33,6 +32,7 @@ public class RecordLogic {
         try {
             mRecorder.prepare();
         } catch (IOException ioException) {
+            String LOG_TAG = "RecordLogic";
             Log.e(LOG_TAG, "prepare() failed");
         }
 

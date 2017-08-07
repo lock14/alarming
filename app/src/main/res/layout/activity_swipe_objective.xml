@@ -21,7 +21,7 @@
         app:layout_constraintHorizontal_bias="0.473" />
 
 
-    <me.zhanghai.android.patternlock.PatternView
+    <cs371m.alarming.SwipePatternView
         android:id="@+id/swipe_pattern_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
