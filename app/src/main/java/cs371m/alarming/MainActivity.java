@@ -177,9 +177,9 @@ public class MainActivity extends AppCompatActivity {
                 int objectiveCode = intent.getIntExtra(getString(R.string.intent_objective_key), 0);
                 String alarmDescription = intent.getStringExtra(getString(R.string.intent_description_key));
                 String recordingFileName = intent.getStringExtra(getString(R.string.intent_recording_key));
-
+                boolean repeat = intent.getBooleanExtra(getString(R.string.intent_repeat_key), false);
                 Alarm alarm =
-                        new Alarm(hour, minute, objectiveCode, alarmDescription, recordingFileName);
+                        new Alarm(hour, minute, objectiveCode, alarmDescription, recordingFileName, repeat);
 
                 if (hour != -1 && minute != -1) {
                     addAlarm(alarm);

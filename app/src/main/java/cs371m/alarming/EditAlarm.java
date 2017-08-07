@@ -8,8 +8,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 public class EditAlarm extends AppCompatActivity {
     private static final int EDIT_RECORDING = 0;
@@ -39,16 +41,23 @@ public class EditAlarm extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menu_save:
                 TimePicker timePicker = (TimePicker) findViewById(R.id.time_picker);
-                Intent result = new Intent();
-                result.putExtra(getString(R.string.intent_hour_key), timePicker.getCurrentHour());
-                result.putExtra(getString(R.string.intent_minute_key), timePicker.getCurrentMinute());
-                result.putExtra(getString(R.string.intent_objective_key), objectiveCode);
-                result.putExtra(getString(R.string.intent_recording_key), recordingFileName);
                 EditText editText = (EditText) findViewById(R.id.alarm_description_edit_txt);
-                result.putExtra(getString(R.string.intent_description_key),
-                        editText.getText().toString());
-                setResult(Activity.RESULT_OK, result);
-                finish();
+                CheckBox repeatCheckBox = (CheckBox) findViewById(R.id.edit_alarm_repeat_chk_bx);
+                if (editText.getText().length() <= 10) {
+                    Intent result = new Intent();
+                    result.putExtra(getString(R.string.intent_hour_key), timePicker.getCurrentHour());
+                    result.putExtra(getString(R.string.intent_minute_key), timePicker.getCurrentMinute());
+                    result.putExtra(getString(R.string.intent_objective_key), objectiveCode);
+                    result.putExtra(getString(R.string.intent_recording_key), recordingFileName);
+                    result.putExtra(getString(R.string.intent_description_key),
+                            editText.getText().toString());
+                    result.putExtra(getString(R.string.intent_repeat_key), repeatCheckBox.isChecked());
+                    setResult(Activity.RESULT_OK, result);
+                    finish();
+                } else {
+                    Toast.makeText(this, "Description too long, keep at 10 characters or less.",
+                            Toast.LENGTH_SHORT).show();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
