@@ -58,7 +58,8 @@ public class EditRecording extends AppCompatActivity {
             stopRecording(mRecordButton);
         }
         Intent result = new Intent();
-        String recordingFileName = mSoundFileManager.getAlarmRecordingName();
+        String recordingFileName = mRecordingListAdapter.mAlarmSoundFileName; //mSoundFileManager.getAlarmRecordingName();
+        mRecordingListAdapter.mAlarmSoundFileName = null;
         if (recordingFileName != null) {
             result.putExtra(getString(R.string.intent_recording_key), recordingFileName);
         }

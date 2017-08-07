@@ -33,6 +33,7 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
     private SoundLogic mSoundLogic;
     private SoundFileManager mSoundFileManager;
     private RecordingListAdapter mRecordingListAdapter;
+    public String mAlarmSoundFileName = null;
 
     RecordingListAdapter(Context context, int resource, List<String> objects, Button recordingPlayButton, SoundLogic soundLogic,
                          RecordLogic recordLogic, SoundFileManager soundFileManager) {
@@ -50,10 +51,10 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
     }
 
     private void setupMaps(List<String> data) {
-        String alarmRecordingName = mSoundFileManager.getAlarmRecordingName();
+//        String alarmRecordingName = mSoundFileManager.getAlarmRecordingName();
         for (String string : data) {
             mIsPlaying.put(string, false);
-            if (alarmRecordingName != null && string.equals(alarmRecordingName)) {
+            if (mAlarmSoundFileName != null && string.equals(mAlarmSoundFileName)) {
                 mIsSetToAlarm.put(string, true);
             } else {
                 mIsSetToAlarm.put(string, false);
@@ -169,6 +170,7 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
             ))) {
                 mSoundFileManager.removeSoundFilesInAlarmDirectory();
                 mSoundFileManager.saveSoundFileToAlarmFileDirectory(mRecordingFileName);
+                mAlarmSoundFileName = mRecordingFileName;
                 disableAllRecordings();
                 mIsSetToAlarm.put(mRecordingFileName, true);
                 mRecordingListAdapter.notifyDataSetChanged();
@@ -192,8 +194,11 @@ public class RecordingListAdapter extends ArrayAdapter<String> {
         @Override
         public void onClick(View v) {
             mSoundFileManager.removeSoundFileByName(mRecordingFileName);
-            if (mRecordingFileName.equals(mSoundFileManager.getAlarmRecordingName())) {
-                mSoundFileManager.removeSoundFilesInAlarmDirectory();
+//            if (mRecordingFileName.equals(mSoundFileManager.getAlarmRecordingName())) {
+//                mSoundFileManager.removeSoundFilesInAlarmDirectory();
+//            }
+            if (mAlarmSoundFileName != null && mRecordingFileName.equals(mAlarmSoundFileName)) {
+                mAlarmSoundFileName = null;
             }
             mIsSetToAlarm.remove(mRecordingFileName);
             mIsPlaying.remove(mRecordingFileName);
