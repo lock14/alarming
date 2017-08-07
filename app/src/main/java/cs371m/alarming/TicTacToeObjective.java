@@ -13,7 +13,6 @@ public class TicTacToeObjective extends AppCompatActivity {
     private TicTacToeGame mGame;
     private Button mBoardButtons[];
     private TextView mInfoTextView;
-    private Button mRetryButton;
     private TextView mCompletionTextView;
     private boolean mGameOver = false;
     private boolean mDemoMode;
@@ -33,7 +32,7 @@ public class TicTacToeObjective extends AppCompatActivity {
         mBoardButtons[7] = (Button) findViewById(R.id.eight);
         mBoardButtons[8] = (Button) findViewById(R.id.nine);
         mInfoTextView = (TextView) findViewById(R.id.information);
-        mRetryButton = (Button) findViewById(R.id.retry_tictactoe);
+        Button mRetryButton = (Button) findViewById(R.id.retry_tictactoe);
         mRetryButton.setOnClickListener(new RetryButtonClickListener());
         Intent intent = getIntent();
         mDemoMode =  intent.getBooleanExtra(getString(R.string.objective_demo_mode), false);
@@ -41,7 +40,7 @@ public class TicTacToeObjective extends AppCompatActivity {
         if (!mDemoMode) {
             mCompletionTextView.setText("Need "+ (3 - mNumWins) +" objective wins to disable.");
         } else {
-            mCompletionTextView.setText("DEMO");
+            mCompletionTextView.setText(getText(R.string.demo_string));
         }
         mNumWins = 0;
         mGame = new TicTacToeGame();
@@ -55,12 +54,12 @@ public class TicTacToeObjective extends AppCompatActivity {
             mBoardButtons[i].setOnClickListener(new ButtonClickListener(i));
         }
         mGameOver = false;
-        mInfoTextView.setText("You go first.");
+        mInfoTextView.setText(R.string.tic_tac_toe_go_first_msg);
     }
 
     private void endGame() {
-        for (int i = 0; i < mBoardButtons.length; ++i) {
-            mBoardButtons[i].setEnabled(false);
+        for (Button button : mBoardButtons) {
+            button.setEnabled(false);
         }
     }
 

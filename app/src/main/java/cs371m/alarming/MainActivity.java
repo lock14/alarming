@@ -16,7 +16,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -332,39 +331,46 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = LayoutInflater.from(getContext());
-            View rowView = inflater.inflate(R.layout.alarm_list_item, parent, false);
-            final TextView alarmText = (TextView) rowView.findViewById(R.id.alarm_text);
-            final TextView descriptionText = (TextView) rowView.findViewById(R.id.alarm_description_txt);
-            ImageView deleteAlarm = (ImageView) rowView.findViewById(R.id.delete_alarm_img);
-            final CheckBox repeatChkBox = (CheckBox) rowView.findViewById(R.id.repeat_chk_bx);
-            Switch enabledSwitch = (Switch) rowView.findViewById(R.id.enable_switch);
             final Alarm alarm = alarms.get(position);
-            alarmText.setText(AlarmUtil.alarmText(alarm.getHour(), alarm.getMinute()));
-            descriptionText.setText(alarm.getAlarmDescription());
-            deleteAlarm.setOnClickListener(new View.OnClickListener() {
+
+            final AlarmViewHolder holder;
+            if (convertView == null) {
+                holder = new AlarmViewHolder();
+                LayoutInflater inflater = LayoutInflater.from(getContext());
+                convertView = inflater.inflate(R.layout.alarm_list_item, parent, false);
+                holder.alarmText = convertView.findViewById(R.id.alarm_text);
+                holder.descriptionText = convertView.findViewById(R.id.alarm_description_txt);
+                holder.deleteAlarm = convertView.findViewById(R.id.delete_alarm_img);
+                holder.repeatChkBox = convertView.findViewById(R.id.repeat_chk_bx);
+                holder.enabledSwitch = convertView.findViewById(R.id.enable_switch);
+                convertView.setTag(holder);
+            } else {
+                holder = (AlarmViewHolder) convertView.getTag();
+            }
+            holder.alarmText.setText(AlarmUtil.alarmText(alarm.getHour(), alarm.getMinute()));
+            holder.descriptionText.setText(alarm.getAlarmDescription());
+            holder.deleteAlarm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     cancelAlarm(alarm);
                     removeAlarm(alarm);
                 }
             });
-            repeatChkBox.setChecked(alarm.isRepeating());
-            repeatChkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            holder.repeatChkBox.setChecked(alarm.isRepeating());
+            holder.repeatChkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                     alarm.setRepeating(checked);
                 }
             });
-            enabledSwitch.setChecked(alarm.isEnabled());
-            enabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            holder.enabledSwitch.setChecked(alarm.isEnabled());
+            holder.enabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                     alarm.setEnabled(checked);
-                    alarmText.setEnabled(checked);
-                    descriptionText.setEnabled(checked);
-                    repeatChkBox.setEnabled(checked);
-                    String message = null;
+                    holder.alarmText.setEnabled(checked);
+                    holder.descriptionText.setEnabled(checked);
+                    holder.repeatChkBox.setEnabled(checked);
                     if (checked) {
                         setAlarm(alarm);
                     } else {
@@ -372,12 +378,19 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
-            alarmText.setEnabled(alarm.isEnabled());
-            descriptionText.setEnabled(alarm.isEnabled());
-            repeatChkBox.setEnabled(alarm.isEnabled());
+            holder.alarmText.setEnabled(alarm.isEnabled());
+            holder.descriptionText.setEnabled(alarm.isEnabled());
+            holder.repeatChkBox.setEnabled(alarm.isEnabled());
 
-            return rowView;
+            return convertView;
         }
+    }
 
+    private class AlarmViewHolder {
+         TextView alarmText;
+        TextView descriptionText;
+        ImageView deleteAlarm;
+        CheckBox repeatChkBox;
+        Switch enabledSwitch;
     }
 }

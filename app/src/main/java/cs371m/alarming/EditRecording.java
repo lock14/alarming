@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import cs371.record_sound_logic.RecordLogic;
 import cs371.record_sound_logic.SoundFileManager;
@@ -19,7 +20,7 @@ import cs371.record_sound_logic.SoundLogic;
 
 
 public class EditRecording extends AppCompatActivity {
-    private ArrayList<String> mData = new ArrayList<String>();
+    private ArrayList<String> mData = new ArrayList<>();
     private RecordLogic mRecordLogic;
     private SoundLogic mSoundLogic;
     private SoundFileManager mSoundFileManager;
@@ -48,37 +49,8 @@ public class EditRecording extends AppCompatActivity {
     }
 
     private void generateRecordingData() {
-        String[] recordingData = mSoundFileManager.getSoundFileList();
-        for (String recordingName : recordingData) {
-            mData.add(recordingName);
-        }
+        Collections.addAll(mData, mSoundFileManager.getSoundFileList());
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        super.onCreateOptionsMenu(menu);
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.menu_save, menu);
-//        return true;
-//    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.menu_save:
-//                Intent result = new Intent();
-//                String recordingFileName = mSoundFileManager.saveTemporarySoundFileToAlarm();
-//                if (recordingFileName != null) {
-//                    result.putExtra(getString(R.string.intent_recording_key), recordingFileName);
-//                }
-//                setResult(Activity.RESULT_OK, result);
-//                finish();
-//                return true;
-//         default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//        return true;
-//    }
 
     @Override
     public void onBackPressed() {
@@ -92,7 +64,6 @@ public class EditRecording extends AppCompatActivity {
         }
         setResult(Activity.RESULT_OK, result);
         finish();
-//        super.onBackPressed();
     }
 
     @Override

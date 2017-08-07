@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class TicTacToeGame {
 
-    public enum DifficultyLevel {Easy, Harder, Expert};
+    public enum DifficultyLevel {Easy, Harder, Expert}
     private DifficultyLevel mDifficultyLevel = DifficultyLevel.Easy;
 
     private static final String TAG = "TicTacToeGame";

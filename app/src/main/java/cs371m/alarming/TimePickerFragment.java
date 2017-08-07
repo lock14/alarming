@@ -1,15 +1,11 @@
 package cs371m.alarming;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.widget.TextView;
 import android.widget.TimePicker;
-
-import org.w3c.dom.Text;
 
 import java.util.Calendar;
 
