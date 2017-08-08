@@ -1,5 +1,8 @@
 package cs371m.alarming;
 
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.text.TextUtils;
 
 import java.io.Serializable;
@@ -17,6 +20,7 @@ public class Alarm implements Serializable {
     private String recordingFileName;
     boolean repeating;
     boolean enabled;
+    private Uri ringtoneUri;
 
     public boolean isRepeating() {
         return repeating;
@@ -53,6 +57,10 @@ public class Alarm implements Serializable {
     }
 
     public Alarm(int hour, int minute, int objectiveCode, String alarmDescription, String recordingFileName, boolean repeating) {
+        this(hour, minute, objectiveCode, alarmDescription, recordingFileName, repeating, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
+    }
+
+    public Alarm(int hour, int minute, int objectiveCode, String alarmDescription, String recordingFileName, boolean repeating, Uri ringtoneUri) {
         this.hour = hour;
         this.minute = minute;
         this.objectiveCode = objectiveCode;
@@ -66,6 +74,7 @@ public class Alarm implements Serializable {
         }
         this.repeating = repeating;
         this.enabled = true;
+        this.ringtoneUri = ringtoneUri;
     }
 
     public int getHour() {
@@ -119,6 +128,15 @@ public class Alarm implements Serializable {
             alarmTime.add(Calendar.DATE, 1);
         }
         return alarmTime;
+    }
+
+    public void setRingtoneUri(Uri ringtoneUri) {
+        this.ringtoneUri = ringtoneUri;
+    }
+
+    public Uri getRingtoneUri() {
+
+        return ringtoneUri;
     }
 
     @Override
