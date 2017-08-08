@@ -5,18 +5,14 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -40,7 +36,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -78,33 +73,36 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Intent intent = new Intent(this, FallingShapesObjective.class);
+        startActivity(intent);
 
-        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        soundLogic = new SoundLogic(new ContextWrapper((getApplicationContext())),
-                getString(R.string.sound_file_directory));
-        alarms = new ArrayList<>();
-        currentAlarm = null;
-        ActivityCompat.requestPermissions(this, permissions,
-                                          REQUEST_RECORD_AUDIO_PERMISSION);
-
-        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        ringtone = RingtoneManager.getRingtone(this, uri);
-        loadStateFromPreferences();
-        alarmListAdapter = new AlarmListAdapter(this, alarms);
-        ListView alarmListView = (ListView) findViewById(R.id.alarm_list);
-        alarmListView.setAdapter(alarmListAdapter);
-        if (alarms.isEmpty()) {
-            disableAlarmListView();
-            enableNoAlarmText();
-        } else {
-            disableNoAlarmText();
-            enableAlarmListView();
-        }
-
-        Intent intent = getIntent();
-        if (intent != null) {
-            onNewIntent(intent);
-        }
+//
+//        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+//        soundLogic = new SoundLogic(new ContextWrapper((getApplicationContext())),
+//                getString(R.string.sound_file_directory));
+//        alarms = new ArrayList<>();
+//        currentAlarm = null;
+//        ActivityCompat.requestPermissions(this, permissions,
+//                                          REQUEST_RECORD_AUDIO_PERMISSION);
+//
+//        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+//        ringtone = RingtoneManager.getRingtone(this, uri);
+//        loadStateFromPreferences();
+//        alarmListAdapter = new AlarmListAdapter(this, alarms);
+//        ListView alarmListView = (ListView) findViewById(R.id.alarm_list);
+//        alarmListView.setAdapter(alarmListAdapter);
+//        if (alarms.isEmpty()) {
+//            disableAlarmListView();
+//            enableNoAlarmText();
+//        } else {
+//            disableNoAlarmText();
+//            enableAlarmListView();
+//        }
+//
+//        Intent intent = getIntent();
+//        if (intent != null) {
+//            onNewIntent(intent);
+//        }
     }
 
     @Override

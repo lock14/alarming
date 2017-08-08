@@ -68,7 +68,7 @@ public class FallingShapes {
         }
     }
 
-    private void clearFirstLevelWithNewShapes() {
+    public void clearFirstLevelWithNewShapes() {
         for (int i = 0; i < mSideLength; ++i) {
             if (drawShape()) {
                 mShapesGrid[0][i] = generateRandomShape();
