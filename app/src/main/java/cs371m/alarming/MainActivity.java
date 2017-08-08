@@ -375,37 +375,35 @@ public class MainActivity extends AppCompatActivity {
                 holder.enabledSwitch = convertView.findViewById(R.id.enable_switch);
                 holder.editAlarm = convertView.findViewById(R.id.edit_alarm_img);
                 holder.deleteAlarm = convertView.findViewById(R.id.delete_alarm_img);
-
-                holder.editAlarm.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        editAlarm(alarm);
-                    }
-                });
-
-                holder.deleteAlarm.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        cancelAlarm(alarm);
-                        removeAlarm(alarm);
-                    }
-                });
-
                 convertView.setTag(holder);
             } else {
                 holder = (AlarmViewHolder) convertView.getTag();
             }
             holder.alarmText.setText(AlarmUtil.alarmText(alarm.getHour(), alarm.getMinute()));
             holder.descriptionText.setText(alarm.getAlarmDescription());
-
             holder.repeatChkBox.setChecked(alarm.isRepeating());
+            holder.enabledSwitch.setOnCheckedChangeListener(null);
+            holder.enabledSwitch.setChecked(alarm.isEnabled());
+            holder.editAlarm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    editAlarm(alarm);
+                }
+            });
+
+            holder.deleteAlarm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    cancelAlarm(alarm);
+                    removeAlarm(alarm);
+                }
+            });
             holder.repeatChkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                     alarm.setRepeating(checked);
                 }
             });
-            holder.enabledSwitch.setChecked(alarm.isEnabled());
             holder.enabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
