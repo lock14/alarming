@@ -16,6 +16,7 @@ import android.widget.Toast;
 public class EditAlarm extends AppCompatActivity {
     private static final int EDIT_RECORDING = 0;
     private static final int EDIT_OBJECTIVE = 1;
+    private static final int EDIT_RINGTONE = 2;
     private int objectiveCode;
     private String recordingFileName;
     private boolean editMode;
@@ -120,5 +121,10 @@ public class EditAlarm extends AppCompatActivity {
         Intent intent = new Intent(this, EditObjective.class);
         intent.putExtra(getString(R.string.intent_objective_key), objectiveCode);
         startActivityForResult(intent, EDIT_OBJECTIVE);
+    }
+
+    public void editRingTone(View view) {
+        Intent intent = new Intent(this, EditAlarmSound.class);
+        startActivityForResult(intent, EDIT_RINGTONE);
     }
 }
