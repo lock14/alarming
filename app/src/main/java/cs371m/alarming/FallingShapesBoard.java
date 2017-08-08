@@ -4,22 +4,24 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
+import android.graphics.Path;
 
 /**
  * Created by nano on 8/7/17.
  */
 
 public class FallingShapesBoard extends View {
-    int mRows = 10; // for y
-    int mColumns = 10; // for x
+    int mRows = 5; // for y
+    int mColumns = 5; // for x
     FallingShapes mFallingShapes;
     private String LOG_TAG = "FallingShapesBoard";
     public FallingShapesBoard(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mFallingShapes = new FallingShapes(10, 50);
+        mFallingShapes = new FallingShapes(5, 100);
     }
 
     @Override
@@ -112,24 +114,18 @@ public class FallingShapesBoard extends View {
             paint.setColor(Color.BLUE);
             canvas.drawCircle(x, y, shape.getImportantLength()/2, paint);
         } else if (shape.getShapeType() == ShapeType.TRIANGLE) {
-//            Path path = new Path();
-//            path.moveTo(x - (shape.getImportantLength()/2), y + (shape.getImportantLength()/2));
-//            path.lineTo(x + (shape.getImportantLength()/2), y + (shape.getImportantLength()/2));
-//            path.moveTo(x + (shape.getImportantLength()/2), y + (shape.getImportantLength()/2));
-//            path.lineTo(x + (shape.getImportantLength()/2), y - (shape.getImportantLength()/2));
-//            path.moveTo(x + (shape.getImportantLength()/2), y - (shape.getImportantLength()/2));
-//            path.lineTo(x - (shape.getImportantLength()/2), y + (shape.getImportantLength()/2));
-//            path.close();
-//
-//            canvas.drawPath(path, paint);
-            Rect drawingRect = new Rect();
-            drawingRect.left = x - (shape.getImportantLength()/2);
-            drawingRect.top = y - (shape.getImportantLength()/2);
-            drawingRect.right = x + (shape.getImportantLength()/2);
-            drawingRect.bottom = y + (shape.getImportantLength()/2);
-            paint = new Paint();
             paint.setColor(Color.GREEN);
-            canvas.drawRect(drawingRect, paint);
+            Point point1_draw = new Point(x - (shape.getImportantLength()/2), y + (shape.getImportantLength()/2));
+            Point point2_draw = new Point(x + (shape.getImportantLength()/2), y + (shape.getImportantLength()/2));
+            Point point3_draw = new Point(x + (shape.getImportantLength()/2), y - (shape.getImportantLength()/2));
+            Path path = new Path();
+            path.setFillType(Path.FillType.EVEN_ODD);
+            path.moveTo(point2_draw.x, point2_draw.y);
+            path.lineTo(point2_draw.x, point2_draw.y);
+            path.lineTo(point3_draw.x, point3_draw.y);
+            path.lineTo(point1_draw.x, point1_draw.y);
+            path.close();
+            canvas.drawPath(path, paint);
         }
     }
 
