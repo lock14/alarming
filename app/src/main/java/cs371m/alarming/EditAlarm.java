@@ -80,32 +80,27 @@ public class EditAlarm extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_save:
-                if (ringToneUri != null) {
-                    TimePicker timePicker = (TimePicker) findViewById(R.id.time_picker);
-                    EditText editText = (EditText) findViewById(R.id.alarm_description_edit_txt);
-                    CheckBox repeatCheckBox = (CheckBox) findViewById(R.id.edit_alarm_repeat_chk_bx);
-                    if (editText.getText().length() <= 25) {
-                        Intent result = new Intent();
-                        if (editMode) {
-                            result.putExtra(getString(R.string.edit_alarm_edit_mode), true);
-                            result.putExtra(getString(R.string.intent_alarm_id), alarmId);
-                        }
-                        result.putExtra(getString(R.string.intent_hour_key), timePicker.getCurrentHour());
-                        result.putExtra(getString(R.string.intent_minute_key), timePicker.getCurrentMinute());
-                        result.putExtra(getString(R.string.intent_objective_key), objectiveCode);
-                        result.putExtra(getString(R.string.intent_recording_key), recordingFileName);
-                        result.putExtra(getString(R.string.intent_description_key),
-                                editText.getText().toString());
-                        result.putExtra(getString(R.string.intent_repeat_key), repeatCheckBox.isChecked());
-                        result.putExtra(getString(R.string.intent_ringtone_uri_key), ringToneUri);
-                        setResult(Activity.RESULT_OK, result);
-                        finish();
-                    } else {
-                        Toast.makeText(this, "Description too long, keep at 25 characters or less.",
-                                Toast.LENGTH_SHORT).show();
+                TimePicker timePicker = (TimePicker) findViewById(R.id.time_picker);
+                EditText editText = (EditText) findViewById(R.id.alarm_description_edit_txt);
+                CheckBox repeatCheckBox = (CheckBox) findViewById(R.id.edit_alarm_repeat_chk_bx);
+                if (editText.getText().length() <= 25) {
+                    Intent result = new Intent();
+                    if (editMode) {
+                        result.putExtra(getString(R.string.edit_alarm_edit_mode), true);
+                        result.putExtra(getString(R.string.intent_alarm_id), alarmId);
                     }
+                    result.putExtra(getString(R.string.intent_hour_key), timePicker.getCurrentHour());
+                    result.putExtra(getString(R.string.intent_minute_key), timePicker.getCurrentMinute());
+                    result.putExtra(getString(R.string.intent_objective_key), objectiveCode);
+                    result.putExtra(getString(R.string.intent_recording_key), recordingFileName);
+                    result.putExtra(getString(R.string.intent_description_key),
+                            editText.getText().toString());
+                    result.putExtra(getString(R.string.intent_repeat_key), repeatCheckBox.isChecked());
+                    result.putExtra(getString(R.string.intent_ringtone_uri_key), ringToneUri);
+                    setResult(Activity.RESULT_OK, result);
+                    finish();
                 } else {
-                    Toast.makeText(this, "'None' is not a valid choice for alarm sound.",
+                    Toast.makeText(this, "Description too long, keep at 25 characters or less.",
                             Toast.LENGTH_SHORT).show();
                 }
                 return true;
@@ -149,13 +144,13 @@ public class EditAlarm extends AppCompatActivity {
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Alarm Sound");
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, ringToneUri);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);
         startActivityForResult(intent, EDIT_RINGTONE);
     }
 
     private String modifyTitle(String s) {
         if (s.startsWith("Default")) {
-            s = s.replaceFirst("Default ringtone \\(", "");
-            s = s.replaceFirst("\\)", "");
+            s = "Default";
         } else if (s.equals("Unknown ringtone")) {
             s = "None";
         }

@@ -38,8 +38,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -108,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().registerTypeAdapter(Uri.class, new UriSerializer()).create();
         String alarmsJson = gson.toJson(alarms);
         Log.d(TAG, "JSON: " + alarmsJson);
         editor.putString(getString(R.string.shared_pref_alarms), alarmsJson);
@@ -118,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadStateFromPreferences() {
         SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
         String alarmsJson = sharedPreferences.getString(getString(R.string.shared_pref_alarms), "[]");
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().registerTypeAdapter(Uri.class, new UriDeserializer()).create();
         alarms = gson.fromJson(alarmsJson, new TypeToken<List<Alarm>>(){}.getType());
     }
 
@@ -439,5 +448,19 @@ public class MainActivity extends AppCompatActivity {
         ImageView editAlarm;
         CheckBox repeatChkBox;
         Switch enabledSwitch;
+    }
+
+    public class UriSerializer implements JsonSerializer<Uri> {
+        public JsonElement serialize(Uri src, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(src.toString());
+        }
+    }
+
+    public class UriDeserializer implements JsonDeserializer<Uri> {
+        @Override
+        public Uri deserialize(final JsonElement src, final Type srcType,
+                               final JsonDeserializationContext context) throws JsonParseException {
+            return Uri.parse(src.getAsString());
+        }
     }
 }
