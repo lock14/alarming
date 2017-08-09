@@ -1,5 +1,6 @@
 package cs371m.alarming;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -35,14 +36,14 @@ public class FallingShapesObjective extends AppCompatActivity {
         setContentView(R.layout.activity_falling_shapes_objective);
         mFallingShapesBoard = (FallingShapesBoard) findViewById(R.id.falling_shapes_board);
         mFallingShapes = mFallingShapesBoard.getFallingShapes();
-        mNFalls = 50;
+        mNFalls = 20;
         mNumberOfWins = 0;
         Intent intent = getIntent();
         mDemo = intent.getBooleanExtra(getString(R.string.objective_demo_mode), false);
         mFallingShapesObjective = this;
+        mExecutingFallingShapes = false;
         setupGUIComponents();
         addOnClickListeners();
-//        executeFallingShapes();
     }
 
     private void executeFallingShapes() {
@@ -56,7 +57,7 @@ public class FallingShapesObjective extends AppCompatActivity {
         } else {
             shapeString = "circle";
         }
-        mCountShapesTitle.setText("count the " + shapeString +"s!!!");
+        mCountShapesTitle.setText("Count the " + shapeString +"s!!!");
         mFallingShapesTaskBundle = new FallingShapesTaskBundle();
         mFallingShapesTaskBundle.mFallingShapesBoard = mFallingShapesBoard;
         mFallingShapesTaskBundle.mFallingsShapes = mFallingShapes;
@@ -126,23 +127,30 @@ public class FallingShapesObjective extends AppCompatActivity {
                     int intCounter = Integer.valueOf(stringCounter);
                     int numShapes = -1;
                     if (mShapeToCount.getShapeType() == ShapeType.SQUARE) {
-                        numShapes = mFallingShapesTaskBundle.mNumCircles;
+                        numShapes = mFallingShapesTaskBundle.mNumSquares;
                     } else if (mShapeToCount.getShapeType() == ShapeType.TRIANGLE) {
                         numShapes = mFallingShapesTaskBundle.mNumTriangles;
                     } else {
                         numShapes = mFallingShapesTaskBundle.mNumCircles;
                     }
-
                     if (intCounter == numShapes) {
                         Toast.makeText(mFallingShapesObjective, "Correct", Toast.LENGTH_SHORT).show();
+                        mShapesCounter.setText("0");
+                        mCountShapesTitle.setText("Falling Shapes");
+                        ++mNumberOfWins;
+                        if (mNumberOfWins > 2 && !mDemo) {
+                            Intent result = new Intent();
+                            setResult(Activity.RESULT_OK, result);
+                            finish();
+                        }
                     } else {
                         Toast.makeText(mFallingShapesObjective, "Incorrect", Toast.LENGTH_SHORT).show();
                     }
 
-                } else if (!mExecutingFallingShapes){
-                    Toast.makeText(mFallingShapesObjective, "Wait for the shapes to stop falling.", Toast.LENGTH_SHORT);
+                } else if (mExecutingFallingShapes){
+                    Toast.makeText(mFallingShapesObjective, "Wait for the shapes to stop falling.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(mFallingShapesObjective, "Must start the game at least once.", Toast.LENGTH_SHORT);
+                    Toast.makeText(mFallingShapesObjective, "Must start the game at least once.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
