@@ -7,4 +7,10 @@ package cs371m.alarming;
 public class FallingShapesTaskBundle {
     public FallingShapesBoard mFallingShapesBoard;
     public FallingShapes mFallingsShapes;
+    public int mNumberOfFalls;
+    public int mNFalls;
+    public FallingShapesObjective mFallingShapesObjective;
+    public int mNumSquares;
+    public int mNumTriangles;
+    public int mNumCircles;
 }

@@ -10,7 +10,7 @@ public class FallingShapesTask extends AsyncTask<FallingShapesTaskBundle, Void, 
     @Override
     public FallingShapesTaskBundle doInBackground(FallingShapesTaskBundle ... fallingShapesTaskBundles) {
         try {
-            Thread.sleep(250);
+            Thread.sleep(500);
         } catch (InterruptedException interruptedException) {
             System.out.println("thread did not sleep in FallingShapesTask");
             }
@@ -19,7 +19,28 @@ public class FallingShapesTask extends AsyncTask<FallingShapesTaskBundle, Void, 
 
     @Override
     public void onPostExecute(FallingShapesTaskBundle fallingShapesTaskBundle) {
-        fallingShapesTaskBundle.mFallingShapesBoard.invalidate();
-        fallingShapesTaskBundle.mFallingsShapes.fallOneLevel();
+        if (fallingShapesTaskBundle.mNumberOfFalls < fallingShapesTaskBundle.mNFalls) {
+            fallingShapesTaskBundle.mFallingsShapes.fallOneLevel();
+            fallingShapesTaskBundle.mNumSquares += fallingShapesTaskBundle.mFallingsShapes.countSquaresAtBottom();
+            fallingShapesTaskBundle.mNumTriangles += fallingShapesTaskBundle.mFallingsShapes.countTrianglesAtBottom();
+            fallingShapesTaskBundle.mNumCircles += fallingShapesTaskBundle.mFallingsShapes.countCirclesAtBottom();
+            fallingShapesTaskBundle.mFallingShapesBoard.invalidate();
+            if ((fallingShapesTaskBundle.mNumberOfFalls + 1) == fallingShapesTaskBundle.mNFalls) {
+                fallingShapesTaskBundle.mFallingsShapes.clearFirstLeveWithEmptyShapes();
+            }
+        } else if (fallingShapesTaskBundle.mNumberOfFalls <
+                (fallingShapesTaskBundle.mNFalls + fallingShapesTaskBundle.mFallingsShapes.mSideLength)) {
+            fallingShapesTaskBundle.mFallingsShapes.cloneOneLevel();
+            fallingShapesTaskBundle.mNumSquares += fallingShapesTaskBundle.mFallingsShapes.countSquaresAtBottom();
+            fallingShapesTaskBundle.mNumTriangles += fallingShapesTaskBundle.mFallingsShapes.countTrianglesAtBottom();
+            fallingShapesTaskBundle.mNumCircles += fallingShapesTaskBundle.mFallingsShapes.countCirclesAtBottom();
+            fallingShapesTaskBundle.mFallingShapesBoard.invalidate();
+        } else {
+            System.out.println("number of squares: " + fallingShapesTaskBundle.mNumSquares);
+            System.out.println("number of triangles: " + fallingShapesTaskBundle.mNumTriangles);
+            System.out.println("number of circles: " + fallingShapesTaskBundle.mNumCircles);
+        }
+        ++fallingShapesTaskBundle.mNumberOfFalls;
+
     }
 }

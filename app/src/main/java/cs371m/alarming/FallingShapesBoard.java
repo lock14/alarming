@@ -92,7 +92,7 @@ public class FallingShapesBoard extends View {
         int cellHeight = boardHeight / mRows;
         for (int i = 0; i < shapesGrid.length; ++i) {
             for (int j = 0; j < shapesGrid[0].length; ++j) {
-                int x = ((cellWidth * j) - (cellWidth/2));
+                int x = ((cellWidth * (j+1)) - (cellWidth/2));
                 int y = (cellHeight * i) + (cellHeight/2);
                 drawShape(canvas, x, y, shapesGrid[i][j]);
             }

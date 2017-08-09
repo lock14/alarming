@@ -16,7 +16,7 @@ public class FallingShapes {
         mSideLength = sideLength;
         mShapeSize = shapeSize;
         mShapesGrid = new Shape[mSideLength][mSideLength];
-        mRand = new Random();
+        mRand = new Random(5);
         //populateShapesGrid();
         populateShapesGridWithEmptyShapes();
     }
@@ -62,7 +62,15 @@ public class FallingShapes {
         clearFirstLevelWithNewShapes();
     }
 
-    private void clearFirstLeveWithEmptyShapes() {
+    public void cloneOneLevel() {
+        for (int i = (mSideLength - 2); i >= 0; --i) {
+            for (int j = (mSideLength - 1); j >= 0; --j) {
+                mShapesGrid[i + 1][j] = mShapesGrid[i][j].cloneSelf();
+            }
+        }
+    }
+
+    public void clearFirstLeveWithEmptyShapes() {
         for (int i = 0; i < mSideLength; ++i) {
             mShapesGrid[0][i] = new EmptyShape();
         }
@@ -113,5 +121,35 @@ public class FallingShapes {
     private boolean drawShape() {
         int shapeChance = mRand.nextInt(4);
         return (0 == shapeChance);
+    }
+
+    public int countSquaresAtBottom() {
+        int numSquares = 0;
+        for (int i = 0; i < mSideLength; ++i) {
+            if (mShapesGrid[mSideLength - 1][i].getShapeType() == ShapeType.SQUARE) {
+                ++numSquares;
+            }
+        }
+        return numSquares;
+    }
+
+    public int countTrianglesAtBottom() {
+        int numTriangles = 0;
+        for (int i = 0; i < mSideLength; ++i) {
+            if (mShapesGrid[mSideLength - 1][i].getShapeType() == ShapeType.TRIANGLE) {
+                ++numTriangles;
+            }
+        }
+        return numTriangles;
+    }
+
+    public int countCirclesAtBottom() {
+        int numCircles = 0;
+        for (int i = 0; i < mSideLength; ++i) {
+            if (mShapesGrid[mSideLength - 1][i].getShapeType() == ShapeType.CIRCLE) {
+                ++numCircles;
+            }
+        }
+        return numCircles;
     }
 }
