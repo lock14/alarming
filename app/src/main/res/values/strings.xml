@@ -32,4 +32,5 @@
     <string name="tic_tac_toe_go_first_msg">You go first.</string>
     <string name="intent_repeat_key">REPEAT_KEY</string>
     <string name="edit_alarm_edit_mode">EDIT_MODE</string>
+    <string name="intent_ringtone_uri_key">RINGTONE_URI_KEY</string>
 </resources>

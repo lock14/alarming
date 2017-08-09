@@ -90,6 +90,8 @@ public class EditRecording extends AppCompatActivity {
         mRecordingListAdapter.notifyDataSetChanged();
         recordButton.setBackgroundResource(R.drawable.record_stop);
         mRecordLogic.startRecordingIntoTemporarySoundFile();
+        mPlayRecording.setEnabled(true);
+        mSaveRecording.setEnabled(true);
     }
 
     private void stopRecording(Button recordButton) {

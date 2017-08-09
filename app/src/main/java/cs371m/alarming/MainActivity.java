@@ -51,11 +51,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int EDIT_ALARM = 0;
     private static final int OBJECTIVE = 1;
     private AlarmManager alarmManager;
-    private Ringtone ringtone;
     private List<Alarm> alarms;
     private SoundLogic soundLogic;
     private AlarmListAdapter alarmListAdapter;
-
+    private Ringtone ringtone;
     // Requesting permission to RECORD_AUDIO
     private boolean permissionToRecordAccepted = false;
     private String [] permissions = {Manifest.permission.RECORD_AUDIO};
@@ -89,9 +88,7 @@ public class MainActivity extends AppCompatActivity {
         currentAlarm = null;
         ActivityCompat.requestPermissions(this, permissions,
                                           REQUEST_RECORD_AUDIO_PERMISSION);
-
-        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        ringtone = RingtoneManager.getRingtone(this, uri);
+        ringtone = null;
         loadStateFromPreferences();
         alarmListAdapter = new AlarmListAdapter(this, alarms);
         ListView alarmListView = (ListView) findViewById(R.id.alarm_list);
@@ -134,8 +131,13 @@ public class MainActivity extends AppCompatActivity {
         boolean startedByAlarm =
                 intent.getBooleanExtra(getString(R.string.intent_started_by_alarm_key), false);
         if (startedByAlarm) {
+            if (currentAlarm != null) {
+                // an existing alarm is playing, stop it
+                stopCurrentAlarm();
+            }
             int alarmId = intent.getIntExtra(getString(R.string.intent_alarm_id), 0);
             currentAlarm = getAlarmById(alarmId);
+            ringtone = RingtoneManager.getRingtone(this, currentAlarm.getRingtoneUri());
             playAlarm();
         }
     }
@@ -181,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(getString(R.string.intent_description_key), alarm.getAlarmDescription());
         intent.putExtra(getString(R.string.intent_recording_key), alarm.getRecordingFileName());
         intent.putExtra(getString(R.string.intent_repeat_key), alarm.isRepeating());
+        intent.putExtra(getString(R.string.intent_ringtone_uri_key), alarm.getRingtoneUri());
         startActivityForResult(intent, EDIT_ALARM);
     }
 
@@ -195,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
                 String recordingFileName = intent.getStringExtra(getString(R.string.intent_recording_key));
                 boolean repeat = intent.getBooleanExtra(getString(R.string.intent_repeat_key), false);
                 boolean editMode = intent.getBooleanExtra(getString(R.string.edit_alarm_edit_mode), false);
+                Uri ringToneUri = intent.getParcelableExtra(getString(R.string.intent_ringtone_uri_key));
                 if (editMode) {
                     int alarmId = intent.getIntExtra(getString(R.string.intent_alarm_id), -1);
                     Alarm alarm = getAlarmById(alarmId);
@@ -204,34 +208,39 @@ public class MainActivity extends AppCompatActivity {
                     alarm.setAlarmDescription(alarmDescription);
                     alarm.setRecordingFileName(recordingFileName);
                     alarm.setRepeating(repeat);
+                    alarm.setRingtoneUri(ringToneUri);
                     if (alarm.isEnabled()) {
                         setAlarm(alarm, true);
                     }
                     alarmListAdapter.notifyDataSetChanged();
                 } else {
                     Alarm alarm = new Alarm(hour, minute, objectiveCode, alarmDescription,
-                            recordingFileName, repeat);
 
+                                            recordingFileName, repeat, ringToneUri);
                     if (hour != -1 && minute != -1) {
                         addAlarm(alarm);
                         setAlarm(alarm, true);
                     }
                 }
             } else if (requestCode == OBJECTIVE) {
-                ringtone.stop();
-                Button disableButton = (Button) findViewById(R.id.disable_alarm);
-                disableButton.setVisibility(View.INVISIBLE);
-
-                if (currentAlarm.isRepeating()) {
-                    setAlarm(currentAlarm, false);
-                } else {
-                    currentAlarm.setEnabled(false);
-                }
-                disableAlarmsWithSameTime(currentAlarm);
-                alarmListAdapter.notifyDataSetChanged();
-                currentAlarm = null;
+                stopCurrentAlarm();
             }
         }
+    }
+
+    private void stopCurrentAlarm() {
+        ringtone.stop();
+        Button disableButton = (Button) findViewById(R.id.disable_alarm);
+        disableButton.setVisibility(View.INVISIBLE);
+
+        if (currentAlarm.isRepeating()) {
+            setAlarm(currentAlarm, false);
+        } else {
+            currentAlarm.setEnabled(false);
+        }
+        disableAlarmsWithSameTime(currentAlarm);
+        alarmListAdapter.notifyDataSetChanged();
+        currentAlarm = null;
     }
 
     private void disableAlarmsWithSameTime(Alarm currentAlarm) {
@@ -378,37 +387,35 @@ public class MainActivity extends AppCompatActivity {
                 holder.enabledSwitch = convertView.findViewById(R.id.enable_switch);
                 holder.editAlarm = convertView.findViewById(R.id.edit_alarm_img);
                 holder.deleteAlarm = convertView.findViewById(R.id.delete_alarm_img);
-
-                holder.editAlarm.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        editAlarm(alarm);
-                    }
-                });
-
-                holder.deleteAlarm.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        cancelAlarm(alarm);
-                        removeAlarm(alarm);
-                    }
-                });
-
                 convertView.setTag(holder);
             } else {
                 holder = (AlarmViewHolder) convertView.getTag();
             }
             holder.alarmText.setText(AlarmUtil.alarmText(alarm.getHour(), alarm.getMinute()));
             holder.descriptionText.setText(alarm.getAlarmDescription());
-
             holder.repeatChkBox.setChecked(alarm.isRepeating());
+            holder.enabledSwitch.setOnCheckedChangeListener(null);
+            holder.enabledSwitch.setChecked(alarm.isEnabled());
+            holder.editAlarm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    editAlarm(alarm);
+                }
+            });
+
+            holder.deleteAlarm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    cancelAlarm(alarm);
+                    removeAlarm(alarm);
+                }
+            });
             holder.repeatChkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                     alarm.setRepeating(checked);
                 }
             });
-            holder.enabledSwitch.setChecked(alarm.isEnabled());
             holder.enabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
