@@ -8,8 +8,8 @@ public enum Objective {
     MATH,
     TIC_TAC_TOE,
     SWIPE,
-    COUNTING,
-    TYPING;
+    TYPING,
+    FALLING_SHAPES;
 
     static Objective getObjective(int id) {
         if (id == MATH.ordinal()) {
@@ -20,8 +20,8 @@ public enum Objective {
             return TYPING;
         } else if (id == SWIPE.ordinal()) {
             return SWIPE;
-        } else if (id == COUNTING.ordinal()) {
-            return COUNTING;
+        } else if(id == FALLING_SHAPES.ordinal()) {
+            return FALLING_SHAPES;
         } else {
             throw new IllegalArgumentException("Illegal Objective ID");
         }
