@@ -47,6 +47,12 @@
             android:name=".SwipeObjective"
             android:label="@string/title_activity_swipe_objective"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".FallingShapesObjective"
+            android:label="FallingShapesObjective"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>
