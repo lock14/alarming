@@ -77,7 +77,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        Intent intent = new Intent(this, FallingShapesObjective.class);
+//        startActivity(intent);
 
+//
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         soundLogic = new SoundLogic(new ContextWrapper((getApplicationContext())),
                 getString(R.string.sound_file_directory));
@@ -212,8 +215,8 @@ public class MainActivity extends AppCompatActivity {
                     alarmListAdapter.notifyDataSetChanged();
                 } else {
                     Alarm alarm = new Alarm(hour, minute, objectiveCode, alarmDescription,
-                                            recordingFileName, repeat, ringToneUri);
 
+                                            recordingFileName, repeat, ringToneUri);
                     if (hour != -1 && minute != -1) {
                         addAlarm(alarm);
                         setAlarm(alarm, true);
