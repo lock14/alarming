@@ -77,10 +77,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        Intent intent = new Intent(this, FallingShapesObjective.class);
-//        startActivity(intent);
-
-//
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         soundLogic = new SoundLogic(new ContextWrapper((getApplicationContext())),
                 getString(R.string.sound_file_directory));
