@@ -47,7 +47,6 @@
             android:name=".SwipeObjective"
             android:label="@string/title_activity_swipe_objective"
             android:screenOrientation="portrait" />
-        <activity android:name=".EditAlarmSound"></activity>
     </application>
 
 </manifest>
