@@ -21,9 +21,11 @@ public class EditObjective extends AppCompatActivity {
         imageViews = new ArrayList<>();
         ImageView mathImageView = (ImageView) findViewById(R.id.math_img_view);
         ImageView ticTactToeImageView = (ImageView) findViewById(R.id.tic_tac_toe_img_view);
+        ImageView typingImageView = (ImageView) findViewById(R.id.typing_img_view);
         ImageView swipeImageView = (ImageView) findViewById((R.id.swipe_img_view));
         imageViews.add(mathImageView);
         imageViews.add(ticTactToeImageView);
+        imageViews.add(typingImageView);
         imageViews.add(swipeImageView);
         objectiveCode = 0;
         Intent intent = getIntent();
@@ -58,6 +60,8 @@ public class EditObjective extends AppCompatActivity {
             return Objective.MATH;
         } else if (viewId == R.id.tic_tac_toe_img_view) {
             return Objective.TIC_TAC_TOE;
+        } else if (viewId == R.id.typing_img_view) {
+            return  Objective.TYPING;
         } else if (viewId == R.id.swipe_img_view) {
             return Objective.SWIPE;
         } else {
@@ -78,7 +82,9 @@ public class EditObjective extends AppCompatActivity {
     }
 
     public void typingObjective(View view) {
-
+        Intent intent = new Intent(this, TypingObjective.class);
+        intent.putExtra(getString(R.string.objective_demo_mode), true);
+        startActivity(intent);
     }
 
     public void swipeObjective(View view) {

@@ -351,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(this, TicTacToeObjective.class);
                 break;
             case TYPING:
-                // insert code here
+                intent = new Intent(this, TypingObjective.class);
                 break;
             case SWIPE:
                 intent = new Intent(this, SwipeObjective.class);

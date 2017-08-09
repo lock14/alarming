@@ -47,6 +47,9 @@
             android:name=".SwipeObjective"
             android:label="@string/title_activity_swipe_objective"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".TypingObjective"
+            android:label="@string/title_activity_typing_objective"></activity>
     </application>
 
 </manifest>
