@@ -106,7 +106,7 @@ public class FallingShapes {
         }
     }
 
-    private Shape generateRandomShape() {
+    public Shape generateRandomShape() {
         int shapeInt = mRand.nextInt(3);
 
         if (shapeInt == 0) {

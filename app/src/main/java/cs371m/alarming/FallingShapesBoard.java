@@ -32,7 +32,7 @@ public class FallingShapesBoard extends View {
         int boardWidth = getWidth();
         int boardHeight = getHeight();
 
-        drawGrid(canvas, boardWidth, boardHeight);
+//        drawGrid(canvas, boardWidth, boardHeight);
         drawFallingShapes(canvas, boardWidth, boardHeight);
     }
 

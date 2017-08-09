@@ -39,6 +39,7 @@ public class FallingShapesTask extends AsyncTask<FallingShapesTaskBundle, Void, 
             System.out.println("number of squares: " + fallingShapesTaskBundle.mNumSquares);
             System.out.println("number of triangles: " + fallingShapesTaskBundle.mNumTriangles);
             System.out.println("number of circles: " + fallingShapesTaskBundle.mNumCircles);
+            fallingShapesTaskBundle.mFallingShapesObjective.mExecutingFallingShapes = false;
         }
         ++fallingShapesTaskBundle.mNumberOfFalls;
 
