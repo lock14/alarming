@@ -365,8 +365,11 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(this, SwipeObjective.class);
                 break;
             case FALLING_SHAPES:
-                // insert code here
+                intent = new Intent(this, FallingShapesObjective.class);
                 break;
+            default:
+                stopCurrentAlarm();
+                return;
         }
         startActivityForResult(intent, OBJECTIVE);
     }
