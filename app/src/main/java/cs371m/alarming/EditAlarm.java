@@ -30,7 +30,7 @@ public class EditAlarm extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_alarm);
-        objectiveCode = 0; // default to math objective?
+        objectiveCode = Objective.NONE.ordinal();
         recordingFileName = "";
         editMode = false;
         alarmId = -1;

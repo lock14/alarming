@@ -24,12 +24,14 @@ public class EditObjective extends AppCompatActivity {
         ImageView typingImageView = (ImageView) findViewById(R.id.typing_img_view);
         ImageView swipeImageView = (ImageView) findViewById((R.id.swipe_img_view));
         ImageView fallingShapesImageView = (ImageView) findViewById(R.id.falling_shapes_img_view);
+        ImageView noneImageView = (ImageView) findViewById(R.id.none_img_view);
         imageViews.add(mathImageView);
         imageViews.add(ticTactToeImageView);
         imageViews.add(typingImageView);
         imageViews.add(swipeImageView);
         imageViews.add(fallingShapesImageView);
-        objectiveCode = 0;
+        imageViews.add(noneImageView);
+        objectiveCode = Objective.NONE.ordinal();
         Intent intent = getIntent();
         if (intent != null) {
             objectiveCode = intent.getIntExtra(getString(R.string.intent_objective_key), 0);
@@ -68,6 +70,8 @@ public class EditObjective extends AppCompatActivity {
             return Objective.SWIPE;
         } else if (viewId == R.id.falling_shapes_img_view) {
             return Objective.FALLING_SHAPES;
+        } else if (viewId == R.id.none_img_view) {
+            return Objective.NONE;
         } else {
             throw new IllegalStateException("Non Existent View ID: " + viewId);
         }
