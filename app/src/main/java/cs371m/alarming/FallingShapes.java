@@ -16,7 +16,7 @@ public class FallingShapes {
         mSideLength = sideLength;
         mShapeSize = shapeSize;
         mShapesGrid = new Shape[mSideLength][mSideLength];
-        mRand = new Random(5);
+        mRand = new Random();
         //populateShapesGrid();
         populateShapesGridWithEmptyShapes();
     }
