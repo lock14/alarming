@@ -21,10 +21,11 @@ public class FallingShapesObjective extends AppCompatActivity {
     Shape mShapeToCount;
     private int mNFalls;
     private int mNumberOfWins;
-    private boolean mDemo;
+    private boolean mDemoMode;
     public boolean mExecutingFallingShapes;
     private TextView mCountShapesTitle;
     private TextView mShapesCounter;
+    private TextView mDemoView;
     private Button mMinus;
     private Button mPlus;
     private Button mStart;
@@ -39,11 +40,15 @@ public class FallingShapesObjective extends AppCompatActivity {
         mNFalls = 20;
         mNumberOfWins = 0;
         Intent intent = getIntent();
-        mDemo = intent.getBooleanExtra(getString(R.string.objective_demo_mode), false);
+        mDemoMode = intent.getBooleanExtra(getString(R.string.objective_demo_mode), false);
         mFallingShapesObjective = this;
         mExecutingFallingShapes = false;
         setupGUIComponents();
+        if (mDemoMode) {
+            mDemoView.setVisibility(TextView.VISIBLE);
+        }
         addOnClickListeners();
+        executeFallingShapes();
     }
 
     private void executeFallingShapes() {
@@ -80,6 +85,7 @@ public class FallingShapesObjective extends AppCompatActivity {
         mPlus = (Button) findViewById(R.id.plus);
         mStart = (Button) findViewById(R.id.start_falling_shapes);
         mSubmit = (Button) findViewById(R.id.submit_falling_shapes_count);
+        mDemoView = (TextView) findViewById(R.id.demo_falling_shapes);
     }
 
     private void addOnClickListeners() {
@@ -134,17 +140,15 @@ public class FallingShapesObjective extends AppCompatActivity {
                         numShapes = mFallingShapesTaskBundle.mNumCircles;
                     }
                     if (intCounter == numShapes) {
-                        Toast.makeText(mFallingShapesObjective, "Correct", Toast.LENGTH_SHORT).show();
                         mShapesCounter.setText("0");
-                        mCountShapesTitle.setText("Falling Shapes");
                         ++mNumberOfWins;
-                        if (mNumberOfWins > 2 && !mDemo) {
+                        if (mNumberOfWins > 0) {
                             Intent result = new Intent();
                             setResult(Activity.RESULT_OK, result);
                             finish();
                         }
                     } else {
-                        Toast.makeText(mFallingShapesObjective, "Incorrect", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mFallingShapesObjective, "Incorrect please retry.", Toast.LENGTH_SHORT).show();
                     }
 
                 } else if (mExecutingFallingShapes){
