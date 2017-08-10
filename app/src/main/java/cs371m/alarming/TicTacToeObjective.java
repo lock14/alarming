@@ -7,13 +7,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class TicTacToeObjective extends AppCompatActivity {
 
+    private TicTacToeObjective mTicTacToeObjective;
     private TicTacToeGame mGame;
     private Button mBoardButtons[];
     private TextView mInfoTextView;
-    private TextView mCompletionTextView;
+    private TextView mDemoView;
     private boolean mGameOver = false;
     private boolean mDemoMode;
     private int mNumWins;
@@ -31,16 +33,15 @@ public class TicTacToeObjective extends AppCompatActivity {
         mBoardButtons[6] = (Button) findViewById(R.id.seven);
         mBoardButtons[7] = (Button) findViewById(R.id.eight);
         mBoardButtons[8] = (Button) findViewById(R.id.nine);
+        mTicTacToeObjective = this;
         mInfoTextView = (TextView) findViewById(R.id.information);
         Button mRetryButton = (Button) findViewById(R.id.retry_tictactoe);
         mRetryButton.setOnClickListener(new RetryButtonClickListener());
         Intent intent = getIntent();
         mDemoMode =  intent.getBooleanExtra(getString(R.string.objective_demo_mode), false);
-        mCompletionTextView = (TextView) findViewById(R.id.tictactoe_objective_completions);
-        if (!mDemoMode) {
-            mCompletionTextView.setText("Need "+ (3 - mNumWins) +" objective wins to disable.");
-        } else {
-            mCompletionTextView.setText(getText(R.string.demo_string));
+        mDemoView = (TextView) findViewById(R.id.demo_tictactoe);
+        if (mDemoMode) {
+            mDemoView.setVisibility(TextView.VISIBLE);
         }
         mNumWins = 0;
         mGame = new TicTacToeGame();
@@ -100,15 +101,15 @@ public class TicTacToeObjective extends AppCompatActivity {
                 else if (winner == 2) {
                     mInfoTextView.setText(R.string.result_human_wins);
                     mGameOver = true;
-                    if (!mDemoMode) {
-                        ++mNumWins;
-                        mCompletionTextView.setText("Need "+ (3 - mNumWins) +" objective wins to disable.");
-                        if (mNumWins > 2) {
-                            Intent result = new Intent();
-                            mNumWins = 0;
-                            setResult(Activity.RESULT_OK, result);
-                            finish();
-                        }
+                    ++mNumWins;
+                    if (mNumWins > 2) {
+                        Intent result = new Intent();
+                        mNumWins = 0;
+                        setResult(Activity.RESULT_OK, result);
+                        finish();
+
+                    } else {
+                        Toast.makeText(mTicTacToeObjective, "Need "+ (3 - mNumWins) +" objective wins to disable.", Toast.LENGTH_SHORT).show();
                     }
                 }
                 else {
