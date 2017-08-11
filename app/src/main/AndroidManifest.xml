@@ -40,9 +40,12 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".MathObjective"
-            android:screenOrientation="portrait" />
+            android:label="MathObjective"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible"/>
         <activity
             android:name=".TicTacToeObjective"
+            android:label="TicTacToeObjective"
             android:screenOrientation="portrait" />
         <activity
             android:name=".SwipeObjective"
@@ -51,7 +54,8 @@
         <activity
             android:name=".TypingObjective"
             android:screenOrientation="portrait"
-            android:label="@string/title_activity_typing_objective" />
+            android:label="@string/title_activity_typing_objective"
+            android:windowSoftInputMode="stateVisible"/>
         <activity
             android:name=".FallingShapesObjective"
             android:label="FallingShapesObjective"

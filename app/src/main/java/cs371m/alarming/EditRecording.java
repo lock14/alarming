@@ -10,9 +10,12 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -200,7 +203,20 @@ public class EditRecording extends AppCompatActivity {
                     mRecordingListAdapter.notifyDataSetChanged();
                     mPlayRecording.setEnabled(false);
                     mSaveRecording.setEnabled(false);
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(mRecordingTitleInput.getWindowToken(), 0);
                 }
+            }
+        });
+
+        mRecordingTitleInput.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_DONE && mSaveRecording.isEnabled()) {
+                    mSaveRecording.performClick();
+                    return true;
+                }
+                return false;
             }
         });
 

@@ -13,7 +13,7 @@ import android.widget.Toast;
  * Created by nano on 8/7/17.
  */
 
-public class FallingShapesObjective extends AppCompatActivity {
+public class FallingShapesObjective extends Activity {
     FallingShapesBoard mFallingShapesBoard;
     FallingShapes mFallingShapes;
     FallingShapesTaskBundle mFallingShapesTaskBundle;

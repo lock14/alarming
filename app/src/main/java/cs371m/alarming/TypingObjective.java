@@ -3,9 +3,12 @@ package cs371m.alarming;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +36,8 @@ public class TypingObjective extends Activity {
         setContentView(R.layout.activity_typing_objective);
         Intent intent = getIntent();
         boolean demoMode = intent.getBooleanExtra(getString(R.string.objective_demo_mode), false);
-        compText = (TextView)findViewById(R.id.typing_objective_comp_text);
+        userText = (EditText) findViewById(R.id.typing_objective_user_text);
+        compText = (TextView) findViewById(R.id.typing_objective_comp_text);
         String text = "ERROR";
         try {
             text = loadText();
@@ -47,6 +51,18 @@ public class TypingObjective extends Activity {
             TextView completionTextView = (TextView) findViewById(R.id.typing_objective_completions);
             completionTextView.setText(R.string.demo_string);
         }
+        userText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        userText.setRawInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        userText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    submitAnswer(findViewById(R.id.typing_objective_button));
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     // Retrieves the block of text for the user to copy
@@ -79,8 +95,6 @@ public class TypingObjective extends Activity {
     }
 
     public void submitAnswer(View view) {
-        userText = (EditText) findViewById(R.id.typing_objective_user_text);
-        compText = (TextView)findViewById(R.id.typing_objective_comp_text);
         String comp = String.valueOf(userText.getText());
         String user =String.valueOf(compText.getText());
         if (comp.equals(user)) {

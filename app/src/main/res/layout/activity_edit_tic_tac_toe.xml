@@ -8,6 +8,16 @@
     tools:context="cs371m.alarming.TicTacToeObjective"
     android:weightSum="1">
 
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="57dp"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:text="Beat the computer!"
+        android:textSize="24sp"
+        android:layout_weight="0.38" />
+
     <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

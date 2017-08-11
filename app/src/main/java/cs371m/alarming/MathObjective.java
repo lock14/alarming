@@ -6,14 +6,16 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Random;
 
-public class MathObjective extends AppCompatActivity {
+public class MathObjective extends Activity {
     private int completion_count;
     private int operand1;
     private int operand2;
@@ -34,6 +36,17 @@ public class MathObjective extends AppCompatActivity {
             TextView completionTextView = (TextView) findViewById(R.id.math_objective_completions);
             completionTextView.setText(R.string.demo_string);
         }
+        EditText answerText = (EditText) findViewById(R.id.answer_text);
+        answerText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    submitAnswer(findViewById(R.id.math_objective_btn));
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     public void submitAnswer(View view) {

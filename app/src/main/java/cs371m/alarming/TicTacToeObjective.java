@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class TicTacToeObjective extends AppCompatActivity {
+public class TicTacToeObjective extends Activity {
 
     private TicTacToeObjective mTicTacToeObjective;
     private TicTacToeGame mGame;
