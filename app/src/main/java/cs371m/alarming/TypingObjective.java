@@ -57,7 +57,7 @@ public class TypingObjective extends Activity {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    submitAnswer(findViewById(R.id.typing_objective_button));
+                    submitAnswer();
                     return true;
                 }
                 return false;
@@ -94,7 +94,7 @@ public class TypingObjective extends Activity {
         return result.toString();
     }
 
-    public void submitAnswer(View view) {
+    public void submitAnswer() {
         String comp = String.valueOf(userText.getText());
         String user =String.valueOf(compText.getText());
         if (comp.equals(user)) {

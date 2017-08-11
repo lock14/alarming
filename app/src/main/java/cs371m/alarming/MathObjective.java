@@ -41,7 +41,7 @@ public class MathObjective extends Activity {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    submitAnswer(findViewById(R.id.math_objective_btn));
+                    submitAnswer();
                     return true;
                 }
                 return false;
@@ -49,7 +49,7 @@ public class MathObjective extends Activity {
         });
     }
 
-    public void submitAnswer(View view) {
+    public void submitAnswer() {
         EditText answerText = (EditText) findViewById(R.id.answer_text);
         String answerString = String.valueOf(answerText.getText());
         if (!TextUtils.isEmpty(answerString)) {
