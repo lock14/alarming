@@ -3,6 +3,7 @@ package cs371m.alarming;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.io.Serializable;
@@ -12,7 +13,7 @@ import java.util.Calendar;
  * Created by Brian on 8/4/2017.
  */
 
-public class Alarm implements Serializable {
+public class Alarm implements Comparable<Alarm>, Serializable {
     private int hour;
     private int minute;
     private int objectiveCode;
@@ -172,5 +173,14 @@ public class Alarm implements Serializable {
                 ", alarmDescription='" + alarmDescription + '\'' +
                 ", recordingFileName='" + recordingFileName + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(@NonNull Alarm other) {
+        if (this.hour != other.hour) {
+            return this.hour - other.hour;
+        } else {
+            return this.minute - other.minute;
+        }
     }
 }

@@ -51,6 +51,8 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import cs371.record_sound_logic.SoundLogic;
@@ -220,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
                     if (alarm.isEnabled()) {
                         setAlarm(alarm, true);
                     }
+                    Collections.sort(alarms);
                     alarmListAdapter.notifyDataSetChanged();
                 } else {
                     Alarm alarm = new Alarm(hour, minute, objectiveCode, alarmDescription,
@@ -288,6 +291,7 @@ public class MainActivity extends AppCompatActivity {
             disableNoAlarmText();
         }
         alarms.add(alarm);
+        Collections.sort(alarms);
         alarmListAdapter.notifyDataSetChanged();
     }
 
