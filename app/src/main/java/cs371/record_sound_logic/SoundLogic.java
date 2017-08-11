@@ -25,10 +25,14 @@ public class SoundLogic {
     }
 
     public int playCurrentSound() {
+        return playCurrentSound(null);
+    }
+
+    public int playCurrentSound(MediaPlayer.OnCompletionListener listener) {
         String temporarySoundFileName = mContext.getString(R.string.temporary_sound_file_name);
         File temporarySoundFile = new File(prependDirectoryToFileName(temporarySoundFileName));
         if (temporarySoundFile.exists()) {
-            return playSoundByFileName(temporarySoundFileName);
+            return playSoundByFileName(temporarySoundFileName, listener);
         } else {
             Log.d(LOG_TAG, "there's no temporarySoundFile to play sound from");
         }
@@ -44,11 +48,11 @@ public class SoundLogic {
         return dummyStrings;
     }
 
-    public int playSoundByFileName(String fileName) {
+    public synchronized int playSoundByFileName(String fileName) {
         return playSoundByFileName(fileName, null);
     }
 
-    public int playSoundByFileName(String fileName, MediaPlayer.OnCompletionListener listener) {
+    public synchronized int playSoundByFileName(String fileName, MediaPlayer.OnCompletionListener listener) {
         // play sound
         mPlayer = new MediaPlayer();
         int duration = 0;
@@ -62,7 +66,9 @@ public class SoundLogic {
             mPlayer.start();
         } catch (IOException e) {
             Log.e(LOG_TAG, "prepare() failed");
-            listener.onCompletion(mPlayer);
+            if (listener != null) {
+                listener.onCompletion(mPlayer);
+            }
         }
         return duration;
     }
@@ -81,7 +87,7 @@ public class SoundLogic {
         return duration;
     }
 
-    public void stopPlaying() {
+    public synchronized void stopPlaying() {
         if (mPlayer != null) {
             mPlayer.release();
             mPlayer = null;

@@ -115,6 +115,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        if (currentAlarm != null) {
+            stopCurrentAlarm();
+        }
         SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new GsonBuilder().registerTypeAdapter(Uri.class, new UriSerializer()).create();

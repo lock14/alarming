@@ -19,7 +19,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         Log.d("AlarmReceiver", "alarmId: " + alarmId);
         intent2.putExtra(context.getString(R.string.intent_alarm_id), alarmId);
         intent2.putExtra(context.getString(R.string.intent_started_by_alarm_key), true);
-        //startService(context, intent2);
         context.startActivity(intent2);
     }
 }

@@ -27,7 +27,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".EditRecording"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".EditObjective"
             android:screenOrientation="portrait" />
