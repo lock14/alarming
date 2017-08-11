@@ -47,7 +47,6 @@ public class RecordLogic {
 
     public void stopRecording() {
         if (mRecorder != null) {
-            mRecorder.stop();
             mRecorder.release();
             mRecorder = null;
         }
