@@ -1,9 +1,13 @@
 package cs371m.alarming;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -13,6 +17,10 @@ import java.util.List;
 public class EditObjective extends AppCompatActivity {
     private int objectiveCode;
     List<View> imageViews;
+
+    // Objective difficulty level options
+//    public enum DifficultyLevel {Easy, Medium, Hard}
+    private DifficultyLevel objDifficulty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +46,28 @@ public class EditObjective extends AppCompatActivity {
         }
         selectObjective(imageViews.get(objectiveCode));
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater(); inflater.inflate(R.menu.menu_difficulty, menu); return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) { FragmentManager fm = getFragmentManager();
+        switch (item.getItemId()) {
+            case R.id.easy:
+
+                return true;
+            case R.id.medium:
+
+                return true;
+            case R.id.hard:
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        } }
 
     @Override
     public void onBackPressed() {
