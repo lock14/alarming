@@ -23,6 +23,7 @@ public class SwipeObjective extends Activity {
     private List<PatternView.Cell> pattern;
     private Random random;
     private int completionCount;
+    private int numOfDots;
     private Handler handler;
     private Runnable startAnimation = new Runnable() {
         @Override
@@ -100,7 +101,8 @@ public class SwipeObjective extends Activity {
     }
 
     private byte[] generateRandomPattern() {
-        byte[] bytes = new byte[random.nextInt(5) + 4];
+        checkDifficulty();
+        byte[] bytes = new byte[numOfDots];
         List<Integer> choices = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8));
         Integer last = choices.get(random.nextInt(choices.size()));
         choices.remove(last);
@@ -128,5 +130,21 @@ public class SwipeObjective extends Activity {
                 || (val == 2 && last == 8) || (val == 8 && last == 2)
                 || (val == 0 && last == 8) || (val == 8 && last == 0)
                 || (val == 2 && last == 6) || (val == 6 && last == 2);
+    }
+
+    //NEED TO FINISH METHOD
+    public void checkDifficulty() {
+        cs371m.alarming.DifficultyLevel objDifficulty = null;   // <--------------
+        numOfDots = random.nextInt(2);
+        switch (objDifficulty) {
+            case Easy:
+                numOfDots += 4;
+            case Medium:
+                numOfDots += 6;
+            case Hard:
+                numOfDots += 8;
+            default:
+                numOfDots += 4;
+        }
     }
 }
