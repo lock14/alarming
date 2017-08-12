@@ -12,8 +12,7 @@ import java.util.Random;
 
 public class TicTacToeGame {
 
-    public enum DifficultyLevel {Easy, Harder, Expert}
-    private DifficultyLevel mDifficultyLevel = DifficultyLevel.Easy;
+    private DifficultyLevel mDifficultyLevel;
 
     private static final String TAG = "TicTacToeGame";
     public final static int BOARD_SIZE = 9;
@@ -31,6 +30,7 @@ public class TicTacToeGame {
         // Seed the random number generator
         mRand = new Random();
         mBoard = new char[BOARD_SIZE];
+        checkDifficulty();
         clearBoard();
     }
 
@@ -121,12 +121,12 @@ public class TicTacToeGame {
 
         if (mDifficultyLevel == DifficultyLevel.Easy)
             move = getRandomMove();
-        else if (mDifficultyLevel == DifficultyLevel.Harder) {
+        else if (mDifficultyLevel == DifficultyLevel.Medium) {
             move = getWinningMove();
             if (move == -1)
                 move = getRandomMove();
         }
-        else if (mDifficultyLevel == DifficultyLevel.Expert) {
+        else if (mDifficultyLevel == DifficultyLevel.Hard) {
             move = getWinningMove();
             if (move == -1)
                 move = getBlockingMove();
@@ -192,7 +192,22 @@ public class TicTacToeGame {
         return mDifficultyLevel;
     }
 
-    public void setDifficultyLevel(DifficultyLevel difficultyLevel) {
-        mDifficultyLevel = difficultyLevel;
+//    public void setDifficultyLevel(DifficultyLevel difficultyLevel) {
+//        mDifficultyLevel = difficultyLevel;
+//    }
+
+    //NEED TO FINISH METHOD
+    public void checkDifficulty() {
+        cs371m.alarming.DifficultyLevel objDifficulty = null;   // <--------------
+        switch (objDifficulty) {
+            case Easy:
+                mDifficultyLevel = DifficultyLevel.Easy;
+            case Medium:
+                mDifficultyLevel = DifficultyLevel.Medium;
+            case Hard:
+                mDifficultyLevel = DifficultyLevel.Hard;
+            default:
+
+        }
     }
 }
