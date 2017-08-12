@@ -25,7 +25,7 @@ import java.util.Scanner;
 public class TypingObjective extends Activity {
     private static final String TAG = "TypingObjective";
     private final static String FILE_NAME = "pride.txt";
-    private final static int CHAR_LIMIT = 175;
+    private int charLimit;
 
     EditText userText;
     TextView compText;
@@ -46,7 +46,6 @@ public class TypingObjective extends Activity {
             System.out.println("Could not find file " + FILE_NAME);
         }
         compText.setText(text);
-
         if (demoMode) {
             TextView completionTextView = (TextView) findViewById(R.id.typing_objective_completions);
             completionTextView.setText(R.string.demo_string);
@@ -67,10 +66,11 @@ public class TypingObjective extends Activity {
 
     // Retrieves the block of text for the user to copy
     private String loadText() throws IOException {
+        checkDifficulty();
         InputStream is = getResources().openRawResource(R.raw.pride);
         int charCount = is.available();
         Random rn = new Random();
-        int fileIndex = rn.nextInt(charCount - CHAR_LIMIT + 1);
+        int fileIndex = rn.nextInt(charCount - charLimit + 1);
         is.skip(fileIndex);
         Scanner scanner = new Scanner(is, "UTF_8");
         StringBuilder result = new StringBuilder();
@@ -79,7 +79,7 @@ public class TypingObjective extends Activity {
         while (loop) {
             String temp = scanner.next();
             if (isSentence) {
-                if (result.length() + temp.length() < CHAR_LIMIT) {
+                if (result.length() + temp.length() < charLimit) {
                     result.append(temp);
                     result.append(" ");
                 } else {
@@ -109,5 +109,19 @@ public class TypingObjective extends Activity {
         }
     }
 
+    //NEED TO FINISH METHOD
+    public void checkDifficulty() {
+        DifficultyLevel objDifficulty = null;   // <--------------
+        switch (objDifficulty) {
+            case Easy:
+                charLimit = 50;
+            case Medium:
+                charLimit = 100;
+            case Hard:
+                charLimit = 175;
+            default:
+                charLimit = 0;
+        }
+    }
 
 }
