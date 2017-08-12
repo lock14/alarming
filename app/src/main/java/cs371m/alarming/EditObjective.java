@@ -53,17 +53,19 @@ public class EditObjective extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater(); inflater.inflate(R.menu.menu_difficulty, menu); return true;
     }
 
+
+    //NEED TO FINISH METHOD
     @Override
     public boolean onOptionsItemSelected(MenuItem item) { FragmentManager fm = getFragmentManager();
         switch (item.getItemId()) {
             case R.id.easy:
-
+                // Store in persistent data
                 return true;
             case R.id.medium:
-
+                // Store in persistent data
                 return true;
             case R.id.hard:
-
+                // Store in persistent data
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

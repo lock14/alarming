@@ -21,6 +21,8 @@ public class MathObjective extends Activity {
     private int operand2;
     private MathFunctor operator;
     private Random random;
+    private int operatorDiff;
+    private int operandDiff;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,13 +108,14 @@ public class MathObjective extends Activity {
             operand1 = random.nextInt(9) + 2;
             operand2 = random.nextInt(9) + 2;
         } else {
-            operand1 = random.nextInt(99) + 2;
-            operand2 = random.nextInt(99) + 2;
+            operand1 = random.nextInt(operandDiff) + 2;
+            operand2 = random.nextInt(operandDiff) + 2;
         }
     }
 
     private void chooseOperation() {
-        switch(random.nextInt(4)) {
+        checkDifficulty();
+        switch(random.nextInt(operatorDiff)) {
             case 0:
                 operator = new PlusFunctor();
                 break;
@@ -128,6 +131,25 @@ public class MathObjective extends Activity {
             default:
                 // should never get here
                 throw new IllegalStateException("Error in choosing math operation");
+        }
+    }
+
+    //NEED TO FINISH METHOD
+    public void checkDifficulty() {
+        DifficultyLevel objDifficulty = null;   // <--------------
+        switch (objDifficulty) {
+            case Easy:
+                operatorDiff = 2;
+                operandDiff = 20;
+            case Medium:
+                operatorDiff = 2;
+                operandDiff = 99;
+            case Hard:
+                operatorDiff = 4;
+                operandDiff = 99;
+            default:
+                operatorDiff = 4;
+                operandDiff = 99;
         }
     }
 

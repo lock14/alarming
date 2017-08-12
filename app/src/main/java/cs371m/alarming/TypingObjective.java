@@ -120,7 +120,7 @@ public class TypingObjective extends Activity {
             case Hard:
                 charLimit = 175;
             default:
-                charLimit = 0;
+                charLimit = 175;
         }
     }
 
