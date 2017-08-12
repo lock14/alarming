@@ -27,8 +27,8 @@ public class EditObjective extends AppCompatActivity {
         ImageView noneImageView = (ImageView) findViewById(R.id.none_img_view);
         imageViews.add(mathImageView);
         imageViews.add(ticTactToeImageView);
-        imageViews.add(typingImageView);
         imageViews.add(swipeImageView);
+        imageViews.add(typingImageView);
         imageViews.add(fallingShapesImageView);
         imageViews.add(noneImageView);
         objectiveCode = Objective.NONE.ordinal();
