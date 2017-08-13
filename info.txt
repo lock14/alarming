@@ -7,7 +7,7 @@ a.    Name - UT EID
 
 b.    Special Instructions
 
-      N/A
+      - Make sure device alarm and media volume are turned on.
 
 
 c.    List of features
