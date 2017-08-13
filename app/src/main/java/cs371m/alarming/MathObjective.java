@@ -142,8 +142,8 @@ public class MathObjective extends Activity {
                 operandDiff = 20;
                 break;
             case MEDIUM:
-                operatorDiff = 2;
-                operandDiff = 99;
+                operatorDiff = 4;
+                operandDiff = 50;
                 break;
             case HARD:
                 operatorDiff = 4;

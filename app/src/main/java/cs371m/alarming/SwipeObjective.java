@@ -135,7 +135,7 @@ public class SwipeObjective extends Activity {
 
     public void setDifficultyParams(int diffultyCode) {
         DifficultyLevel objDifficulty = DifficultyLevel.getDiffulty(diffultyCode);
-        numOfDots = random.nextInt(1);
+        numOfDots = random.nextInt(2);
         switch (objDifficulty) {
             case EASY:
                 numOfDots += 4;
