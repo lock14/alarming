@@ -3,7 +3,7 @@
     <string name="intent_hour_key">HOUR_KEY</string>
     <string name="intent_minute_key">MINUTE_KEY</string>
     <string name="sound_file_directory">soundFileDirectory</string>
-    <string name="temporary_sound_file_name">b54b5861–a32e-4f6f-9b22-707ebbe00ceb</string>
+    <string name="temporary_sound_file_name">b54b5861-a32e-4f6f-9b22-707ebbe00ceb</string>
     <string name="play">Play</string>
     <string name="stop">Stop</string>
     <string name="set">Set</string>
