@@ -10,16 +10,21 @@ b.	Special Instructions
 
 c.	List of features
 
-	- Ability to set an alarm at a user specified time and have the alarm go off at the set time.
-	- The ability to record one message from the user that will play when the alarm goes off.
-	- Two objectives that the user may select between in order to disable the alarm
-	- Basic UI that supports interacting with the above features.
+	- Ability to set multiple alarms at a user specified time and have the alarm go off at the set time.
+	- The ability to record and save multiple recordings and be able to select one to play when the alarm goes off.
+	- Ability to select a default alarm sound
+	- Five objectives that the user may select between in order to disable the alarm
+	- Ability to change difficulty of objectives
+	- Full UI support with theme and graphics
 
 d. Code obtained from other sources
 	
 	Two classes involve code from Tutorial 3. This code is to implement a TicTacToe objective. The classes are:
 	- TicTacToeGame.java
 	- TicTacToeObjective.java
+
+	Swiping objective:
+
 
 e. Code completed ourselves
 
