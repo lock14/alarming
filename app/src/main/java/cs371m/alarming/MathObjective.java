@@ -20,7 +20,8 @@ public class MathObjective extends Activity {
     private MathFunctor operator;
     private Random random;
     private int operatorDiff;
-    private int operandDiff;
+    private int operandDiffPlusMinus;
+    private int operandDiffTimesDivide;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,17 +100,17 @@ public class MathObjective extends Activity {
         if (operator instanceof DivideFunctor) {
             // want evenly divisible problem;
             // choose operand2 to be between 1 and 10
-            operand2 = random.nextInt(9) + 2;
+            operand2 = random.nextInt(operandDiffTimesDivide) + 2;
 
             // next multiply operand2 by random number between 1 and 10.
             // operand 1 will be the result;
-            operand1 = operand2 * (random.nextInt(9) + 2);
+            operand1 = operand2 * (random.nextInt(operandDiffTimesDivide) + 2);
         } else if (operator instanceof TimesFunctor){
-            operand1 = random.nextInt(9) + 2;
-            operand2 = random.nextInt(9) + 2;
+            operand1 = random.nextInt(operandDiffTimesDivide) + 2;
+            operand2 = random.nextInt(operandDiffTimesDivide) + 2;
         } else {
-            operand1 = random.nextInt(operandDiff) + 2;
-            operand2 = random.nextInt(operandDiff) + 2;
+            operand1 = random.nextInt(operandDiffPlusMinus) + 2;
+            operand2 = random.nextInt(operandDiffPlusMinus) + 2;
         }
     }
 
@@ -139,19 +140,22 @@ public class MathObjective extends Activity {
         switch (objDifficulty) {
             case EASY:
                 operatorDiff = 2;
-                operandDiff = 20;
+                operandDiffPlusMinus = 9;
+                operandDiffTimesDivide = 9;
                 break;
             case MEDIUM:
                 operatorDiff = 4;
-                operandDiff = 50;
+                operandDiffTimesDivide = 9;
+                operandDiffPlusMinus = 99;
                 break;
             case HARD:
                 operatorDiff = 4;
-                operandDiff = 99;
+                operandDiffTimesDivide = 99;
+                operandDiffPlusMinus = 999;
                 break;
             default:
                 operatorDiff = 4;
-                operandDiff = 99;
+                operandDiffPlusMinus = 99;
                 break;
         }
     }
