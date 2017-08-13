@@ -17,7 +17,16 @@ c.	List of features
 	- Ability to change difficulty of objectives
 	- Full UI support with theme and graphics
 
-d. Code obtained from other sources
+d.	Incomplete Features
+
+	All our features were completed
+e.	Added Features
+
+	- Ability to set Default alarm
+	- Ability to set objective difficulty
+	- Ability to set multiple alarms
+
+f. Code obtained from other sources
 	
 	Two classes involve code from Tutorial 3. This code is to implement a TicTacToe objective. The classes are:
 	- TicTacToeGame.java
@@ -26,7 +35,7 @@ d. Code obtained from other sources
 	Swiping objective:
 
 
-e. Code completed ourselves
+g. Code completed ourselves
 
 	All classes other than those mentioned in d are written by us
 	
