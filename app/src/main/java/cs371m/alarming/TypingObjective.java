@@ -4,21 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -36,6 +30,9 @@ public class TypingObjective extends Activity {
         setContentView(R.layout.activity_typing_objective);
         Intent intent = getIntent();
         boolean demoMode = intent.getBooleanExtra(getString(R.string.objective_demo_mode), false);
+        int difficultyCode = DifficultyLevel.MEDIUM.ordinal();
+        difficultyCode = intent.getIntExtra(getString(R.string.objective_difficulty), difficultyCode);
+        setDifficultyParams(difficultyCode);
         userText = (EditText) findViewById(R.id.typing_objective_user_text);
         compText = (TextView) findViewById(R.id.typing_objective_comp_text);
         String text = "ERROR";
@@ -66,7 +63,6 @@ public class TypingObjective extends Activity {
 
     // Retrieves the block of text for the user to copy
     private String loadText() throws IOException {
-        checkDifficulty();
         InputStream is = getResources().openRawResource(R.raw.pride);
         int charCount = is.available();
         Random rn = new Random();
@@ -110,17 +106,21 @@ public class TypingObjective extends Activity {
     }
 
     //NEED TO FINISH METHOD
-    public void checkDifficulty() {
-        DifficultyLevel objDifficulty = null;   // <--------------
+    public void setDifficultyParams(int difficultyCode) {
+        DifficultyLevel objDifficulty = DifficultyLevel.getDiffulty(difficultyCode);
         switch (objDifficulty) {
-            case Easy:
+            case EASY:
                 charLimit = 50;
-            case Medium:
+                break;
+            case MEDIUM:
                 charLimit = 100;
-            case Hard:
+                break;
+            case HARD:
                 charLimit = 175;
+                break;
             default:
                 charLimit = 175;
+                break;
         }
     }
 

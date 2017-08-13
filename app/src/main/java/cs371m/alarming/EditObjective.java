@@ -16,11 +16,8 @@ import java.util.List;
 
 public class EditObjective extends AppCompatActivity {
     private int objectiveCode;
+    private int objectiveDifficulty;
     List<View> imageViews;
-
-    // Objective difficulty level options
-//    public enum DifficultyLevel {Easy, Medium, Hard}
-    private DifficultyLevel objDifficulty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +37,11 @@ public class EditObjective extends AppCompatActivity {
         imageViews.add(fallingShapesImageView);
         imageViews.add(noneImageView);
         objectiveCode = Objective.NONE.ordinal();
+        objectiveDifficulty = DifficultyLevel.MEDIUM.ordinal();
         Intent intent = getIntent();
         if (intent != null) {
-            objectiveCode = intent.getIntExtra(getString(R.string.intent_objective_key), 0);
+            objectiveCode = intent.getIntExtra(getString(R.string.intent_objective_key), objectiveCode);
+            objectiveDifficulty = intent.getIntExtra(getString(R.string.intent_objective_difficulty), objectiveDifficulty);
         }
         selectObjective(imageViews.get(objectiveCode));
     }
@@ -50,22 +49,38 @@ public class EditObjective extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        MenuInflater inflater = getMenuInflater(); inflater.inflate(R.menu.menu_difficulty, menu); return true;
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_difficulty, menu);
+        switch (DifficultyLevel.getDiffulty(objectiveDifficulty)) {
+            case HARD:
+                menu.findItem(R.id.hard).setChecked(true);
+                break;
+            case MEDIUM:
+                menu.findItem(R.id.medium).setChecked(true);
+                break;
+            case EASY:
+                menu.findItem(R.id.easy).setChecked(true);
+                break;
+            default: // default to medium
+                throw new IllegalStateException("Illegal Difficulty Code: " + objectiveDifficulty);
+        }
+        return true;
     }
 
 
     //NEED TO FINISH METHOD
     @Override
     public boolean onOptionsItemSelected(MenuItem item) { FragmentManager fm = getFragmentManager();
+        item.setChecked(true);
         switch (item.getItemId()) {
             case R.id.easy:
-                // Store in persistent data
+                objectiveDifficulty = DifficultyLevel.EASY.ordinal();
                 return true;
             case R.id.medium:
-                // Store in persistent data
+                objectiveDifficulty = DifficultyLevel.MEDIUM.ordinal();
                 return true;
             case R.id.hard:
-                // Store in persistent data
+                objectiveDifficulty = DifficultyLevel.HARD.ordinal();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -75,6 +90,7 @@ public class EditObjective extends AppCompatActivity {
     public void onBackPressed() {
         Intent result = new Intent();
         result.putExtra(getString(R.string.intent_objective_key), objectiveCode);
+        result.putExtra(getString(R.string.intent_objective_difficulty), objectiveDifficulty);
         setResult(Activity.RESULT_OK, result);
         finish();
     }
@@ -112,30 +128,35 @@ public class EditObjective extends AppCompatActivity {
     public void mathObjective(View view) {
         Intent intent = new Intent(this, MathObjective.class);
         intent.putExtra(getString(R.string.objective_demo_mode), true);
+        intent.putExtra(getString(R.string.objective_difficulty), objectiveDifficulty);
         startActivity(intent);
     }
 
     public void ticTacToeObjective(View view) {
         Intent intent = new Intent(this, TicTacToeObjective.class);
         intent.putExtra(getString(R.string.objective_demo_mode), true);
+        intent.putExtra(getString(R.string.objective_difficulty), objectiveDifficulty);
         startActivity(intent);
     }
 
     public void typingObjective(View view) {
         Intent intent = new Intent(this, TypingObjective.class);
         intent.putExtra(getString(R.string.objective_demo_mode), true);
+        intent.putExtra(getString(R.string.objective_difficulty), objectiveDifficulty);
         startActivity(intent);
     }
 
     public void swipeObjective(View view) {
         Intent intent = new Intent(this, SwipeObjective.class);
         intent.putExtra(getString(R.string.objective_demo_mode), true);
+        intent.putExtra(getString(R.string.objective_difficulty), objectiveDifficulty);
         startActivity(intent);
     }
 
     public void fallingShapesObjective(View view) {
         Intent intent = new Intent(this, FallingShapesObjective.class);
         intent.putExtra(getString(R.string.objective_demo_mode), true);
+        intent.putExtra(getString(R.string.objective_difficulty), objectiveDifficulty);
         startActivity(intent);
     }
 

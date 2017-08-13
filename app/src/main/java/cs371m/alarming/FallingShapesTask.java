@@ -7,10 +7,16 @@ import android.os.AsyncTask;
  */
 
 public class FallingShapesTask extends AsyncTask<FallingShapesTaskBundle, Void, FallingShapesTaskBundle> {
+    private int mThreadSleepTime;
+
+    public FallingShapesTask(int threadSleepTime) {
+        mThreadSleepTime = threadSleepTime;
+    }
+
     @Override
     public FallingShapesTaskBundle doInBackground(FallingShapesTaskBundle ... fallingShapesTaskBundles) {
         try {
-            Thread.sleep(500);
+            Thread.sleep(mThreadSleepTime);
         } catch (InterruptedException interruptedException) {
             System.out.println("thread did not sleep in FallingShapesTask");
             }

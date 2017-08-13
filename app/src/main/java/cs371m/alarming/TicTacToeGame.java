@@ -12,8 +12,6 @@ import java.util.Random;
 
 public class TicTacToeGame {
 
-    private DifficultyLevel mDifficultyLevel;
-
     private static final String TAG = "TicTacToeGame";
     public final static int BOARD_SIZE = 9;
 
@@ -22,7 +20,7 @@ public class TicTacToeGame {
     public static final char COMPUTER_PLAYER = 'O';
     public static final char OPEN_SPOT = ' ';
 
-
+    private DifficultyLevel mDifficultyLevel;
     private Random mRand;
     private char mBoard[];
 
@@ -30,7 +28,7 @@ public class TicTacToeGame {
         // Seed the random number generator
         mRand = new Random();
         mBoard = new char[BOARD_SIZE];
-        checkDifficulty();
+        mDifficultyLevel = DifficultyLevel.MEDIUM;
         clearBoard();
     }
 
@@ -119,14 +117,14 @@ public class TicTacToeGame {
 
         int move = -1;
 
-        if (mDifficultyLevel == DifficultyLevel.Easy)
+        if (mDifficultyLevel == DifficultyLevel.EASY)
             move = getRandomMove();
-        else if (mDifficultyLevel == DifficultyLevel.Medium) {
+        else if (mDifficultyLevel == DifficultyLevel.MEDIUM) {
             move = getWinningMove();
             if (move == -1)
                 move = getRandomMove();
         }
-        else if (mDifficultyLevel == DifficultyLevel.Hard) {
+        else if (mDifficultyLevel == DifficultyLevel.HARD) {
             move = getWinningMove();
             if (move == -1)
                 move = getBlockingMove();
@@ -192,22 +190,7 @@ public class TicTacToeGame {
         return mDifficultyLevel;
     }
 
-//    public void setDifficultyLevel(DifficultyLevel difficultyLevel) {
-//        mDifficultyLevel = difficultyLevel;
-//    }
-
-    //NEED TO FINISH METHOD
-    public void checkDifficulty() {
-        cs371m.alarming.DifficultyLevel objDifficulty = null;   // <--------------
-        switch (objDifficulty) {
-            case Easy:
-                mDifficultyLevel = DifficultyLevel.Easy;
-            case Medium:
-                mDifficultyLevel = DifficultyLevel.Medium;
-            case Hard:
-                mDifficultyLevel = DifficultyLevel.Hard;
-            default:
-
-        }
+    public void setDifficultyLevel(DifficultyLevel difficultyLevel) {
+        mDifficultyLevel = difficultyLevel;
     }
 }

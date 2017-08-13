@@ -21,6 +21,7 @@ public class EditAlarm extends AppCompatActivity {
     private static final int EDIT_OBJECTIVE = 1;
     private static final int EDIT_RINGTONE = 2;
     private int objectiveCode;
+    private int objectiveDifficulty;
     private String recordingFileName;
     private boolean editMode;
     private int alarmId;
@@ -31,6 +32,7 @@ public class EditAlarm extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_alarm);
         objectiveCode = Objective.NONE.ordinal();
+        objectiveDifficulty = DifficultyLevel.MEDIUM.ordinal();
         recordingFileName = "";
         editMode = false;
         alarmId = -1;
@@ -43,6 +45,7 @@ public class EditAlarm extends AppCompatActivity {
                 int hour = intent.getIntExtra(getString(R.string.intent_hour_key), -1);
                 int minute = intent.getIntExtra(getString(R.string.intent_minute_key), -1);
                 objectiveCode = intent.getIntExtra(getString(R.string.intent_objective_key), 0);
+                objectiveDifficulty = intent.getIntExtra(getString(R.string.intent_objective_difficulty), objectiveDifficulty);
                 String alarmDescription = intent.getStringExtra(getString(R.string.intent_description_key));
                 recordingFileName = intent.getStringExtra(getString(R.string.intent_recording_key));
                 boolean repeat = intent.getBooleanExtra(getString(R.string.intent_repeat_key), false);
@@ -92,6 +95,7 @@ public class EditAlarm extends AppCompatActivity {
                     result.putExtra(getString(R.string.intent_hour_key), timePicker.getCurrentHour());
                     result.putExtra(getString(R.string.intent_minute_key), timePicker.getCurrentMinute());
                     result.putExtra(getString(R.string.intent_objective_key), objectiveCode);
+                    result.putExtra(getString(R.string.intent_objective_difficulty), objectiveDifficulty);
                     result.putExtra(getString(R.string.intent_recording_key), recordingFileName);
                     result.putExtra(getString(R.string.intent_description_key),
                             editText.getText().toString());
@@ -119,7 +123,8 @@ public class EditAlarm extends AppCompatActivity {
                     System.out.println("getting recording file name in EditAlarm activity: " + recordingFileName);
                 }
             } else if (requestCode == EDIT_OBJECTIVE) {
-                objectiveCode = intent.getIntExtra(getString(R.string.intent_objective_key), 0);
+                objectiveCode = intent.getIntExtra(getString(R.string.intent_objective_key), objectiveCode);
+                objectiveDifficulty = intent.getIntExtra(getString(R.string.intent_objective_difficulty), objectiveDifficulty);
             } else if (requestCode == EDIT_RINGTONE) {
                 ringToneUri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
                 setRingToneText();
@@ -136,6 +141,7 @@ public class EditAlarm extends AppCompatActivity {
     public void editObjective(View view) {
         Intent intent = new Intent(this, EditObjective.class);
         intent.putExtra(getString(R.string.intent_objective_key), objectiveCode);
+        intent.putExtra(getString(R.string.intent_objective_difficulty), objectiveDifficulty);
         startActivityForResult(intent, EDIT_OBJECTIVE);
     }
 

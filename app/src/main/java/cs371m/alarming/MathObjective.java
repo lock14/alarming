@@ -3,11 +3,9 @@ package cs371m.alarming;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -28,12 +26,11 @@ public class MathObjective extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_math_objective);
-        Intent intent = getIntent();
-        boolean demoMode = intent.getBooleanExtra(getString(R.string.objective_demo_mode), false);
         completion_count = 3;
         random = new Random();
-        chooseRandomProblem();
-        setGuiCompoents();
+        Intent intent = getIntent();
+        boolean demoMode = intent.getBooleanExtra(getString(R.string.objective_demo_mode), false);
+        int difficultyCode = intent.getIntExtra(getString(R.string.objective_difficulty), DifficultyLevel.MEDIUM.ordinal());
         if (demoMode) {
             TextView completionTextView = (TextView) findViewById(R.id.math_objective_completions);
             completionTextView.setText(R.string.demo_string);
@@ -49,6 +46,9 @@ public class MathObjective extends Activity {
                 return false;
             }
         });
+        setDifficultyParams(difficultyCode);
+        chooseRandomProblem();
+        setGuiCompoents();
     }
 
     public void submitAnswer() {
@@ -114,7 +114,6 @@ public class MathObjective extends Activity {
     }
 
     private void chooseOperation() {
-        checkDifficulty();
         switch(random.nextInt(operatorDiff)) {
             case 0:
                 operator = new PlusFunctor();
@@ -135,21 +134,25 @@ public class MathObjective extends Activity {
     }
 
     //NEED TO FINISH METHOD
-    public void checkDifficulty() {
-        DifficultyLevel objDifficulty = null;   // <--------------
+    public void setDifficultyParams(int difficultyCode) {
+        DifficultyLevel objDifficulty = DifficultyLevel.getDiffulty(difficultyCode);
         switch (objDifficulty) {
-            case Easy:
+            case EASY:
                 operatorDiff = 2;
                 operandDiff = 20;
-            case Medium:
+                break;
+            case MEDIUM:
                 operatorDiff = 2;
                 operandDiff = 99;
-            case Hard:
+                break;
+            case HARD:
                 operatorDiff = 4;
                 operandDiff = 99;
+                break;
             default:
                 operatorDiff = 4;
                 operandDiff = 99;
+                break;
         }
     }
 

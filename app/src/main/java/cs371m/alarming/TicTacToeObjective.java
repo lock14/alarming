@@ -10,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class TicTacToeObjective extends Activity {
-
     private TicTacToeObjective mTicTacToeObjective;
     private TicTacToeGame mGame;
     private Button mBoardButtons[];
@@ -39,12 +38,15 @@ public class TicTacToeObjective extends Activity {
         mRetryButton.setOnClickListener(new RetryButtonClickListener());
         Intent intent = getIntent();
         mDemoMode =  intent.getBooleanExtra(getString(R.string.objective_demo_mode), false);
+        int difficultyCode = DifficultyLevel.MEDIUM.ordinal();
+        difficultyCode = intent.getIntExtra(getString(R.string.objective_difficulty), difficultyCode);
         mDemoView = (TextView) findViewById(R.id.demo_tictactoe);
         if (mDemoMode) {
             mDemoView.setVisibility(TextView.VISIBLE);
         }
         mNumWins = 0;
         mGame = new TicTacToeGame();
+        mGame.setDifficultyLevel(DifficultyLevel.getDiffulty(difficultyCode));
         startNewGame();
     }
     private void startNewGame() {
@@ -110,6 +112,7 @@ public class TicTacToeObjective extends Activity {
 
                     } else {
                         Toast.makeText(mTicTacToeObjective, "Need "+ (3 - mNumWins) +" objective wins to disable.", Toast.LENGTH_SHORT).show();
+                        startNewGame();
                     }
                 }
                 else {

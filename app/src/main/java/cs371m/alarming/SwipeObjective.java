@@ -41,6 +41,17 @@ public class SwipeObjective extends Activity {
         random = new Random();
         completionCount = 3;
         handler = new Handler();
+        Intent intent = getIntent();
+        int difficultyCode = DifficultyLevel.MEDIUM.ordinal();
+        if (intent != null) {
+            boolean demoMode = intent.getBooleanExtra(getString(R.string.objective_demo_mode), false);
+            if (demoMode) {
+                TextView demoText = findViewById(R.id.swipe_demo_txt);
+                demoText.setVisibility(View.VISIBLE);
+            }
+            difficultyCode = intent.getIntExtra(getString(R.string.objective_difficulty), difficultyCode);
+        }
+        setDifficultyParams(difficultyCode);
         pattern = PatternUtils.bytesToPattern(generateRandomPattern());
         Log.d("SwipeObjective", "pattern: " + pattern);
         patternView.setPattern(PatternView.DisplayMode.Animate, pattern);
@@ -84,15 +95,6 @@ public class SwipeObjective extends Activity {
                 }
             }
         });
-
-        Intent intent = getIntent();
-        if (intent != null) {
-            boolean demoMode = intent.getBooleanExtra(getString(R.string.objective_demo_mode), false);
-            if (demoMode) {
-                TextView demoText = findViewById(R.id.swipe_demo_txt);
-                demoText.setVisibility(View.VISIBLE);
-            }
-        }
     }
 
     private boolean patternCorrect(List<PatternView.Cell> userPattern) {
@@ -101,7 +103,6 @@ public class SwipeObjective extends Activity {
     }
 
     private byte[] generateRandomPattern() {
-        checkDifficulty();
         byte[] bytes = new byte[numOfDots];
         List<Integer> choices = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8));
         Integer last = choices.get(random.nextInt(choices.size()));
@@ -132,19 +133,22 @@ public class SwipeObjective extends Activity {
                 || (val == 2 && last == 6) || (val == 6 && last == 2);
     }
 
-    //NEED TO FINISH METHOD
-    public void checkDifficulty() {
-        cs371m.alarming.DifficultyLevel objDifficulty = null;   // <--------------
-        numOfDots = random.nextInt(2);
+    public void setDifficultyParams(int diffultyCode) {
+        DifficultyLevel objDifficulty = DifficultyLevel.getDiffulty(diffultyCode);
+        numOfDots = random.nextInt(1);
         switch (objDifficulty) {
-            case Easy:
+            case EASY:
                 numOfDots += 4;
-            case Medium:
+                break;
+            case MEDIUM:
                 numOfDots += 6;
-            case Hard:
+                break;
+            case HARD:
                 numOfDots += 8;
+                break;
             default:
                 numOfDots += 4;
+                break;
         }
     }
 }

@@ -5,5 +5,9 @@ package cs371m.alarming;
  */
 
 public enum DifficultyLevel {
-    Easy, Medium, Hard
+    EASY, MEDIUM, HARD;
+
+    public static DifficultyLevel getDiffulty(int objDifficulty) {
+        return DifficultyLevel.values()[objDifficulty];
+    }
 }
