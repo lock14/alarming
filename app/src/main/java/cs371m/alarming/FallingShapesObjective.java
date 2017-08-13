@@ -30,6 +30,7 @@ public class FallingShapesObjective extends Activity {
     private Button mPlus;
     private Button mStart;
     private Button mSubmit;
+    private int mThreadSleepTime;
 
     @Override
     public void onCreate(Bundle savedInstance) {
@@ -41,6 +42,9 @@ public class FallingShapesObjective extends Activity {
         mNumberOfWins = 0;
         Intent intent = getIntent();
         mDemoMode = intent.getBooleanExtra(getString(R.string.objective_demo_mode), false);
+        int difficultyCode = DifficultyLevel.MEDIUM.ordinal();
+        difficultyCode = intent.getIntExtra(getString(R.string.objective_difficulty), difficultyCode);
+        setDifficultyParams(difficultyCode);
         mFallingShapesObjective = this;
         mExecutingFallingShapes = false;
         setupGUIComponents();
@@ -73,7 +77,7 @@ public class FallingShapesObjective extends Activity {
         mFallingShapesTaskBundle.mNFalls = mNFalls;
         mFallingShapesTaskBundle.mFallingShapesObjective = this;
         for (int i = 0; i < mNFalls + 1 + mFallingShapes.mSideLength; ++i) {
-            FallingShapesTask fallingShapesTask = new FallingShapesTask();
+            FallingShapesTask fallingShapesTask = new FallingShapesTask(mThreadSleepTime);
             fallingShapesTask.execute(mFallingShapesTaskBundle);
         }
     }
@@ -158,5 +162,23 @@ public class FallingShapesObjective extends Activity {
                 }
             }
         });
+    }
+
+    public void setDifficultyParams(int difficultyCode) {
+        DifficultyLevel objDifficulty = DifficultyLevel.getDiffulty(difficultyCode);
+        switch (objDifficulty) {
+            case EASY:
+                mThreadSleepTime = 500;
+                break;
+            case MEDIUM:
+                mThreadSleepTime = 250;
+                break;
+            case HARD:
+                mThreadSleepTime = 125;
+                break;
+            default:
+                mThreadSleepTime = 250;
+                break;
+        }
     }
 }

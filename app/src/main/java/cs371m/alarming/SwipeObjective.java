@@ -23,6 +23,7 @@ public class SwipeObjective extends Activity {
     private List<PatternView.Cell> pattern;
     private Random random;
     private int completionCount;
+    private int numOfDots;
     private Handler handler;
     private Runnable startAnimation = new Runnable() {
         @Override
@@ -40,6 +41,17 @@ public class SwipeObjective extends Activity {
         random = new Random();
         completionCount = 3;
         handler = new Handler();
+        Intent intent = getIntent();
+        int difficultyCode = DifficultyLevel.MEDIUM.ordinal();
+        if (intent != null) {
+            boolean demoMode = intent.getBooleanExtra(getString(R.string.objective_demo_mode), false);
+            if (demoMode) {
+                TextView demoText = findViewById(R.id.swipe_demo_txt);
+                demoText.setVisibility(View.VISIBLE);
+            }
+            difficultyCode = intent.getIntExtra(getString(R.string.objective_difficulty), difficultyCode);
+        }
+        setDifficultyParams(difficultyCode);
         pattern = PatternUtils.bytesToPattern(generateRandomPattern());
         Log.d("SwipeObjective", "pattern: " + pattern);
         patternView.setPattern(PatternView.DisplayMode.Animate, pattern);
@@ -83,15 +95,6 @@ public class SwipeObjective extends Activity {
                 }
             }
         });
-
-        Intent intent = getIntent();
-        if (intent != null) {
-            boolean demoMode = intent.getBooleanExtra(getString(R.string.objective_demo_mode), false);
-            if (demoMode) {
-                TextView demoText = findViewById(R.id.swipe_demo_txt);
-                demoText.setVisibility(View.VISIBLE);
-            }
-        }
     }
 
     private boolean patternCorrect(List<PatternView.Cell> userPattern) {
@@ -100,7 +103,7 @@ public class SwipeObjective extends Activity {
     }
 
     private byte[] generateRandomPattern() {
-        byte[] bytes = new byte[random.nextInt(5) + 4];
+        byte[] bytes = new byte[numOfDots];
         List<Integer> choices = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8));
         Integer last = choices.get(random.nextInt(choices.size()));
         choices.remove(last);
@@ -128,5 +131,24 @@ public class SwipeObjective extends Activity {
                 || (val == 2 && last == 8) || (val == 8 && last == 2)
                 || (val == 0 && last == 8) || (val == 8 && last == 0)
                 || (val == 2 && last == 6) || (val == 6 && last == 2);
+    }
+
+    public void setDifficultyParams(int diffultyCode) {
+        DifficultyLevel objDifficulty = DifficultyLevel.getDiffulty(diffultyCode);
+        numOfDots = random.nextInt(2);
+        switch (objDifficulty) {
+            case EASY:
+                numOfDots += 4;
+                break;
+            case MEDIUM:
+                numOfDots += 6;
+                break;
+            case HARD:
+                numOfDots += 8;
+                break;
+            default:
+                numOfDots += 4;
+                break;
+        }
     }
 }

@@ -12,9 +12,6 @@ import java.util.Random;
 
 public class TicTacToeGame {
 
-    public enum DifficultyLevel {Easy, Harder, Expert}
-    private DifficultyLevel mDifficultyLevel = DifficultyLevel.Easy;
-
     private static final String TAG = "TicTacToeGame";
     public final static int BOARD_SIZE = 9;
 
@@ -23,7 +20,7 @@ public class TicTacToeGame {
     public static final char COMPUTER_PLAYER = 'O';
     public static final char OPEN_SPOT = ' ';
 
-
+    private DifficultyLevel mDifficultyLevel;
     private Random mRand;
     private char mBoard[];
 
@@ -31,6 +28,7 @@ public class TicTacToeGame {
         // Seed the random number generator
         mRand = new Random();
         mBoard = new char[BOARD_SIZE];
+        mDifficultyLevel = DifficultyLevel.MEDIUM;
         clearBoard();
     }
 
@@ -119,14 +117,14 @@ public class TicTacToeGame {
 
         int move = -1;
 
-        if (mDifficultyLevel == DifficultyLevel.Easy)
+        if (mDifficultyLevel == DifficultyLevel.EASY)
             move = getRandomMove();
-        else if (mDifficultyLevel == DifficultyLevel.Harder) {
+        else if (mDifficultyLevel == DifficultyLevel.MEDIUM) {
             move = getWinningMove();
             if (move == -1)
                 move = getRandomMove();
         }
-        else if (mDifficultyLevel == DifficultyLevel.Expert) {
+        else if (mDifficultyLevel == DifficultyLevel.HARD) {
             move = getWinningMove();
             if (move == -1)
                 move = getBlockingMove();

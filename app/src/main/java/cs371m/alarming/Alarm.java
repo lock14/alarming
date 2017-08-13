@@ -1,6 +1,5 @@
 package cs371m.alarming;
 
-import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -17,6 +16,7 @@ public class Alarm implements Comparable<Alarm>, Serializable {
     private int hour;
     private int minute;
     private int objectiveCode;
+    private int objectiveDifficulty;
     private String alarmDescription;
     private String recordingFileName;
     boolean repeating;
@@ -27,8 +27,9 @@ public class Alarm implements Comparable<Alarm>, Serializable {
         return repeating;
     }
 
-    public void setRepeating(boolean repeating) {
+    public Alarm setRepeating(boolean repeating) {
         this.repeating = repeating;
+        return this;
     }
 
     public boolean isEnabled() {
@@ -40,82 +41,69 @@ public class Alarm implements Comparable<Alarm>, Serializable {
     }
 
     public Alarm() {
-        hour = -1;
-        minute = -1;
-        objectiveCode = -1;
-    }
-
-    public Alarm(int hour, int minute, int objectiveCode) {
-        this(hour, minute, objectiveCode, null);
-    }
-
-    public Alarm(int hour, int minute, int objectiveCode, String alarmDescription) {
-        this(hour, minute, objectiveCode, alarmDescription, null);
-    }
-
-    public Alarm(int hour, int minute, int objectiveCode, String alarmDescription, String recordingFileName) {
-        this(hour, minute, objectiveCode, alarmDescription, recordingFileName, false);
-    }
-
-    public Alarm(int hour, int minute, int objectiveCode, String alarmDescription, String recordingFileName, boolean repeating) {
-        this(hour, minute, objectiveCode, alarmDescription, recordingFileName, repeating, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
-    }
-
-    public Alarm(int hour, int minute, int objectiveCode, String alarmDescription, String recordingFileName, boolean repeating, Uri ringtoneUri) {
-        this.hour = hour;
-        this.minute = minute;
-        this.objectiveCode = objectiveCode;
-        this.alarmDescription = alarmDescription;
-        this.recordingFileName = recordingFileName;
-        if (this.alarmDescription == null) {
-            this.alarmDescription = "";
-        }
-        if (this.recordingFileName == null) {
-            this.recordingFileName = "";
-        }
-        this.repeating = repeating;
+        this.hour = 0;
+        this.minute = 0;
+        this.objectiveCode = 0;
+        this.objectiveDifficulty = DifficultyLevel.MEDIUM.ordinal();
+        this.alarmDescription = "";
+        this.recordingFileName = "";
+        this.repeating = false;
         this.enabled = true;
-        this.ringtoneUri = ringtoneUri;
+        this.ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
     }
 
     public int getHour() {
         return hour;
     }
 
-    public void setHour(int hour) {
+    public Alarm setHour(int hour) {
         this.hour = hour;
+        return this;
     }
 
     public int getMinute() {
         return minute;
     }
 
-    public void setMinute(int minute) {
+    public Alarm setMinute(int minute) {
         this.minute = minute;
+        return this;
     }
 
     public int getObjectiveCode() {
         return objectiveCode;
     }
 
-    public void setObjectiveCode(int objectiveCode) {
+    public Alarm setObjectiveCode(int objectiveCode) {
         this.objectiveCode = objectiveCode;
+        return this;
+    }
+
+    public int getObjectiveDifficulty() {
+        return objectiveDifficulty;
+    }
+
+    public Alarm setObjectiveDifficulty(int objectiveDifficulty) {
+        this.objectiveDifficulty = objectiveDifficulty;
+        return this;
     }
 
     public String getAlarmDescription() {
         return alarmDescription;
     }
 
-    public void setAlarmDescription(String alarmDescription) {
+    public Alarm setAlarmDescription(String alarmDescription) {
         this.alarmDescription = alarmDescription;
+        return this;
     }
 
     public String getRecordingFileName() {
         return recordingFileName;
     }
 
-    public void setRecordingFileName(String recordingFileName) {
+    public Alarm setRecordingFileName(String recordingFileName) {
         this.recordingFileName = recordingFileName;
+        return this;
     }
 
     public Calendar getCalendar() {
@@ -131,8 +119,9 @@ public class Alarm implements Comparable<Alarm>, Serializable {
         return alarmTime;
     }
 
-    public void setRingtoneUri(Uri ringtoneUri) {
+    public Alarm setRingtoneUri(Uri ringtoneUri) {
         this.ringtoneUri = ringtoneUri;
+        return this;
     }
 
     public Uri getRingtoneUri() {

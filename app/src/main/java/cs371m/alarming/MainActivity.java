@@ -201,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
                 int hour = intent.getIntExtra(getString(R.string.intent_hour_key), -1);
                 int minute = intent.getIntExtra(getString(R.string.intent_minute_key), -1);
                 int objectiveCode = intent.getIntExtra(getString(R.string.intent_objective_key), 0);
+                int objectiveDifficulty = intent.getIntExtra(getString(R.string.intent_objective_difficulty), 0);
                 String alarmDescription = intent.getStringExtra(getString(R.string.intent_description_key));
                 String recordingFileName = intent.getStringExtra(getString(R.string.intent_recording_key));
                 boolean repeat = intent.getBooleanExtra(getString(R.string.intent_repeat_key), false);
@@ -209,22 +210,33 @@ public class MainActivity extends AppCompatActivity {
                 if (editMode) {
                     int alarmId = intent.getIntExtra(getString(R.string.intent_alarm_id), -1);
                     Alarm alarm = getAlarmById(alarmId);
-                    alarm.setHour(hour);
-                    alarm.setMinute(minute);
-                    alarm.setObjectiveCode(objectiveCode);
-                    alarm.setAlarmDescription(alarmDescription);
-                    alarm.setRecordingFileName(recordingFileName);
-                    alarm.setRepeating(repeat);
-                    alarm.setRingtoneUri(ringToneUri);
-                    if (alarm.isEnabled()) {
-                        setAlarm(alarm, true);
+                    if (alarm != null) {
+                        boolean timeChanged = timeChanged(alarm, hour, minute);
+                        alarm.setHour(hour)
+                             .setMinute(minute)
+                             .setObjectiveCode(objectiveCode)
+                             .setObjectiveDifficulty(objectiveDifficulty)
+                             .setAlarmDescription(alarmDescription)
+                             .setRecordingFileName(recordingFileName)
+                             .setRepeating(repeat)
+                             .setRingtoneUri(ringToneUri);
+                        if (alarm.isEnabled() && timeChanged) {
+                            setAlarm(alarm, true);
+                        }
+                        Collections.sort(alarms);
+                        alarmListAdapter.notifyDataSetChanged();
                     }
-                    Collections.sort(alarms);
-                    alarmListAdapter.notifyDataSetChanged();
                 } else {
-                    Alarm alarm = new Alarm(hour, minute, objectiveCode, alarmDescription,
-                                            recordingFileName, repeat, ringToneUri);
                     if (hour != -1 && minute != -1) {
+                        Alarm alarm = new Alarm()
+                                .setHour(hour)
+                                .setMinute(minute)
+                                .setObjectiveCode(objectiveCode)
+                                .setObjectiveDifficulty(objectiveDifficulty)
+                                .setAlarmDescription(alarmDescription)
+                                .setRecordingFileName(recordingFileName)
+                                .setRepeating(repeat)
+                                .setRingtoneUri(ringToneUri);
                         addAlarm(alarm);
                         setAlarm(alarm, true);
                     }
@@ -233,6 +245,10 @@ public class MainActivity extends AppCompatActivity {
                 stopCurrentAlarm();
             }
         }
+    }
+
+    private boolean timeChanged(Alarm alarm, int hour, int minute) {
+        return (alarm.getHour() != hour) || (alarm.getMinute() != minute);
     }
 
     private void stopCurrentAlarm() {
@@ -374,6 +390,7 @@ public class MainActivity extends AppCompatActivity {
                 stopCurrentAlarm();
                 return;
         }
+        intent.putExtra(getString(R.string.objective_difficulty), currentAlarm.getObjectiveDifficulty());
         startActivityForResult(intent, OBJECTIVE);
     }
 
