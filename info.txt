@@ -1,41 +1,82 @@
-a. 	Name - UT EID
+a.    Name - UT EID
 
-	Ali Darwiche – ad32823
-	Brian Bechtel – brb2727
-	Christiano Contreras – cac6253
-
-b.	Special Instructions
-
-	N/A
-
-c.	List of features
-
-	- Ability to set multiple alarms at a user specified time and have the alarm go off at the set time.
-	- The ability to record and save multiple recordings and be able to select one to play when the alarm goes off.
-	- Ability to select a default alarm sound
-	- Five objectives that the user may select between in order to disable the alarm
-	- Ability to change difficulty of objectives
-	- Full UI support with theme and graphics
-
-d.	Incomplete Features
-
-	All our features were completed
-e.	Added Features
-
-	- Ability to set Default alarm
-	- Ability to set objective difficulty
-	- Ability to set multiple alarms
-
-f. Code obtained from other sources
-	
-	Two classes involve code from Tutorial 3. This code is to implement a TicTacToe objective. The classes are:
-	- TicTacToeGame.java
-	- TicTacToeObjective.java
-
-	Swiping objective:
+      Ali Darwiche – ad32823
+      Brian Bechtel – brb2727
+      Christiano Contreras – cac6253
 
 
-g. Code completed ourselves
+b.    Special Instructions
 
-	All classes other than those mentioned in d are written by us
-	
+      N/A
+
+
+c.    List of features
+
+      - Ability to set multiple alarms at a user specified time and have the alarm
+        go off at the set time.
+
+      - User's alarm list sorted by alarm time from least to greatest, where
+        12:00 AM is considered the least time and 11:59 PM the greatest time.
+
+      - The ability to record and save multiple recordings.
+
+      - The abilty to choose recording from saved recordings to play when the alarm
+        goes off. If this choice is selected, the recording will play followed by
+        alarm ringtone when alarm goes off.
+
+      - Ability to select alarm ringtone.
+
+      - Five objectives that the user may select between in order to disable the
+        alarm. Objectives are Math, Tic-Tac-Toe, Swipe, Typing, and FallingShapes.
+
+      - Ability to choose no objective. If this is selected, disable button merely
+        turns alarm off rather than launch an objective activity.
+
+      - Three difficulty levels for objectives. Easy, Medium, Hard. Diffulcty can
+        be chosen on a per alarm basis.
+
+      - Full UI support with theme and graphics
+
+
+d.    Incomplete Features
+
+      - Currently, when creating an alarm, objective difficulty defaults to medium.
+        We would like to implement a global setting where the User can specify what
+        the default difficulty should be.
+
+      - Ability to select a song as alarm sound (Future Release section of design doc).
+
+      - Cloud interface where users can download more objectives and audio recordings
+        (Future Release section of design doc).
+
+
+e.    Added Features not in Design Document
+
+      - Ability to select alarm ringtone.
+      - Ability to set objective difficulty
+      - Ability to choose no objective.
+
+
+f.    Code obtained from other sources
+    
+      Two classes involve code from Tutorial 3. This code is to implement a TicTacToe
+      objective. The classes are:
+      - TicTacToeGame.java
+      - TicTacToeObjective.java
+
+      The following Libraries were used.
+      - Google Gson: https://github.com/google/gson
+      - PatternLock: https://github.com/DreaminginCodeZH/PatternLock
+
+      The code that uses these these libaries was our own save for the following:
+
+      - We had trouble using Gson to serialize Uri objects. We used the code snippet in the top post of this stack overflow post
+        https://stackoverflow.com/questions/22533432/create-object-from-gson-string-doesnt-work
+
+        This code is located at lines 476-488 of our MainActivity.java class
+
+
+g.    Code completed ourselves
+
+      All classes and code other than those mentioned in section f. were written by us
+    
