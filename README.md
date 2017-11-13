@@ -9,4 +9,6 @@ a difficulty level when making an alarm. When the alarm goes off, the user must 
 alarm is allowed to be turned off. Both of these features are optional and the user is allowed to make a regular alarm
 that has not recorded message or objective.
 
-This project has ceased development.
+The app was developed over a 3 week period and thus is a little rough around the edges. It is feature complete and
+(mostly) bug free. The UI could probably use additional polish, but it doesn't look half bad as it stands. For now,
+this project has ceased development.
