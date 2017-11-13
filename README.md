@@ -1,4 +1,4 @@
-# alarming
+# Alarming
 CS 371m App Project
 
 This is a small alarm clock app implemented as a class project for CS 371m at the University of Texas as Austin.
